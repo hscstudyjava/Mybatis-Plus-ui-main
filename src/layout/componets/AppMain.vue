@@ -5,7 +5,18 @@
                 <router-view v-if="!$route.meta.link" :key="key" />
             </keep-alive>    -->
             <keep-alive>
-                <router-view v-if="route.meta" :key="route.path" />
+
+                <div v-if="config.hidden">
+                    <el-watermark  class="watermark" :content="config.content" :font="config.font"
+                    :z-index="config.zIndex" :rotate="config.rotate" :gap="config.gap" :offset="config.offset">
+                    <h1>Element Plus</h1>
+                    <router-view v-if="!route.meta" :key="route.path" />
+                </el-watermark>
+                </div>
+                <div v-else>
+                    <router-view  :key="route.path" />
+                </div>
+
             </keep-alive>
         </transition>
         <!-- <iframe-toggle /> -->
@@ -14,47 +25,89 @@
 
 <script setup lang="ts">
 import router from '@/router';
-import { computed } from 'vue';
+import { computed, reactive } from 'vue';
 
 const route = router.currentRoute.value;
+import { useSettingStore } from '@/stores/setting';
+const setting = useSettingStore()
 
-const getKey = 
-() => computed<string>((router) => {
-    return router.currentRoute.value.path
+const config = reactive({
+    hidden: setting.watermark,
+    content: setting.watermarkContext,
+    font: {
+        fontSize: 16,
+        color: 'rgba(0, 0, 0, 0.15)',
+    },
+    zIndex: -1,
+    rotate: -22,
+    gap: [100, 100] as [number, number],
+    offset: [] as unknown as [number, number],
 })
+
+const getKey =
+    () => computed<string>((router) => {
+        return router.currentRoute.value.path
+    })
 
 </script>
 
 <style lang="scss" scoped>
-.app-main {
-  /* 50= navbar  50  */
-  min-height: calc(100vh - 50px);
-  width: 100%;
-  position: relative;
-  overflow: hidden;
+.wrapper {
+    display: flex;
 }
 
-.fixed-header + .app-main {
-  padding-top: 50px;
+.watermark {
+    display: flex;
+    flex: auto;
+}
+
+.demo {
+    flex: auto;
+}
+
+.form {
+    width: 330px;
+    margin-left: 20px;
+    border-left: 1px solid #eee;
+    padding-left: 20px;
+}
+
+img {
+    z-index: 10;
+    width: 100%;
+    max-width: 300px;
+    position: relative;
+}
+
+.app-main {
+    /* 50= navbar  50  */
+    min-height: calc(100vh - 50px);
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.fixed-header+.app-main {
+    padding-top: 50px;
 }
 
 .hasTagsView {
-  .app-main {
-    /* 84 = navbar + tags-view = 50 + 34 */
-    min-height: calc(100vh - 84px);
-  }
+    .app-main {
+        /* 84 = navbar + tags-view = 50 + 34 */
+        min-height: calc(100vh - 84px);
+    }
 
-  .fixed-header + .app-main {
-    padding-top: 84px;
-  }
+    .fixed-header+.app-main {
+        padding-top: 84px;
+    }
 }
 </style>
 
 <style lang="scss">
 // fix css style bug in open el-dialog
 .el-popup-parent--hidden {
-  .fixed-header {
-    padding-right: 17px;
-  }
+    .fixed-header {
+        padding-right: 17px;
+    }
 }
 </style>

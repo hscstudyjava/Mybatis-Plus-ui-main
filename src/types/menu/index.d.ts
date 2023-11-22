@@ -34,7 +34,7 @@ type Menu={
     hidden:Boolean,
 
     /**
-     * 是否需要展示
+     * 是否需要
      */
     alwaysShow:Boolean,
 

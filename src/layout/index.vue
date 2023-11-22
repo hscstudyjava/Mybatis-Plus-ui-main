@@ -8,7 +8,8 @@ const resizeMixin = ResizeMixin();// 应用minix
 import AppMain from './componets/AppMain.vue'
 // @ts-ignore
 import Sidebar from './componets/sidebar/index.vue'
-
+// @ts-ignore
+import navbar from './componets/naber/index.vue'
 // @ts-ignore
 import sytleConstant from '@/assets/style/sytleConstant.module.scss'
 const variable = sytleConstant;
@@ -46,12 +47,12 @@ const handlerOutSidear = () => {
     <div>
         <div :class="classObj" class="app-wrapper" :style="{ '--current-color': theme }">
             <div v-if="device === 'mobile' && sidebar.open" class="drawer-bg" @click="handlerOutSidear" />
-            <sidebar v-if="!sidebar.hide" class="sidebar-container" />
+            <!-- <sidebar v-if="!sidebar.hide" class="sidebar-container" /> -->
             <div :class="{ hasTagsView: needTagsView, sidebarHide: sidebar.hide }" class="main-container">
-                <!--  <div :class="{ 'fixed-header': fixedHeader }">
+                <div :class="{ 'fixed-header': fixedHeader }">
                     <navbar />
-                    <tags-view v-if="needTagsView" />
-                </div> -->
+                    <!-- <tags-view v-if="needTagsView" /> -->
+                </div>
                 <app-main />
             </div>
         </div>
