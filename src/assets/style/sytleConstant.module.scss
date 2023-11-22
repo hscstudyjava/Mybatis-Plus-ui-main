@@ -1,0 +1,53 @@
+// base color
+$blue:#475c7c;
+$light-blue:#4785c4;
+$tiffany: #4AB7BD;
+$red:#d03b3d;
+$pink: #e25c6c;
+$green: #3ac6a3;
+$yellow:#FEC171;
+$panGreen: #30B08F;
+
+//base-menu  
+
+// 浅色主题theme-light THEME_LIGHT = "theme-light"
+$base-menu-color:#bfcbd9;
+$base-menu-color-active:#f4f4f5;
+$base-menu-background:#304156;
+$base-logo-title-color: #ffffff;
+
+// 深色主题theme-dark，THEME_DARK = "theme-dark",
+$base-menu-light-color:rgba(0,0,0,.70);
+$base-menu-light-background:#ffffff;
+$base-logo-light-title-color: #001529;
+
+
+// children
+$base-children-menu-background:#1f2d3d;
+$base-children-menu-hover:#001528;
+
+// 宽度
+$base-sidebar-width: 200px;
+
+:export{
+
+    menuColor: $base-menu-color;
+
+    menuLightColor: $base-menu-light-color;
+
+    menuColorActive: $base-menu-color-active;
+
+    menuBackground: $base-menu-background;
+
+    menuLightBackground: $base-menu-light-background;
+
+    subMenuBackground: $base-children-menu-background;
+
+    subMenuHover: $base-children-menu-hover;
+
+    sideBarWidth: $base-sidebar-width;
+
+    logoTitleColor: $base-logo-title-color;
+
+    logoLightTitleColor: $base-logo-light-title-color
+}
