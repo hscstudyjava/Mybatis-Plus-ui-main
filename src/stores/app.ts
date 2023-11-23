@@ -48,6 +48,7 @@ export const useAppStore = defineStore('appStore', () => {
     const TOGGLE_SIBEBAR = (): void => {
         sibebar.open = !sibebar.open
         sibebar.withoutAnimation = false
+        
         if (sibebar.open) {
             CacheUtils.cookieCache.set('sibebar_open', 1)
         } else {

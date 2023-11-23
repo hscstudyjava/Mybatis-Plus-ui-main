@@ -16,7 +16,6 @@ export const useSettingStore = defineStore('settingStore', () => {
      * 项目标题
      */
     var title = ref<string>("")
-    console.log(settingStore)
 
     /** 
      * 配置设置

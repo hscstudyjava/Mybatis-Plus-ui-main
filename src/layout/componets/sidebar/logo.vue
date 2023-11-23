@@ -6,12 +6,12 @@
   >
     <transition name="sidebarLogoFade">
       <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo" />
+        <img v-if="logo" :src="logo" class="sidebar-logo 1" />
         <h1 v-else class="sidebar-title" :style="{ color: sideTheme === theme
         ? sytleConstant.logoTitleColor : sytleConstant.logoLightTitleColor }">{{ title }} </h1>
       </router-link>
       <router-link v-else key="expand" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo" />
+        <img v-if="logo" :src="logo" class="sidebar-logo 2" />
         <h1 class="sidebar-title" :style="{ color: sideTheme === theme
         ? sytleConstant.logoTitleColor : sytleConstant.logoLightTitleColor }">{{ title }} </h1>
       </router-link>
@@ -29,18 +29,15 @@ import sytleConstant from '@/assets/style/sytleConstant.module.scss'
 
 // @ts-ignore
 import { LayoutThemeEnum } from '@/utils/constants/SystemConstants';
+import { storeToRefs } from 'pinia';
 // 开启
 defineProps<{
     collapse:boolean
 }>();
+
 const theme=LayoutThemeEnum.THEME_DARK
-
-const settingStore=useSettingStore()
-
-
-var sideTheme=settingStore.sideTheme
-
-var title=settingStore.title
+const setting=useSettingStore()
+const {sideTheme,title} = storeToRefs(setting)
 
 var logo=logoUrl
 

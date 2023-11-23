@@ -5,18 +5,18 @@
                 <router-view v-if="!$route.meta.link" :key="key" />
             </keep-alive>    -->
             <keep-alive>
-
+                
                 <div v-if="config.hidden">
-                    <el-watermark  class="watermark" :content="config.content" :font="config.font"
-                    :z-index="config.zIndex" :rotate="config.rotate" :gap="config.gap" :offset="config.offset">
-                    <h1>Element Plus</h1>
-                    <router-view v-if="!route.meta" :key="route.path" />
-                </el-watermark>
-                </div>
-                <div v-else>
-                    <router-view  :key="route.path" />
+                    <el-watermark class="watermark" :content="config.content" :font="config.font" :z-index="config.zIndex"
+                        :rotate="config.rotate" :gap="config.gap" :offset="config.offset">
+                        <h1>Element Plus</h1>
+                        <router-view v-if="!route.meta" :key="route.path" />
+                    </el-watermark>
                 </div>
 
+                <div v-else>
+                    <router-view :key="route.path" />
+                </div>
             </keep-alive>
         </transition>
         <!-- <iframe-toggle /> -->
@@ -52,32 +52,13 @@ const getKey =
 </script>
 
 <style lang="scss" scoped>
-.wrapper {
-    display: flex;
-}
-
 .watermark {
-    display: flex;
-    flex: auto;
+    height: 100%;
+    // display: flex;
+    // flex: auto;
 }
 
-.demo {
-    flex: auto;
-}
 
-.form {
-    width: 330px;
-    margin-left: 20px;
-    border-left: 1px solid #eee;
-    padding-left: 20px;
-}
-
-img {
-    z-index: 10;
-    width: 100%;
-    max-width: 300px;
-    position: relative;
-}
 
 .app-main {
     /* 50= navbar  50  */

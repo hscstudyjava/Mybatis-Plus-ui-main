@@ -1,13 +1,15 @@
 <template>
     <div class="navbar">
-        <hamburger id="hamburger-container" :is-active="sidebar.open" class="hamburger-container"
+        <Hamburger id="hamburger-container" 
+        :is-active="sibebar.open" 
+        class="hamburger-container"
             @toggleClick="toggleSideBar" />
 
         <breadcrumb id="breadcrumb-container" class="breadcrumb-container" v-if="!topNav" />
-        <top-nav id="topmenu-container" class="topmenu-container" v-if="topNav" />
+        <!-- <top-nav id="topmenu-container" class="topmenu-container" v-if="topNav" /> -->
 
         <div class="right-menu">
-            <template v-if="device !== 'mobile'">
+            <template v-if="device !== moddileDevice">
 
             </template>
 
@@ -17,8 +19,8 @@
                     <img :src="avatar" class="user-avatar">
                     <i class="el-icon-caret-bottom" />
                 </div>
-                <!-- @vue-ignore -->
-                <el-dropdown-menu v-shot="dropdown">
+                <!-- @vue-ignore v-shot="dropdown" -->
+                <el-dropdown-menu >
 
                     <router-link to="/user/profile">
                         <el-dropdown-item>个人中心</el-dropdown-item>
@@ -39,22 +41,28 @@
 import { useSettingStore } from '@/stores/setting'
 import { useAppStore } from '@/stores/app';
 import { useUserStore } from '@/stores/user';
+import Hamburger from './Hamburger.vue';
+import Breadcrumb from './breadcrumb.vue';
+import { storeToRefs } from 'pinia';
+import { DeviceEnum } from '@/utils/constants/SystemConstants';
 const appStore = useAppStore();
 const setting = useSettingStore()
 const userSotre = useUserStore()
 
-const avatar = userSotre.currentUser.userImg;
-const sidebar = appStore.sibebar
-const device = appStore.device
-const topNav = setting.topNav
+const {currentUser }=storeToRefs(userSotre)
+const {device}=storeToRefs(appStore)
+const {sibebar}=storeToRefs(appStore)
 
+const avatar = currentUser.value.userImg
+const topNav = (()=>{return setting.topNav})
+const moddileDevice = DeviceEnum.MOBILE;//手机模式
 
 const logout = () => {
 
 }
 
 const toggleSideBar = () => {
-    appStore.TOGGLE_SIBEBAR
+    appStore.TOGGLE_SIBEBAR();
 }
 </script>
   

@@ -17,6 +17,7 @@ const router = createRouter({
       name: 'system',
       component: Layout,
       redirect: '/system/user',
+      meta: { title: '系统管理', icon: 'dashboard' },
       children: [{
         path: 'user',
         name: 'user',

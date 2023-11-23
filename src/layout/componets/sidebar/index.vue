@@ -4,10 +4,15 @@
         ? variables.menuBackground : variables.menuLightBackground }">
         <logo v-if="isLogo" :collapse="sibebarOpen" />
         <el-scrollbar :class="settingStore.sideTheme" wrap-class="scrollbar-wrapper">
+
             <el-menu :default-active="activeMenu" :collapse="sibebarOpen"
                 :background-color="settingStore.sideTheme === 'theme-dark' ? variables.menuBackground : variables.menuLightBackground"
                 :text-color="settingStore.sideTheme === 'theme-dark' ? variables.menuColor : variables.menuLightColor"
-                :unique-opened="true" :active-text-color="settingStore.themeColor" :collapse-transition="false" mode="vertical">
+                :unique-opened="true" 
+                :active-text-color="settingStore.themeColor"
+                 :collapse-transition="false"
+                  mode="vertical">
+                  
               <!--   <sidebar-item v-for="(route, index) in sidebarRouters" :key="route.path + index" :item="route"
                     :base-path="route.path" /> -->
             </el-menu>
@@ -52,12 +57,12 @@ const variables = sytleConstant
 /** 
  * 侧边栏是否打开
  */
-const sibebarOpen = appStore.sibebar.open
+const sibebarOpen = computed(()=>{return appStore.sibebar.open})
 
 /** 
  * 是否展示log
  */
-const isLogo = settingStore.sidebarLogo
+const isLogo = computed(()=>{return settingStore.sidebarLogo})
 
 </script>
  

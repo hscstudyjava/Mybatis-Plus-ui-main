@@ -18,22 +18,28 @@ const variable = sytleConstant;
 // @ts-ignore
 import { useSettingStore } from '@/stores/setting'
 import { useAppStore } from '@/stores/app';
+import { DeviceEnum } from '@/utils/constants/SystemConstants';
+import { computed } from 'vue';
+import { storeToRefs } from 'pinia';
+const moddileDevice = DeviceEnum.MOBILE;//手机模式
+
+const setting = useSettingStore();
+const { themeColor, sideTheme, tagsView, fixedHeader } = storeToRefs(setting)
+
 const appStore = useAppStore();
-const setting = useSettingStore()
+const { device } = storeToRefs(appStore)
+const { sibebar } = storeToRefs(appStore)
 
-const theme = setting.themeColor
-const sideTheme = setting.sideTheme
-const sidebar = appStore.sibebar
-const device = appStore.device
-const needTagsView = setting.tagsView;
-const fixedHeader = setting.fixedHeader
+console.log(appStore.device);
 
-const classObj = {
-    hideSidebar: sidebar.open,
-    openSidebar: sidebar.open,
-    withoutAnimation: sidebar.withoutAnimation,
-    mobile: device
-}
+var classObj = computed(() => {
+    return {
+        hideSidebar: !sibebar.value.open,
+        openSidebar: sibebar.value.open,
+        withoutAnimation: sibebar.value.withoutAnimation,
+        mobile: device.value === moddileDevice
+    }
+})
 
 /** 
  * 关闭侧边栏
@@ -45,14 +51,17 @@ const handlerOutSidear = () => {
 
 <template>
     <div>
-        <div :class="classObj" class="app-wrapper" :style="{ '--current-color': theme }">
-            <div v-if="device === 'mobile' && sidebar.open" class="drawer-bg" @click="handlerOutSidear" />
-            <!-- <sidebar v-if="!sidebar.hide" class="sidebar-container" /> -->
-            <div :class="{ hasTagsView: needTagsView, sidebarHide: sidebar.hide }" class="main-container">
+        <div :class="classObj" class="app-wrapper" :style="{ '--current-color': themeColor }">
+            <div v-if="device === moddileDevice && sibebar.open" class="drawer-bg" @click="handlerOutSidear" />
+            <sidebar v-if="!sibebar.hide" class="sidebar-container" />
+
+            <div :class="{ hasTagsView: tagsView, sidebarHide: sibebar.hide }" class="main-container">
+
                 <div :class="{ 'fixed-header': fixedHeader }">
                     <navbar />
                     <!-- <tags-view v-if="needTagsView" /> -->
                 </div>
+
                 <app-main />
             </div>
         </div>
@@ -60,8 +69,9 @@ const handlerOutSidear = () => {
 </template>
 
 <style lang="scss" scoped>
-@import '@/assets/style/sytleConstant.module.scss';
+// @import '@/assets/style/sytleConstant.module.scss';
 @import '@/assets/style/mixin.scss';
+@import '@/assets/style/sidebar.scss';
 
 .app-wrapper {
     @include clearfix;
