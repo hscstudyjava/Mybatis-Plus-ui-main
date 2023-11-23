@@ -1,22 +1,24 @@
 
 <template>
-    <div class="app-container">
-        <el-button v-peri="['ok']">1123123</el-button>
-
-        <el-table :data="tableData" style="width: 100%">
-    <el-table-column prop="date" label="Date" width="180" />
-    <el-table-column prop="name" label="Name" width="180" />
-    <el-table-column prop="address" label="Address" />
-  </el-table>
-    </div>
+  <div class="app-container">
+    <el-button type="primary" @click="openFullScreen2"> As a service </el-button>
+  </div>
 </template>
     
 <script setup lang="ts">
+
+// @ts-ignore
+import { confirms, loading, message, notify } from "@/utils/message/MessageUtil"
 // @ts-ignore
 import { useUserStore } from '@/stores/user';
-import { reactive } from 'vue';
+// @ts-ignore
+import { onMounted, reactive } from 'vue';
 
 const userStore = useUserStore()
+const openFullScreen2 = () => {
+  loading.open()
+}
+
 const tableData = [
   {
     date: '2016-05-03',
@@ -84,5 +86,8 @@ const tableData = [
     address: 'No. 189, Grove St, Los Angeles',
   },
 ]
+onMounted(() => {
+  // message.success("ok")
 
+})
 </script>

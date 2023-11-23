@@ -9,7 +9,9 @@
                     <el-watermark class="watermark" :content="config.content" :font="config.font" :z-index="config.zIndex"
                         :rotate="config.rotate" :gap="config.gap" :offset="config.offset">
                         <router-view v-if="!route.meta.link" :key="route.path" />
+
                     </el-watermark>
+
                 </div>
 
                 <div v-else>
@@ -54,8 +56,8 @@ const getKey =
 <style lang="scss" scoped>
 .watermark {
     height: 100%;
-    // display: flex;
-    // flex: auto;
+    display: flex;
+    flex: auto;
 }
 
 
