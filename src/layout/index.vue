@@ -9,7 +9,7 @@ import AppMain from './componets/AppMain.vue'
 // @ts-ignore
 import Sidebar from './componets/sidebar/index.vue'
 // @ts-ignore
-import navbar from './componets/naber/index.vue'
+import navigation from './componets/navigation/index.vue'
 // @ts-ignore
 import sytleConstant from '@/assets/style/sytleConstant.module.scss'
 const variable = sytleConstant;
@@ -29,8 +29,6 @@ const { themeColor, sideTheme, tagsView, fixedHeader } = storeToRefs(setting)
 const appStore = useAppStore();
 const { device } = storeToRefs(appStore)
 const { sibebar } = storeToRefs(appStore)
-
-console.log(appStore.device);
 
 var classObj = computed(() => {
     return {
@@ -58,7 +56,8 @@ const handlerOutSidear = () => {
             <div :class="{ hasTagsView: tagsView, sidebarHide: sibebar.hide }" class="main-container">
 
                 <div :class="{ 'fixed-header': fixedHeader }">
-                    <navbar />
+                    <!-- 头部导航栏 -->
+                    <navigation />
                     <!-- <tags-view v-if="needTagsView" /> -->
                 </div>
 

@@ -48,10 +48,10 @@ export const useUserStore = defineStore('userStore', () => {
         seteRefreshToken(oauth2.refreshToken)//存储进去
     }
 
-    const setOuath2=(targetOauth2: Oauth2Resp) =>{
-        oauth2.accessToken=targetOauth2.accessToken
-        oauth2.refreshToken=targetOauth2.refreshToken
-        oauth2.expiredTime=targetOauth2.expiredTime
+    const setOuath2 = (targetOauth2: Oauth2Resp) => {
+        oauth2.accessToken = targetOauth2.accessToken
+        oauth2.refreshToken = targetOauth2.refreshToken
+        oauth2.expiredTime = targetOauth2.expiredTime
     }
 
 
@@ -69,6 +69,8 @@ export const useUserStore = defineStore('userStore', () => {
     var currentUser = reactive<CurrentUser>({
         userId: 0,
         permissions: [],
+        // 登录用户
+        roleList: [],
         userName: "",
         userImg: "",
         isSupuerAdmin: false
@@ -86,6 +88,7 @@ export const useUserStore = defineStore('userStore', () => {
         currentUser = reactive<CurrentUser>({
             userId: 0,
             permissions: [],
+            roleList: [],
             userName: "",
             userImg: "",
             isSupuerAdmin: false

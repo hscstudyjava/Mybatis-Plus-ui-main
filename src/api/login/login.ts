@@ -42,6 +42,11 @@ export interface CurrentUser {
     permissions: [],
 
     /**
+     * 角色列表
+     */
+    roleList:[],
+
+    /**
      * 用户编号
      */
     userId:number,

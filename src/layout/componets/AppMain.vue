@@ -5,17 +5,15 @@
                 <router-view v-if="!$route.meta.link" :key="key" />
             </keep-alive>    -->
             <keep-alive>
-                
                 <div v-if="config.hidden">
                     <el-watermark class="watermark" :content="config.content" :font="config.font" :z-index="config.zIndex"
                         :rotate="config.rotate" :gap="config.gap" :offset="config.offset">
-                        <svg-icon iconClass="dashboard"></svg-icon>
-                        <router-view v-if="!route.meta" :key="route.path" />
+                        <router-view v-if="!route.meta.link" :key="route.path" />
                     </el-watermark>
                 </div>
 
                 <div v-else>
-                    <router-view :key="route.path" />
+                    <router-view v-if="!route.meta.link" :key="route.path" />
                 </div>
             </keep-alive>
         </transition>
@@ -29,14 +27,16 @@ import { computed, reactive } from 'vue';
 
 const route = router.currentRoute.value;
 import { useSettingStore } from '@/stores/setting';
+import { storeToRefs } from 'pinia';
 const setting = useSettingStore()
 
+const { watermark, watermarkContext } = storeToRefs(setting)
 const config = reactive({
-    hidden: setting.watermark,
-    content: setting.watermarkContext,
+    hidden: watermark.value,
+    content: watermarkContext.value,
     font: {
-        fontSize: 16,
-        color: 'rgba(0, 0, 0, 0.15)',
+        fontSize: 18,
+        color: 'rgba(0, 0, 0, 0.20)',
     },
     zIndex: -1,
     rotate: -22,
