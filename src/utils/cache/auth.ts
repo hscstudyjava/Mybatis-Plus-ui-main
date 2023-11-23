@@ -33,10 +33,10 @@ export function seteRefreshToken(refreshToken: string) {
     cache.local.set(AuthCacheConstant.REFRESH_TOKEN_KEY, refreshToken)
 }
 
-export function getRefreshToken(): string | null{
+export function getRefreshToken(): string {
     let refreshToekn= cache.local.get(AuthCacheConstant.REFRESH_TOKEN_KEY) as string
     if(refreshToekn==null && refreshToekn==""){
-        return null
+        return ""
     }
     return refreshToekn
 }

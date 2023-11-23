@@ -7,13 +7,13 @@
     <transition name="sidebarLogoFade">
       <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" to="/">
         <img v-if="logo" :src="logo" class="sidebar-logo 1" />
-        <h1 v-else class="sidebar-title" :style="{ color: sideTheme === theme
-        ? sytleConstant.logoTitleColor : sytleConstant.logoLightTitleColor }">{{ title }} </h1>
+        <h1 v-else class="sidebar-title" :style="{ color: sideThemes === theme
+        ? sytleConstant.logoTitleColor : sytleConstant.logoLightTitleColor }">{{ titles }} </h1>
       </router-link>
       <router-link v-else key="expand" class="sidebar-logo-link" to="/">
         <img v-if="logo" :src="logo" class="sidebar-logo 2" />
-        <h1 class="sidebar-title" :style="{ color: sideTheme === theme
-        ? sytleConstant.logoTitleColor : sytleConstant.logoLightTitleColor }">{{ title }} </h1>
+        <h1 class="sidebar-title" :style="{ color: sideThemes === theme
+        ? sytleConstant.logoTitleColor : sytleConstant.logoLightTitleColor }">{{ titles }} </h1>
       </router-link>
     </transition>
   </div>
@@ -39,6 +39,8 @@ const theme=LayoutThemeEnum.THEME_DARK
 const setting=useSettingStore()
 const {sideTheme,title} = storeToRefs(setting)
 
+var titles=title;
+var sideThemes=sideTheme;
 var logo=logoUrl
 
 </script>

@@ -1,5 +1,6 @@
+
 <template>
-    <div style="padding: 0 15px;" @click="emit('toggleClick') ">
+    <div style="padding: 0 15px;" @click="emit('toggleClick')">
         <svg :class="{ 'is-active': isActive }" class="hamburger" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"
             width="64" height="64">
             <path
@@ -10,17 +11,28 @@
 
 <script  lang="ts" setup>
 
-const hamburgerProps = defineProps({
+defineProps({
     /** 
      * 是否被激活
      */
     isActive: Boolean
 })
 
-const emit=defineEmits<{
-    (event:'toggleClick'):void
+const emit = defineEmits<{
+    (event: 'toggleClick'): void
 }>()
 
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.hamburger {
+  display: inline-block;
+  vertical-align: middle;
+  width: 20px;
+  height: 20px;
+}
+
+.hamburger.is-active {
+  transform: rotate(180deg);
+}
+</style>

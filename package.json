@@ -19,7 +19,6 @@
     "js-cookie": "^2.2.0",
     "nprogress": "^0.2.0",
     "pinia": "^2.1.7",
-    "svg-sprite-loader": "^6.0.11",
     "vue": "^3.3.4",
     "vue-router": "^4.2.5"
   },
@@ -31,6 +30,7 @@
     "@vitejs/plugin-vue-jsx": "^3.0.2",
     "@vue/tsconfig": "^0.4.0",
     "cypress": "^13.3.1",
+    "fast-glob": "^3.3.2",
     "npm-run-all2": "^6.1.1",
     "sass": "^1.69.5",
     "sass-loader": "^13.3.2",
@@ -39,6 +39,7 @@
     "unplugin-auto-import": "^0.16.7",
     "unplugin-vue-components": "^0.25.2",
     "vite": "^4.4.11",
+    "vite-plugin-svg-icons": "^2.0.1",
     "vue-tsc": "^1.8.19"
   }
 }

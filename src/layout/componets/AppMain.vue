@@ -9,7 +9,7 @@
                 <div v-if="config.hidden">
                     <el-watermark class="watermark" :content="config.content" :font="config.font" :z-index="config.zIndex"
                         :rotate="config.rotate" :gap="config.gap" :offset="config.offset">
-                        <svg-icon className="dashboard"></svg-icon>
+                        <svg-icon iconClass="dashboard"></svg-icon>
                         <router-view v-if="!route.meta" :key="route.path" />
                     </el-watermark>
                 </div>

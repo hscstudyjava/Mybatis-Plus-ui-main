@@ -45,6 +45,7 @@ import Hamburger from './Hamburger.vue';
 import Breadcrumb from './breadcrumb.vue';
 import { storeToRefs } from 'pinia';
 import { DeviceEnum } from '@/utils/constants/SystemConstants';
+import { computed } from 'vue';
 const appStore = useAppStore();
 const setting = useSettingStore()
 const userSotre = useUserStore()
@@ -54,7 +55,7 @@ const {device}=storeToRefs(appStore)
 const {sibebar}=storeToRefs(appStore)
 
 const avatar = currentUser.value.userImg
-const topNav = (()=>{return setting.topNav})
+const topNav = computed(()=>{return setting.topNav})
 const moddileDevice = DeviceEnum.MOBILE;//手机模式
 
 const logout = () => {

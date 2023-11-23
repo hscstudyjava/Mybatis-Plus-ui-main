@@ -30,7 +30,6 @@ router.beforeEach((to, from, next) => {
             userStore.getCurrentUser().then(res => {
                 next();//放行
             }).catch(error => {
-                console.error("未携带(access_token)");
                 next(`/login?redirect=${to.path}`)
                 NProgress.done()
             })

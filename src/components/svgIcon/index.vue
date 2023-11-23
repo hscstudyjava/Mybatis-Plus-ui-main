@@ -1,40 +1,77 @@
+
 <template>
-    <svg
-      :class="svgClass"
-      v-bind="$attrs"
-      :style="{ color: color, fontSize: size }"
-    >
-      <use :href="iconName"></use>
-    </svg>
-  </template>
-  ​
-  <script setup lang="ts">
-  import { computed } from "vue";
-  const props = defineProps({
-    name: {
-      type: String,
-      required: true,
-    },
-    color: {
-      type: String,
-      default: "",
-    },
-    size: {
-      type: Number,
-    },
-  });
-  const iconName = computed(() => `#icon-${props.name}`);
-  const svgClass = computed(() => {
-    if (props.name) return `svg-icon icon-${props.name}`;
-    return "svg-icon";
-  });
-  </script>
-  ​
-  <style scoped>
-  .svg-icon {
-    width: 1em;
-    height: 1em;
-    fill: currentColor;
-    vertical-align: middle;
+  <div v-if="isHttp" :style="styleExternalIcon" class="svg-external-icon svg-icon" v-on="$attrs" />
+  <svg v-else :class="svgClass" aria-hidden="true" v-on="$attrs" :style="{
+    color: color
+  }">
+    <use :xlink:href="iconName" />
+  </svg>
+</template>
+<script setup lang='ts'>
+import { isExternal } from '@/utils/verify'
+import { computed } from 'vue'
+
+// 是否为http//https
+const isHttp = computed(() => {
+  return isExternal(iconProp.iconClass)
+})
+// icon
+const iconName = computed(() => {
+  if(iconProp.className) return `#icon-${iconProp.className}`
+  return `#icon-${iconProp.iconClass}`
+})
+
+// svg
+const svgClass = computed(() => {
+  if (iconProp.className) {
+    return 'svg-icon ' + iconProp.className
+  } else {
+    return 'svg-icon'
   }
-  </style>
+})
+
+const styleExternalIcon = computed(() => {
+  return {
+    mask: `url(${iconProp.iconClass}) no-repeat 50% 50%`,
+    '-webkit-mask': `url(${iconProp.iconClass}) no-repeat 50% 50%`
+  }
+})
+
+
+
+const iconProp = defineProps({
+  // 颜色
+  color: {
+    type: String,
+    default: ''
+  },
+  // icon
+  iconClass: {
+    type: String,
+    required: true
+  },
+  // 默认样式
+  className: {
+    type: String,
+    default: ''
+  }
+
+})
+
+
+</script>
+<style scoped lang='scss'>
+.svg-icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}
+
+.svg-external-icon {
+  background-color: currentColor;
+  mask-size: cover!important;
+  display: inline-block;
+}
+</style>

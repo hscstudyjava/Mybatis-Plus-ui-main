@@ -2,7 +2,7 @@
     <div :class="{ 'has-logo': isLogo }"
         :style="{ backgroundColor: settingStore.sideTheme === 'theme-dark' 
         ? variables.menuBackground : variables.menuLightBackground }">
-        <logo v-if="isLogo" :collapse="sibebarOpen" />
+        <logo v-if="isLogo" :collapse="!sibebarOpen" />
         <el-scrollbar :class="settingStore.sideTheme" wrap-class="scrollbar-wrapper">
 
             <el-menu :default-active="activeMenu" :collapse="sibebarOpen"
