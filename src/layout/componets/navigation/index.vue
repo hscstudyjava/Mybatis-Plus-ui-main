@@ -1,8 +1,6 @@
 <template>
     <div class="navbar">
-        <Hamburger id="hamburger-container" 
-        :is-active="sibebar.open" 
-        class="hamburger-container"
+        <Hamburger id="hamburger-container" :is-active="sibebar.open" class="hamburger-container"
             @toggleClick="toggleSideBar" />
 
         <breadcrumb id="breadcrumb-container" class="breadcrumb-container" v-if="!topNav" />
@@ -20,17 +18,21 @@
                     <i class="el-icon-caret-bottom" />
                 </div>
                 <!-- @vue-ignore v-shot="dropdown" -->
-                <el-dropdown-menu >
+                <template #dropdown>
+                    <el-dropdown-menu>
 
-                    <router-link to="/user/profile">
-                        <el-dropdown-item>个人中心</el-dropdown-item>
-                    </router-link>
+                        <router-link to="/user/profile">
+                            <el-dropdown-item>个人中心</el-dropdown-item>
+                        </router-link>
 
-                    <el-dropdown-item divided @click="logout">
-                        <span>退出登录</span>
-                    </el-dropdown-item>
+                        <el-dropdown-item divided @click="logout" :icon="SwitchButton">
+                            <span>注销账号</span>
+                        </el-dropdown-item>
 
-                </el-dropdown-menu>
+                    </el-dropdown-menu>
+
+                </template>
+
             </el-dropdown>
         </div>
     </div>
@@ -50,12 +52,12 @@ const appStore = useAppStore();
 const setting = useSettingStore()
 const userSotre = useUserStore()
 
-const {currentUser }=storeToRefs(userSotre)
-const {device}=storeToRefs(appStore)
-const {sibebar}=storeToRefs(appStore)
+const { currentUser } = storeToRefs(userSotre)
+const { device } = storeToRefs(appStore)
+const { sibebar } = storeToRefs(appStore)
 
 const avatar = currentUser.value.userImg
-const topNav = computed(()=>{return setting.topNav})
+const topNav = computed(() => { return setting.topNav })
 const moddileDevice = DeviceEnum.MOBILE;//手机模式
 
 const logout = () => {
