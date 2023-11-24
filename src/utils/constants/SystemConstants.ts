@@ -46,3 +46,22 @@ export const enum LayoutThemeEnum {
     // 浅色主题theme-light
     THEME_LIGHT = "theme-light"
 }
+
+/**
+ * 权限常量
+ */
+export const enum PermissionEnum{
+
+    /**
+     * 超级权限
+     */
+    SPUPER_PERSSION="*.*.*",
+
+    /**
+     * 超级管理员
+     */
+    SPUER_ROLE="admin",
+
+
+
+}

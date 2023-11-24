@@ -9,13 +9,12 @@
                 <div v-if="config.hidden">
                     <el-watermark class="watermark" :content="config.content" :font="config.font" :z-index="config.zIndex"
                         :rotate="config.rotate" :gap="config.gap" :offset="config.offset">
-                        <svg-icon iconClass="dashboard"></svg-icon>
-                        <router-view v-if="!route.meta" :key="route.path" />
+                        <router-view v-if="!route.meta.link" :key="route.path" />
                     </el-watermark>
                 </div>
 
                 <div v-else>
-                    <router-view :key="route.path" />
+                    <router-view v-if="!route.meta.link" :key="route.path" />
                 </div>
             </keep-alive>
         </transition>

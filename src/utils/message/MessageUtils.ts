@@ -14,7 +14,7 @@ import 'element-plus/theme-chalk/el-loading.css'
 /** 
  * 
  */
-export const message =
+export const messages =
 {
     info(context: string, showClose?: boolean) {
         ElMessage({

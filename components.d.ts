@@ -17,6 +17,7 @@ declare module 'vue' {
     ElFormItem: typeof import('element-plus/es')['ElFormItem']
     ElInput: typeof import('element-plus/es')['ElInput']
     ElMenu: typeof import('element-plus/es')['ElMenu']
+    ElMessage: typeof import('element-plus/es')['ElMessage']
     ElScrollbar: typeof import('element-plus/es')['ElScrollbar']
     ElWatermark: typeof import('element-plus/es')['ElWatermark']
     RouterLink: typeof import('vue-router')['RouterLink']
