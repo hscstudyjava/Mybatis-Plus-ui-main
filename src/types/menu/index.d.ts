@@ -1,13 +1,13 @@
 // 类型文件
-type MenuItems={
+export interface MenuItems{
     /**
      * icon
      */
-    icon?:String,
+    icon:string,
     /**
      * 标题
      */
-    title?:String
+    title:string
 }
 
 type Menu={
@@ -16,12 +16,12 @@ type Menu={
     /**
      * 子集
      */
-    children:Array<Menu>
+    children?:Array<Menu>
 
     /**
      * 元数据
      */
-    meta:MenuItems,
+    meta?:MenuItems,
 
     /**
      * 请求路径
@@ -31,19 +31,14 @@ type Menu={
     /**
      * 是否隐藏
      */
-    hidden:Boolean,
+    hidden?:Boolean|false,
 
     /**
      * 是否需要
      */
-    alwaysShow:Boolean,
+    alwaysShow:Boolean|false,
 
 }
 
-export default{
 
-    MenuItems,
-
-    Menu
-}
 

@@ -1,39 +1,54 @@
 <template>
     <div v-if="!item.hidden">
-        <template v-if="hasOneShowingChild(item.children, item)
-            && (!onlyOneChild.children || onlyOneChild.noShowingChildren) && !item.alwaysShow">
-            <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path, onlyOneChild.query)">
-                <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{ 'submenu-title-noDropdown': !isNest }">
-                    <item :icon="onlyOneChild.meta.icon || (item.meta && item.meta.icon)" :title="onlyOneChild.meta.title" />
+
+        <template
+            v-if="hasOneShowingChild(item.children, item) 
+            && (!onlyOneChild.children || onlyOneChild.noShowingChildren) 
+            && !item.alwaysShow">
+
+            <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
+
+                <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{ 'sub-menu-title-noDropdown': !isNest }">
+                    <!-- reader icon -->
+                    <icon :icon="onlyOneChild.meta.icon || (item.meta && item.meta.icon)"
+                        :title="onlyOneChild.meta.title" />
+
+
                 </el-menu-item>
             </app-link>
+
         </template>
 
-        <el-submenu v-else ref="subMenu" :index="resolvePath(item.path)" popper-append-to-body>
-            <template v-slot:title>
-                <item v-if="item.meta" :icon="item.meta && item.meta.icon" :title="item.meta.title" />
+
+        <!-- 侧边栏 -->
+        <el-sub-menu v-else ref="subMenu" :index="resolvePath(item.path)" teleported>
+            <template slot="title">
+                <icon v-if="item.meta" :icon="item.meta && item.meta.icon" :title="item.meta.title" />
             </template>
-            <sidebar-item v-for="child in item.children" :key="child.path" :is-nest="true" :item="child"
+            <sub-item v-for="child in item.children" :key="child.path" :is-nest="true" :item="child"
                 :base-path="resolvePath(child.path)" class="nest-menu" />
-        </el-submenu>
+        </el-sub-menu>
+
     </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed, type PropType } from 'vue'
+import { type PropType } from 'vue'
 // @ts-ignore
 import type { Menu } from '@/types/menu';
-// @ts-ignore
-import path from 'path'
+import appLink from './link.vue'
+import icon from './icon.vue'
+import { type RouteRecordRaw } from 'vue-router'
+
 import { isExternal } from '@/utils/verify/index';
 const subItemProp = defineProps({
 
-    /** 
+    /**
      * 当前Item
      */
-    item: Object as PropType<Menu>,
+    item: Object as PropType<RouteRecordRaw> || Object as PropType<Array<RouteRecordRaw>>,
 
-    /** 
+    /**
      * 基础路径
      */
     baseUrl: {
@@ -41,26 +56,30 @@ const subItemProp = defineProps({
         default: ''
     },
 
-    /** 
+    /**
      * 是否嵌套
      */
     isNest: Boolean
 })
-/** 
+/**
  * 只有一个item
  */
-var onlyOneChild: Menu = null
+var onlyOneChild: any = null
 
-/** 
+/**
  * 是否只有一个Menu
  */
-const hasOneShowingChild = (children: Array<Menu>, parent: Menu): Boolean => {
+const hasOneShowingChild = (children: Array<RouteRecordRaw>, parent:  RouteRecordRaw): Boolean => {
+
+    console.log(parent);
+
 
     if (!children) {
         children = []
     }
 
-    const showingChildren = children.filter((item: Menu) => {
+    const showingChildren = children.filter((item: any) => {
+
         if (item.hidden) {
             return false
         } else {
@@ -83,20 +102,21 @@ const hasOneShowingChild = (children: Array<Menu>, parent: Menu): Boolean => {
     return false
 }
 
+
 const resolvePath = (routePath: string, routeQuery?: string) => {
     if (isExternal(routePath)) {
-        return routePath
+        return routePath;
     }
 
     if (isExternal(subItemProp.baseUrl.valueOf())) {
-        return subItemProp.baseUrl.valueOf()
+        return subItemProp.baseUrl.valueOf();
     }
-    if (routeQuery) {
-        let query = JSON.parse(routeQuery);
-        return { path: path.resolve(subItemProp.baseUrl.valueOf(), routePath), query: query }
-    }
-    return path.resolve(subItemProp.baseUrl.valueOf(), routePath)
-}
+
+    const baseUrl = new URL(subItemProp.baseUrl.valueOf(), window.location.href);
+    const resolvedUrl = new URL(routePath, baseUrl.href);
+
+    return resolvedUrl.href;
+};
 </script>
 
 <style lang="scss" scoped></style>

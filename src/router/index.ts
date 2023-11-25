@@ -13,6 +13,19 @@ const router = createRouter({
       component: login
     },
     {
+      path: '/',
+      name: 'home',
+      component: Layout,
+      redirect: '/dashboard',
+      children: [{
+        path: 'dashboard',
+        name: 'Dashboard',
+        // @ts-ignore
+        component: () => import('@/views/dashboard/index.vue'),
+        meta: { title: '首页', icon: 'dashboard' }
+      }]
+    },
+    {
       path: '/system',
       name: 'system',
       component: Layout,
@@ -21,20 +34,9 @@ const router = createRouter({
       children: [{
         path: 'user',
         name: 'user',
+        // @ts-ignore
         component: () => import('@/views/system/user/index.vue'),
         meta: { title: '用户信息', icon: 'dashboard' }
-      }]
-    },
-    {
-      path: '/',
-      name: 'home',
-      component: Layout,
-      redirect: '/dashboard',
-      children: [{
-        path: 'dashboard',
-        name: 'Dashboard',
-        component: () => import('@/views/dashboard/index.vue'),
-        meta: { title: '首页', icon: 'dashboard' }
       }]
     }
   ]

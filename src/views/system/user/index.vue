@@ -7,11 +7,11 @@
 </template>
 
 <script setup lang="ts">
-import ElMessage from 'element-plus/lib/components/message/index.js';
+
 
 
 const success=()=>{
-    ElMessage("ok")
+   
 }
 
 </script>
