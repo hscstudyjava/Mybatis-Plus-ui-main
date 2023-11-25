@@ -1,9 +1,8 @@
 <template>
     <div v-if="!item.hidden">
 
-        <template
-            v-if="hasOneShowingChild(item.children, item) 
-            && (!onlyOneChild.children || onlyOneChild.noShowingChildren) 
+        <template v-if="hasOneShowingChild(item.children, item)
+            && (!onlyOneChild.children || onlyOneChild.noShowingChildren)
             && !item.alwaysShow">
 
             <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
@@ -33,12 +32,13 @@
 </template>
 
 <script lang="ts" setup>
-import { type PropType } from 'vue'
+import { onMounted, type PropType } from 'vue'
 // @ts-ignore
 import type { Menu } from '@/types/menu';
 import appLink from './link.vue'
 import icon from './icon.vue'
 import { type RouteRecordRaw } from 'vue-router'
+import path from 'path-browserify'; // 引入 path-browserify 或 path-browserify-es6
 
 import { isExternal } from '@/utils/verify/index';
 const subItemProp = defineProps({
@@ -69,11 +69,7 @@ var onlyOneChild: any = null
 /**
  * 是否只有一个Menu
  */
-const hasOneShowingChild = (children: Array<RouteRecordRaw>, parent:  RouteRecordRaw): Boolean => {
-
-    console.log(parent);
-
-
+const hasOneShowingChild = (children: Array<RouteRecordRaw>, parent: RouteRecordRaw): Boolean => {
     if (!children) {
         children = []
     }
@@ -112,10 +108,12 @@ const resolvePath = (routePath: string, routeQuery?: string) => {
         return subItemProp.baseUrl.valueOf();
     }
 
-    const baseUrl = new URL(subItemProp.baseUrl.valueOf(), window.location.href);
-    const resolvedUrl = new URL(routePath, baseUrl.href);
-
-    return resolvedUrl.href;
+    if (routeQuery) {
+        let query = JSON.parse(routeQuery);
+        // console.log(path.resolve(import.meta.env.BASE_URL,"/","dashboard"));
+        return { path: path.resolve(import.meta.env.BASE_URL,subItemProp.baseUrl, routePath), query: query }
+    }
+    return path.resolve(import.meta.env.BASE_URL,subItemProp.baseUrl, routePath)
 };
 </script>
 

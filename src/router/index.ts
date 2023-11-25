@@ -17,13 +17,16 @@ const router = createRouter({
       name: 'home',
       component: Layout,
       redirect: '/dashboard',
-      children: [{
+      children: [
+        {
         path: 'dashboard',
         name: 'Dashboard',
         // @ts-ignore
         component: () => import('@/views/dashboard/index.vue'),
         meta: { title: '首页', icon: 'dashboard' }
-      }]
+      }
+    
+    ]
     },
     {
       path: '/system',
@@ -37,7 +40,15 @@ const router = createRouter({
         // @ts-ignore
         component: () => import('@/views/system/user/index.vue'),
         meta: { title: '用户信息', icon: 'dashboard' }
-      }]
+      },
+      {
+        path: 'role',
+        name: 'role',
+        // @ts-ignore
+        component: () => import('@/views/system/user/index.vue'),
+        meta: { title: '角色信息', icon: 'dashboard' }
+      }
+    ]
     }
   ]
 })

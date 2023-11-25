@@ -1,16 +1,38 @@
-<template>
-    <i class="el-icon">
-        <svg-icon v-if="props.icon" :iconClass="props.icon" />
-    </i>
-    <span v-if="props.title !== null" class="el-sub-menu__title"> {{ props.title }}</span>
-    <span v-if="props.title.length > 5" class="el-sub-menu__title">{{ props.title }}</span>
-</template>
-
-<script setup lang="ts">
+<script  lang="ts">
+import { h } from 'vue';
+import svgIcon from '@/components/svgIcon/index.vue'
 interface MenuItemProps {
     icon: string;
     title: string;
 }
 
-const props = defineProps<MenuItemProps>();
+export default {
+    props: {
+        icon: String,
+        title: String,
+    },
+    setup(props) {
+        return () => {
+            const { icon, title } = props;
+            const vnodes = [];
+            if (icon) {
+                vnodes.push(
+                    h(svgIcon, { iconClass: icon })
+                );
+            }
+            if (title) {
+                if (title.length > 5) {
+                    vnodes.push(
+                        h('span', { slot: 'title', title }, title)
+                    );
+                } else {
+                    vnodes.push(
+                        h('span', { slot: 'title' }, title)
+                    );
+                }
+            }
+            return vnodes;
+        }
+    }
+};
 </script>

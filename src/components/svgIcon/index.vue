@@ -1,11 +1,12 @@
 
 <template>
-  <div v-if="isHttp" :style="styleExternalIcon" class="svg-external-icon svg-icon" v-on="$attrs" />
-  <svg v-else :class="svgClass" aria-hidden="true" v-on="$attrs" :style="{
-    color: color
-  }">
-    <use :xlink:href="iconName" />
-  </svg>
+  <div v-if="isHttp" :style="styleExternalIcon" class="svg-external-icon svg-icon" v-on="$attrs"></div>
+  <div v-else>
+    <svg :class="svgClass" aria-hidden="true" v-on="$attrs">
+      <use :xlink:href="iconName" stroke="none" stroke-width="1" :fill="color"
+      fill-rule="evenodd" />
+    </svg>
+  </div>
 </template>
 <script setup lang='ts'>
 import { isExternal } from '@/utils/verify'
@@ -17,7 +18,7 @@ const isHttp = computed(() => {
 })
 // icon
 const iconName = computed(() => {
-  if(iconProp.className) return `#icon-${iconProp.className}`
+  if (iconProp.className) return `#icon-${iconProp.className}`
   return `#icon-${iconProp.iconClass}`
 })
 
@@ -71,7 +72,7 @@ const iconProp = defineProps({
 
 .svg-external-icon {
   background-color: currentColor;
-  mask-size: cover!important;
+  mask-size: cover !important;
   display: inline-block;
 }
 </style>

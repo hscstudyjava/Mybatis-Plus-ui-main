@@ -46,11 +46,6 @@ const route = router;
 var routerList=router.options.routes
 
 
-onMounted(() => {
-    console.log(router.options.routes);
-    
-
-});
 
 
 
