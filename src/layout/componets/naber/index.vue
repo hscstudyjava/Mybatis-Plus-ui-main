@@ -13,12 +13,15 @@
                 <div class="message-container right-menu-item hover-effect">
                     <el-tooltip class="box-item" effect="dark" content="我的消息" placement="bottom">
                         <!-- 后期优化一下 打开是翻开状态 -->
-                        <el-icon class="messsage-wrapper">
+                        <el-icon class="messsage-wrapper" >
                             <Message />
                         </el-icon>
                     </el-tooltip>
                 </div>
-                <!-- setting -->
+                <!-- screenFull|| 全屏设置 -->
+                <div class="right-menu-item hover-effect ">
+                    <FullScreen/>
+                </div>
 
                 <!--  -->
 
@@ -56,16 +59,20 @@
 <script setup lang="ts">
 import { ArrowDown, Pointer, Message } from '@element-plus/icons-vue'
 // @ts-ignore
+import FullScreen from './FullScreen.vue';
+import Hamburger from './Hamburger.vue';
+import Breadcrumb from './breadcrumb.vue';
+
+import { DeviceEnum } from '@/utils/constants/SystemConstants';
+import { messages } from '@/utils/message/MessageUtils';
+
+import router from '@/router';
+import { computed } from 'vue';
+
+import { storeToRefs } from 'pinia';
 import { useSettingStore } from '@/stores/setting'
 import { useAppStore } from '@/stores/app';
 import { useUserStore } from '@/stores/user';
-import Hamburger from './Hamburger.vue';
-import Breadcrumb from './breadcrumb.vue';
-import { storeToRefs } from 'pinia';
-import { DeviceEnum } from '@/utils/constants/SystemConstants';
-import { computed } from 'vue';
-import { messages, notify } from '@/utils/message/MessageUtils';
-import router from '@/router';
 const appStore = useAppStore();
 const setting = useSettingStore()
 const userSotre = useUserStore()
@@ -76,6 +83,8 @@ const { sibebar } = storeToRefs(appStore)
 const avatar = currentUser.value.userImg
 const topNav = computed(() => { return setting.topNav })
 const moddileDevice = DeviceEnum.MOBILE;//手机模式
+
+
 
 const logout = () => {
     userSotre.userLogout()

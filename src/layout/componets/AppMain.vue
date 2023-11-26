@@ -5,7 +5,7 @@
                 <router-view v-if="!$route.meta.link" :key="key" />
             </keep-alive>    -->
             <keep-alive>
-                
+
                 <div v-if="config.hidden">
                     <el-watermark class="watermark" :content="config.content" :font="config.font" :z-index="config.zIndex"
                         :rotate="config.rotate" :gap="config.gap" :offset="config.offset">
@@ -24,7 +24,8 @@
 
 <script setup lang="ts">
 import router from '@/router';
-import { computed, reactive } from 'vue';
+import { onMounted, computed, reactive } from 'vue';
+
 
 const route = router.currentRoute.value;
 import { useSettingStore } from '@/stores/setting';
