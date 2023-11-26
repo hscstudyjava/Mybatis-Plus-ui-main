@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    ElArrowDown: typeof import('element-plus/es')['ElArrowDown']
     ElBreadcrumb: typeof import('element-plus/es')['ElBreadcrumb']
     ElBreadcrumbItem: typeof import('element-plus/es')['ElBreadcrumbItem']
     ElButton: typeof import('element-plus/es')['ElButton']
@@ -32,11 +33,14 @@ declare module 'vue' {
     ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
+    ElTooltip: typeof import('element-plus/es')['ElTooltip']
     ElWatermark: typeof import('element-plus/es')['ElWatermark']
+    IEpArrowDown: typeof import('~icons/ep/arrow-down')['default']
     IEpDelete: typeof import('~icons/ep/delete')['default']
     IEpDownload: typeof import('~icons/ep/download')['default']
     IEpEdit: typeof import('~icons/ep/edit')['default']
     IEpPlus: typeof import('~icons/ep/plus')['default']
+    IEpPointer: typeof import('~icons/ep/pointer')['default']
     IEpRemove: typeof import('~icons/ep/remove')['default']
     Paginations: typeof import('./src/components/paginations/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

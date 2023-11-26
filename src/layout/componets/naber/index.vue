@@ -1,15 +1,26 @@
 <template>
     <div class="navbar">
-        <Hamburger id="hamburger-container" 
-        :is-active="sibebar.open" 
-        class="hamburger-container"
+        <Hamburger id="hamburger-container" :is-active="sibebar.open" class="hamburger-container"
             @toggleClick="toggleSideBar" />
 
         <breadcrumb id="breadcrumb-container" class="breadcrumb-container" v-if="!topNav" />
         <!-- <top-nav id="topmenu-container" class="topmenu-container" v-if="topNav" /> -->
 
         <div class="right-menu">
+
             <template v-if="device !== moddileDevice">
+                <!-- message -->
+                <div class="message-container right-menu-item hover-effect">
+                    <el-tooltip class="box-item" effect="dark" content="我的消息" placement="bottom">
+                        <!-- 后期优化一下 打开是翻开状态 -->
+                        <el-icon class="messsage-wrapper">
+                            <Message />
+                        </el-icon>
+                    </el-tooltip>
+                </div>
+                <!-- setting -->
+
+                <!--  -->
 
             </template>
 
@@ -17,26 +28,33 @@
                 <div class="avatar-wrapper">
                     <!-- @vue-ignore -->
                     <img :src="avatar" class="user-avatar">
-                    <i class="el-icon-caret-bottom" />
+                    <el-icon class="el-icon-caret-bottom ">
+                        <ArrowDown />
+                    </el-icon>
+                    <!-- <el-icon><i-ep-ArrowDown /></el-icon> -->
                 </div>
                 <!-- @vue-ignore v-shot="dropdown" -->
-                <el-dropdown-menu >
+                <template #dropdown>
+                    <el-dropdown-menu>
 
-                    <router-link to="/user/profile">
-                        <el-dropdown-item>个人中心</el-dropdown-item>
-                    </router-link>
+                        <router-link to="/user/profile">
+                            <el-dropdown-item>个人中心</el-dropdown-item>
+                        </router-link>
 
-                    <el-dropdown-item divided @click="logout">
-                        <span>退出登录</span>
-                    </el-dropdown-item>
+                        <el-dropdown-item divided @click="logout" :icon="Pointer">
+                            <span>退出登录</span>
+                        </el-dropdown-item>
 
-                </el-dropdown-menu>
+                    </el-dropdown-menu>
+
+                </template>
             </el-dropdown>
         </div>
     </div>
 </template>
   
 <script setup lang="ts">
+import { ArrowDown, Pointer, Message } from '@element-plus/icons-vue'
 // @ts-ignore
 import { useSettingStore } from '@/stores/setting'
 import { useAppStore } from '@/stores/app';
@@ -46,20 +64,31 @@ import Breadcrumb from './breadcrumb.vue';
 import { storeToRefs } from 'pinia';
 import { DeviceEnum } from '@/utils/constants/SystemConstants';
 import { computed } from 'vue';
+import { messages, notify } from '@/utils/message/MessageUtils';
+import router from '@/router';
 const appStore = useAppStore();
 const setting = useSettingStore()
 const userSotre = useUserStore()
 
-const {currentUser }=storeToRefs(userSotre)
-const {device}=storeToRefs(appStore)
-const {sibebar}=storeToRefs(appStore)
-
+const { currentUser } = storeToRefs(userSotre)
+const { device } = storeToRefs(appStore)
+const { sibebar } = storeToRefs(appStore)
 const avatar = currentUser.value.userImg
-const topNav = computed(()=>{return setting.topNav})
+const topNav = computed(() => { return setting.topNav })
 const moddileDevice = DeviceEnum.MOBILE;//手机模式
 
 const logout = () => {
-
+    userSotre.userLogout()
+        .then(res => {
+            messages.success(res.msg)
+            router.push("/")
+        }).catch(error => {
+            // 捕捉异常
+            userSotre.$resetOauth2();// 重置Oauth2
+            messages.success("退出成功")
+            router.push("/")
+            new Error(error)
+        })
 }
 
 const toggleSideBar = () => {
@@ -111,6 +140,8 @@ const toggleSideBar = () => {
             outline: none;
         }
 
+
+
         .right-menu-item {
             display: inline-block;
             padding: 0 8px;
@@ -126,6 +157,23 @@ const toggleSideBar = () => {
                 &:hover {
                     background: rgba(0, 0, 0, .025)
                 }
+            }
+        }
+
+        // 消息
+        .message-container {
+            line-height: 46px;
+            height: 100%;
+            cursor: pointer;
+            transition: background .3s;
+            -webkit-tap-highlight-color: transparent;
+
+            .messsage-wrapper {
+                display: inline-block;
+                // vertical-align: middle;
+                width: 1em;
+                height: 1em;
+                vertical-align: middle;
             }
         }
 

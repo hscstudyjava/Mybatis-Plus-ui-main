@@ -107,3 +107,20 @@ export function getCurrentUserInfo():Promise<AjaxResult<CurrentUser>>{
         }
     )
 }
+
+/**
+ * 退出登录
+ * @param currentToken 访问Token 
+ * @returns  返回结果
+ */
+export function logout(currentToken:Oauth2Resp):Promise<AjaxResult<void>>{
+    return request.post(
+        baseUrl+'logout',
+        currentToken,
+        {
+            requestOptions:{
+                globalSuccessMessage:true
+            }
+        }
+    )
+}
