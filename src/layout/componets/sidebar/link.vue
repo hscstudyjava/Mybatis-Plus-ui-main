@@ -10,31 +10,32 @@ import { isExternal } from '@/utils/verify/index';
 import { computed } from 'vue';
 const props = defineProps<{
     // 跳转_link
-    to:string
+    to: String
+
 }>();
 
 
-const isExternals=computed(():boolean=>{
-    return isExternal(props.to)
+const isExternals = computed((): boolean => {
+    return isExternal(props.to.valueOf())
 })
 
 
-const linkType=computed(():string=>{
-    if(isExternals){
+const linkType = computed((): string => {
+    if (isExternals.value) {
         return 'a'
     }
     return 'router-link'
 })
 
-const linkProps=(to:String):any=>{
-    if(isExternals){
+const linkProps = (to: String): any => {
+    if (isExternals.value) {
         return {
-          href: to,
-          target: '_blank',
-          rel: 'noopener'
+            href: to,
+            target: '_blank',
+            rel: 'noopener'
         }
-    }else{
-        to:to
+    } else {
+        return { to: to }
     }
 }
 

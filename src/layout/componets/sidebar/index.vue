@@ -16,7 +16,7 @@
                 <sub-item v-for="(route, index) in routerList" 
                 :key="route.path + index" 
                 :item="route"
-                :base-path="route.path" />
+                :baseUrl="route.path"/>
             </el-menu>
         </el-scrollbar>
     </div>
@@ -44,10 +44,6 @@ import router from '@/router';
 const route = router;
 
 var routerList=router.options.routes
-
-
-
-
 
 /** 
  * 激活菜单

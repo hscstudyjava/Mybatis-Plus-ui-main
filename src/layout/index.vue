@@ -30,8 +30,6 @@ const appStore = useAppStore();
 const { device } = storeToRefs(appStore)
 const { sibebar } = storeToRefs(appStore)
 
-console.log(appStore.device);
-
 var classObj = computed(() => {
     return {
         hideSidebar: !sibebar.value.open,

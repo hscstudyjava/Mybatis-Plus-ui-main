@@ -4,28 +4,28 @@
         <template v-if="hasOneShowingChild(item.children, item)
             && (!onlyOneChild.children || onlyOneChild.noShowingChildren)
             && !item.alwaysShow">
-
             <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
 
                 <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{ 'sub-menu-title-noDropdown': !isNest }">
                     <!-- reader icon -->
                     <icon :icon="onlyOneChild.meta.icon || (item.meta && item.meta.icon)"
                         :title="onlyOneChild.meta.title" />
-
-
                 </el-menu-item>
             </app-link>
-
         </template>
 
-
-        <!-- 侧边栏 -->
         <el-sub-menu v-else ref="subMenu" :index="resolvePath(item.path)" teleported>
-            <template slot="title">
+            <template #title>
                 <icon v-if="item.meta" :icon="item.meta && item.meta.icon" :title="item.meta.title" />
             </template>
-            <sub-item v-for="child in item.children" :key="child.path" :is-nest="true" :item="child"
-                :base-path="resolvePath(child.path)" class="nest-menu" />
+            <!--    :base-path="resolvePath(child.path)" -->
+            <sub-item 
+                v-for="child in item.children" 
+                :key="child.path" 
+                :isNest="true" 
+                :item="child"
+                :baseUrl="resolvePath(child.path)"
+                 class="nest-menu" />
         </el-sub-menu>
 
     </div>
@@ -41,12 +41,13 @@ import { type RouteRecordRaw } from 'vue-router'
 import path from 'path-browserify'; // 引入 path-browserify 或 path-browserify-es6
 
 import { isExternal } from '@/utils/verify/index';
+import router from '@/router';
 const subItemProp = defineProps({
 
     /**
      * 当前Item
      */
-    item: Object as PropType<RouteRecordRaw> || Object as PropType<Array<RouteRecordRaw>>,
+    item: Object,
 
     /**
      * 基础路径
@@ -69,7 +70,7 @@ var onlyOneChild: any = null
 /**
  * 是否只有一个Menu
  */
-const hasOneShowingChild = (children: Array<RouteRecordRaw>, parent: RouteRecordRaw): Boolean => {
+const hasOneShowingChild = (children: Array<Object>, parent: Object): Boolean => {
     if (!children) {
         children = []
     }
@@ -98,7 +99,6 @@ const hasOneShowingChild = (children: Array<RouteRecordRaw>, parent: RouteRecord
     return false
 }
 
-
 const resolvePath = (routePath: string, routeQuery?: string) => {
     if (isExternal(routePath)) {
         return routePath;
@@ -109,11 +109,11 @@ const resolvePath = (routePath: string, routeQuery?: string) => {
     }
 
     if (routeQuery) {
-        let query = JSON.parse(routeQuery);
-        // console.log(path.resolve(import.meta.env.BASE_URL,"/","dashboard"));
-        return { path: path.resolve(import.meta.env.BASE_URL,subItemProp.baseUrl, routePath), query: query }
+        let query=JSON.parse(routeQuery)
+        return { path: path.resolve(import.meta.env.BASE_URL, subItemProp.baseUrl, routePath), query: query }
     }
-    return path.resolve(import.meta.env.BASE_URL,subItemProp.baseUrl, routePath)
+ 
+    return path.resolve(import.meta.env.BASE_URL, subItemProp.baseUrl, routePath)
 };
 </script>
 
