@@ -44,15 +44,13 @@ const router = createRouter({
       children: [{
         path: 'user',
         name: 'user',
-        // @ts-ignore
         component: () => import('@/views/system/user/index.vue'),
         meta: { title: '用户信息', icon: 'dashboard' }
       },
       {
         path: 'role',
         name: 'role',
-        // @ts-ignore
-        component: () => import('@/views/system/user/index.vue'),
+        component: () => import('@/views/system/role/index.vue'),
         meta: { title: '角色信息', icon: 'dashboard' }
       }
       ]

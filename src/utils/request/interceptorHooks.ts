@@ -9,11 +9,14 @@ import { useUserStore } from '@/stores/user'
 import Request from './Request'
 import { request } from "@/utils/request";
 import router from '@/router'
+import { messages } from '../message/MessageUtils'
 
 
 let requestList: any[] = []
-
 let isRefresh = false
+
+
+
 
 export const transform: InterceptorHooks = {
   requestInterceptor(config) {
@@ -46,7 +49,6 @@ export const transform: InterceptorHooks = {
 
       // 访问Token已经过期
       if (res.data.code === LoginCode.USER_TOKEN_EXPIRE) {
-
         if (!isRefresh) {
           isRefresh = true;
           // 刷新_toekn
@@ -78,6 +80,13 @@ export const transform: InterceptorHooks = {
 
       }
 
+      if(res.data.code===LoginCode.USER_REFRESH_TOKEN_EXPIRE){
+        // 清空Oauth2_Obj
+        userStore.$resetOauth2();
+        // userStore
+        userStore.$clearCache();
+      }
+
 
 
 
@@ -89,6 +98,7 @@ export const transform: InterceptorHooks = {
     if (res.config.requestOptions?.globalSuccessMessage) {
       // 这里全局提示请求成功
       console.log(res.data.msg)
+      messages.success(res.data.msg);
     }
     // 请求返回值，建议将 返回值 进行解构
     return res.data
