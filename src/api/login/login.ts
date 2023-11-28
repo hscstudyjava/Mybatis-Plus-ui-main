@@ -1,3 +1,4 @@
+import type { Menu } from "@/types/menu";
 import { request } from "@/utils/request";
 import type { AjaxResult } from "@/utils/request/type";
 
@@ -122,5 +123,11 @@ export function logout(currentToken:Oauth2Resp):Promise<AjaxResult<void>>{
                 globalSuccessMessage:true
             }
         }
+    )
+}
+
+export function getRouter():Promise<AjaxResult<Menu>>{
+    return request.get(
+        baseUrl+'getRouter'
     )
 }

@@ -1,3 +1,4 @@
+import { messages } from './../message/MessageUtils';
 import { refreshToken } from '@/api/login/login'
 import { getAccessToken, getRefreshToken } from '../cache/auth'
 import { LoginCode, SuccessCode } from './BaseConstants'
@@ -38,6 +39,7 @@ export const transform: InterceptorHooks = {
     if (res.data.code !== SuccessCode.SUCCESS) {
 
       if (res.config.requestOptions?.globalErrorMessage) {
+        messages.error(res.data.msg);
         // 这里全局提示错误
         console.error(res.data.msg)
       }

@@ -23,3 +23,42 @@ export function queryRolePage(data:Object):Promise<AjaxResult<Page<SysRole>>> {
         data
     )
 }
+
+/**
+ * 
+ * @param form 新增角色信息
+ * @returns 返回结果值
+ */
+export function insertRole(form:SysRole):Promise<AjaxResult<void>>{
+    return request.post(
+        baseUrl,
+        form,
+        {
+            requestOptions:{
+                globalErrorMessage:true,
+                globalSuccessMessage:true
+            }
+        }
+
+    )
+}
+/**
+ * 
+ * @param form 修改角色信息
+ * @returns 返回结果值
+ */
+export function updateRole(form:SysRole):Promise<AjaxResult<void>>{
+    return request.post(
+        baseUrl,
+        form,
+        {
+            requestOptions:{
+                globalErrorMessage:true,
+                globalSuccessMessage:true
+            }
+        }
+
+    )
+}
+
+

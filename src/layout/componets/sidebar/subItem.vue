@@ -1,5 +1,5 @@
 <template>
-    <div v-if="!item.hidden">
+    <template v-if="!item.hidden">
 
         <template v-if="hasOneShowingChild(item.children, item)
             && (!onlyOneChild.children || onlyOneChild.noShowingChildren)
@@ -8,12 +8,13 @@
 
                 <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{ 'sub-menu-title-noDropdown': !isNest }">
                     <!-- reader icon -->
-                    <icon :icon="onlyOneChild.meta.icon || (item.meta && item.meta.icon)"
+                        <icon :icon="onlyOneChild.meta.icon || (item.meta && item.meta.icon)"
                         :title="onlyOneChild.meta.title" />
                 </el-menu-item>
             </app-link>
         </template>
 
+        
         <el-sub-menu v-else ref="subMenu" :index="resolvePath(item.path)" teleported>
             <template #title>
                 <icon v-if="item.meta" :icon="item.meta && item.meta.icon" :title="item.meta.title" />
@@ -28,7 +29,7 @@
                  class="nest-menu" />
         </el-sub-menu>
 
-    </div>
+    </template>
 </template>
 
 <script lang="ts" setup>

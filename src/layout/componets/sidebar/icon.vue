@@ -1,6 +1,7 @@
 <script  lang="ts">
 import { h } from 'vue';
 import svgIcon from '@/components/svgIcon/index.vue'
+import { ElIcon } from 'element-plus';
 interface MenuItemProps {
     icon: string;
     title: string;
@@ -23,11 +24,11 @@ export default {
             if (title) {
                 if (title.length > 5) {
                     vnodes.push(
-                        h('span', { slot: 'title', title }, title)
+                        h('span', {  class:"title" }, title)
                     );
                 } else {
                     vnodes.push(
-                        h('span', { slot: 'title' }, title)
+                        h('span', { class:'title'}, title)
                     );
                 }
             }

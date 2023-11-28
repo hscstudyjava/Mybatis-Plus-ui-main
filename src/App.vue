@@ -16,7 +16,7 @@ const  elementConfig=reactive({
   autoInsertSpace:true,
   // 'large' | 'default' | 'small'
   //size	全局组件大小
-  size:'default',
+  size:'small',
   // 消息内容条数
   max:5
 })

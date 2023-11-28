@@ -1,42 +1,31 @@
 // 类型文件
-export interface MenuItems{
-    /**
-     * icon
-     */
-    icon:string,
-    /**
-     * 标题
-     */
-    title:string
+export interface Meta {
+    title: String?= null
+
+    icon: String?= null
+
+    keepAlive: Boolean = false;
+
+    hasFrame: Boolean?= null
 }
 
-type Menu={
+export type Menu = {
 
+    id: String?= null
 
-    /**
-     * 子集
-     */
-    children?:Array<Menu>
+    path: String?= null
 
-    /**
-     * 元数据
-     */
-    meta?:MenuItems,
+    component: String?= null
 
-    /**
-     * 请求路径
-     */
-    path:String,
+    name: Boolean?= null
 
-    /**
-     * 是否隐藏
-     */
-    hidden?:Boolean|false,
+    hidden: Boolean?= null
 
-    /**
-     * 是否需要
-     */
-    alwaysShow:Boolean|false,
+    meta: Meta?= null
+
+    query: String?= null
+
+    children: List<Menu>?= null
 
 }
 

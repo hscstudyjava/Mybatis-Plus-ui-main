@@ -1,12 +1,9 @@
 
 <template>
   <div v-if="isHttp" :style="styleExternalIcon" class="svg-external-icon svg-icon" v-on="$attrs"></div>
-  <div v-else>
-    <svg :class="svgClass" aria-hidden="true" v-on="$attrs">
-      <use :xlink:href="iconName" stroke="none" stroke-width="1" :fill="color"
-      fill-rule="evenodd" />
-    </svg>
-  </div>
+  <svg v-else :class="svgClass" aria-hidden="true" v-on="$attrs">
+    <use :xlink:href="iconName" stroke="none" stroke-width="1" :fill="color" fill-rule="evenodd" />
+  </svg>
 </template>
 <script setup lang='ts'>
 import { isExternal } from '@/utils/verify'

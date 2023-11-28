@@ -35,7 +35,7 @@
     }
 
     .el-scrollbar__bar.is-vertical {
-      right: 0px;
+      right: 0px ;
     }
 
     .el-scrollbar {
@@ -149,7 +149,7 @@
       .el-sub-menu {
         // 关闭下面span的标签
         &>.el-sub-menu__title {
-          &>span {
+          &>title {
             height: 0;
             width: 0;
             overflow: hidden;

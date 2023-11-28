@@ -4,6 +4,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import login from '@/views/login.vue';
 // @ts-ignore
 import Layout from '@/layout/index.vue'
+// @ts-ignore
+import NotFound from '@/views/NotFound/index.vue';
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -13,20 +15,25 @@ const router = createRouter({
       component: login
     },
     {
+      path: '/404',
+      name: '404',
+      component:NotFound,
+    },
+    {
       path: '/',
       name: 'home',
       component: Layout,
       redirect: '/dashboard',
       children: [
         {
-        path: 'dashboard',
-        name: 'Dashboard',
-        // @ts-ignore
-        component: () => import('@/views/dashboard/index.vue'),
-        meta: { title: '首页', icon: 'dashboard' }
-      }
-    
-    ]
+          path: 'dashboard',
+          name: 'Dashboard',
+          // @ts-ignore
+          component: () => import('@/views/dashboard/index.vue'),
+          meta: { title: '首页', icon: 'dashboard' }
+        }
+
+      ]
     },
     {
       path: '/system',
@@ -48,7 +55,7 @@ const router = createRouter({
         component: () => import('@/views/system/user/index.vue'),
         meta: { title: '角色信息', icon: 'dashboard' }
       }
-    ]
+      ]
     }
   ]
 })
