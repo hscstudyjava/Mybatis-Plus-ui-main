@@ -9,7 +9,7 @@ export interface ELType extends HTMLElement {
 export interface Directives {
     vPeri:Directive,// 按钮权限
     vRole:Directive,// 角色权限
-
+    vCopy:Directive,// 复制内容
 }
 
 export type Keys = keyof Directives;

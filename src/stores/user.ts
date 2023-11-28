@@ -32,10 +32,18 @@ export const useUserStore = defineStore('userStore', () => {
    * 刷新访问Token
    * @param refreshToeknParams 刷新Token
    */
-    async function refresh(refreshToeknParams: string) {
+  /*   async function refresh(refreshToeknParams: string) {
         let resultOauth2 = (await refreshToken(refreshToeknParams)).data
         setOuath2(resultOauth2)
         cacheToken();
+    }
+ */
+
+    async function refresh(refreshToeknParams: string):Promise<AjaxResult<Oauth2Resp>> {
+        let resultOauth2 = (await refreshToken(refreshToeknParams))
+        setOuath2(resultOauth2.data)
+        cacheToken();
+        return resultOauth2;
     }
 
 
@@ -139,6 +147,7 @@ export const useUserStore = defineStore('userStore', () => {
 
 
         $resetOauth2,
+        $clearCache,
 
         login,
 

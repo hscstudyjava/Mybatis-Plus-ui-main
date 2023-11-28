@@ -23,3 +23,16 @@ export function queryRolePage(data:Object):Promise<AjaxResult<Page<SysRole>>> {
         data
     )
 }
+
+
+export function insertRole(data:SysRole):Promise<AjaxResult<void>>{
+    return request.post(
+        baseUrl,
+        data,
+        {
+            requestOptions:{
+                globalSuccessMessage:true
+            }
+        }
+    )
+}
