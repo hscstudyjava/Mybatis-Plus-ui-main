@@ -40,18 +40,18 @@ const router = createRouter({
       name: 'system',
       component: Layout,
       redirect: '/system/user',
-      meta: { title: '系统管理', icon: 'dashboard' },
+      meta: { title: '系统管理', icon: 'system' },
       children: [{
         path: 'user',
         name: 'user',
         component: () => import('@/views/system/user/index.vue'),
-        meta: { title: '用户信息', icon: 'dashboard' }
+        meta: { title: '用户信息', icon: 'user' }
       },
       {
         path: 'role',
         name: 'role',
         component: () => import('@/views/system/role/index.vue'),
-        meta: { title: '角色信息', icon: 'dashboard' }
+        meta: { title: '角色信息', icon: 'role' }
       }
       ]
     }

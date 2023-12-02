@@ -1,7 +1,7 @@
 <template>
 
     <div style="font-family:Nabla ;">
-        <el-button @click="success">ok</el-button>
+        <imgShow/>
     </div>
     
     </template>

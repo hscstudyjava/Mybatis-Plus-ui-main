@@ -11,8 +11,14 @@
                 <el-input v-model="params.roleKey" placeholder="请输入角色字符" @keyup.enter.native="queryPage" clearable />
             </el-form-item>
 
+            <!--  <el-form-item label="删除状态">
+                <el-switch v-model="params.isDeleted" active-value="1" inactive-value="0" class="ml-2" @change="queryPage"
+                    style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949" />
+            </el-form-item> -->
+
             <el-form-item>
                 <el-button type="primary" @click="queryPage">查询</el-button>
+                <el-button @click="resetQuery">重置</el-button>
             </el-form-item>
         </el-form>
 
@@ -20,7 +26,7 @@
         <el-row :gutter="10" class="mb8">
 
             <el-col :span="1.5" v-peri="['system:role:add']">
-                <el-button type="success" plain @click="handleInsert">
+                <el-button type="success" plain @click="handleInsert(ruleFormRef)">
                     <template #icon>
                         <el-icon>
                             <i-ep-Plus />
@@ -31,7 +37,7 @@
             </el-col>
 
             <el-col :span="1.5" v-peri="['system:role:update']">
-                <el-button type="primary" plain>
+                <el-button type="primary" plain :disabled="selectObj.single" @click="hadnleUpdate(undefined)">
                     <template #icon>
                         <el-icon>
                             <i-ep-Edit />
@@ -42,7 +48,7 @@
             </el-col>
 
             <el-col :span="1.5" v-peri="['system:role:remove']">
-                <el-button type="danger" plain>
+                <el-button type="danger" :disabled="selectObj.multiple" @click="removeRole()" plain>
                     <template #icon>
                         <i-ep-delete />
                     </template>
@@ -62,13 +68,40 @@
 
 
         <!-- 表格 -->
-        <el-table :data="objList.records" v-loading="loading" style="width: 100%">
-            <el-table-column prop="roleId" label="ID" />
-            <el-table-column prop="roleName" label="角色名称" />
-            <el-table-column prop="roleKey" label="角色字符" />
-            <el-table-column prop="createTime" label="创建时间" />
-            <el-table-column prop="updateTime" label="更新时间" />
-            <el-table-column prop="status" label="角色状态" />
+        <el-table :data="objList.records"
+        row-key="roleId"
+        v-loading="loading" stripe @selection-change="handleSelectionChange"
+            style="width: 100%">
+            <el-table-column type="selection" width="55" align="center" />
+            <el-table-column prop="roleId" label="ID" align="center" />
+            <el-table-column prop="roleName" label="角色名称" align="center" />
+            <el-table-column prop="roleKey" label="角色字符" align="center" />
+            <el-table-column prop="createTime" label="创建时间" align="center" />
+            <el-table-column prop="updateTime" label="更新时间" align="center" />
+            <el-table-column prop="status" label="角色状态" align="center" />
+            <el-table-column label="操作" align="center">
+                <template #default="scope">
+                    <el-button link v-peri="['system:role:update']"
+                        type="primary"  
+                        @click="hadnleUpdate(scope.row.roleId)">
+                        <template #icon>
+                            <el-icon>
+                                <i-ep-Edit />
+                            </el-icon>
+                        </template>
+                        更新
+                    </el-button>
+
+                    <el-button link
+                    type="danger"  
+                    v-peri="['system:role:remove']" @click="removeRole(scope.row)" >
+                        <template #icon>
+                            <i-ep-delete />
+                        </template>
+                        删除
+                    </el-button>
+                </template>
+            </el-table-column>
         </el-table>
 
         <!-- 分页 -->
@@ -78,22 +111,63 @@
         </Paginations>
 
         <!-- 弹窗 -->
-        <el-dialog
-         v-model="openDialog"
-         :title="title" 
-         :close-on-click-modal="false"
-         :draggable="true"
-         :align-center="true"
-         width="50%"
-        >
+        <el-dialog v-model="openDialog" :title="title" :close-on-click-modal="false" :draggable="true" :align-center="true"
+            width="50%">
+            <el-form ref="ruleFormRef" :model="form" :rules="rules" status-icon label-width="100px">
+                <el-row>
+                    <el-col :span=12>
+                        <el-form-item label="角色名称" prop="roleName">
+                            <el-input v-model="form.roleName" placeholder="请填写角色名称" />
+                        </el-form-item>
+                    </el-col>
 
-            <button v-copy="123123">复制</button>
-            
-            
+                    <el-col :span=12>
+                        <el-form-item prop="roleKey">
+                            <template #label>
+                                <span>角色字符
+                                    <el-tooltip placement="top">
+                                        <template #content>角色字符用于权限管理 请您必须填写</template>
+                                        <svg-icon iconClass="question"></svg-icon>
+                                    </el-tooltip>
+                                </span>
+                            </template>
+                            <el-input v-model="form.roleKey" placeholder="请填写角色字符" />
+                        </el-form-item>
+                    </el-col>
+
+                    <el-col :span=12>
+                        <el-form-item label="角色状态">
+                            <el-switch v-model="form.status" />
+                        </el-form-item>
+                    </el-col>
+
+                    <el-col :span=12>
+                        <el-form-item label="排序值">
+                            <el-input-number v-model="form.sortValue" :min="0" :max="100" controls-position="right"
+                                style="width: 100%;" />
+                        </el-form-item>
+                    </el-col>
+
+
+
+                    <el-col :span="24">
+                        <el-form-item label="备注">
+                            <el-input v-model="form.remark" autosize type="textarea" placeholder="请输入备注" />
+                        </el-form-item>
+
+                    </el-col>
+
+
+                </el-row>
+
+            </el-form>
+
+
+
             <template #footer>
                 <span class="dialog-footer">
                     <el-button @click="openDialog = false">取消</el-button>
-                    <el-button type="primary" @click="openDialog = false">
+                    <el-button type="primary" @click="submit(ruleFormRef)">
                         提交
                     </el-button>
                 </span>
@@ -106,12 +180,13 @@
 <script setup lang="ts">
 // @ts-ignore
 import { useUserStore } from '@/stores/user';
-import { reactive, onMounted, ref } from 'vue';
+import { reactive, onMounted, ref, toRefs } from 'vue';
 import type { SysRole, Page } from '@/api/system/type';
 // @ts-ignore
-import { queryRolePage } from '@/api/system/role';
+import { insertRole, queryRoleById, queryRolePage, removeRoleByIds, updateRole } from '@/api/system/role';
 const userStore = useUserStore()
-import { messages, notify } from "@/utils/message/MessageUtils"
+import { messages, confirms } from "@/utils/message/MessageUtils"
+import type { FormInstance, FormRules } from 'element-plus';
 
 const objList: Page<SysRole> = reactive<Page<SysRole>>({
     totalRow: 0,
@@ -120,16 +195,14 @@ const objList: Page<SysRole> = reactive<Page<SysRole>>({
     pageSize: 0,
     totalPage: 0
 })
-
-const openDialog=ref<Boolean>(false);
+const openDialog = ref<Boolean>(false);
 const loading = ref<Boolean>(false);
-const title=ref<String>('')
-
+const title = ref<String>('')
 const params = reactive({
     roleId: null,
     roleName: '',
     roleKey: '',
-    isDeleted: false,
+    isDeleted: 0,
     status: '',
     createTime: null,
     updateTime: null,
@@ -139,15 +212,54 @@ const params = reactive({
     pageNumber: 1,
     pageSize: 10
 })
+var form: SysRole = reactive<SysRole>({
+    roleName: '',
+    roleKey: '',
+    isDeleted: 0,
+    status: '',
+    createBy: '',
+    updateBy: '',
+    remark: '',
+    sortValue: 0
+})
+const ruleFormRef = ref<FormInstance>()
+const rules = reactive<FormRules<typeof form>>({
+    roleName: [
+        { message: '角色名称必填', trigger: 'blur', required: true },
+        { min: 2, max: 12, message: '角色名称长度 2 - 12之间', trigger: 'blur' }
+    ],
 
+    roleKey: [
+        { message: '角色字符必填', trigger: 'blur', required: true },
+        { min: 2, max: 12, message: '角色字符长度 2 - 12之间', trigger: 'blur' }
+    ],
 
-
+})
+var selectObj = reactive({
+    /** 
+     * 编号数组
+     */
+    ids: [],
+    /** 
+     * 单个
+     */
+    single: true,
+    /** 
+     * 多个
+     */
+    multiple: true
+})
+const handleSelectionChange = (rows?: SysRole[]) => {
+    // @ts-ignore
+    selectObj.ids = rows?.map(item => item.roleId)
+    selectObj.single = selectObj.ids.length != 1
+    selectObj.multiple = !selectObj.ids.length
+}
 
 const queryPage = (value?: any) => {
     // 重新修改后
     if (value != null) {
-        params.pageNumber = value.pageNum;
-        params.pageSize = value.limit;
+        Object.assign(params,value)
     }
     loading.value = true
     queryRolePage(params).then(res => {
@@ -156,12 +268,98 @@ const queryPage = (value?: any) => {
         loading.value = false
     })
 }
-
-const handleInsert=()=>{
-    openDialog.value=true;
-    title.value="新增角色"
+const resetQuery = () => {
+    Object.assign(params, {
+        roleId: null,
+        roleName: '',
+        roleKey: '',
+        isDeleted: 0,
+        status: '',
+        createTime: null,
+        updateTime: null,
+        createBy: '',
+        updateBy: '',
+        remark: '',
+        pageNumber: 1,
+        pageSize: 10
+    });
+    queryPage();
 }
 
+const hadnleUpdate = (roleId: number | undefined) => {
+    let id: number = roleId || selectObj.ids[0]
+    queryRoleInfo(id).then(data => {
+        title.value = "更新角色"
+        openDialog.value = true;
+        Object.assign(form, data)
+    })
+}
+async function queryRoleInfo(roleId: number): Promise<SysRole> {
+    return (await queryRoleById(roleId)).data
+}
+
+const removeRole = (role?: SysRole | undefined) => {
+    confirms.confirm(`您是否删除当前角色:${role?.roleName || selectObj.ids}`)
+        .then(res => {
+            removeRoleByIds(role?.roleId || selectObj.ids).then(res => {
+                messages.success(res.msg)
+                queryPage();
+            })
+        })
+}
+
+const handleInsert = (formEl: FormInstance | undefined) => {
+    openDialog.value = true;
+    title.value = "新增角色"
+    resetFormRule(formEl);// 清空表单
+}
+
+// 提交表单
+const submit = (formEl: FormInstance | undefined) => {
+    if (!formEl) return false
+    formEl.validate((valid) => {
+        if (!valid) {
+            return false
+        }
+        if (form.roleId) {
+            updateRole(form).then(response => {
+                queryPage();
+                openDialog.value = false;
+            }).catch(error => {
+                openDialog.value = false;
+                messages.error(error.msg || '系统接口异常 请联系管理员')
+            })
+            return
+        }
+        // 新增
+        insertRole(form).then(response => {
+            queryPage();
+            openDialog.value = false;
+        }).catch(error => {
+            openDialog.value = false;
+            messages.error(error.msg || '系统接口异常 请联系管理员')
+        })
+    })
+
+
+
+}
+
+const resetFormRule = (formEl?: FormInstance | undefined) => {
+    // 重新赋值
+    Object.assign(form, {
+        roleName: '',
+        roleKey: '',
+        isDeleted: false,
+        status: '',
+        createBy: '',
+        updateBy: '',
+        remark: '',
+        sortValue: 0
+    })
+    if (!formEl) return
+    formEl.resetFields()
+}
 
 onMounted(() => {
     queryPage()

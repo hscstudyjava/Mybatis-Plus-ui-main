@@ -1,4 +1,4 @@
-import { ElMessage, ElMessageBox, ElNotification, ElLoading, type Action } from 'element-plus';
+import { ElMessage, ElMessageBox, ElNotification, ElLoading, type Action, type ElMessageBoxShortcutMethod, type MessageBoxData } from 'element-plus';
 
 // https://juejin.cn/post/7061853693121036319
 /** 
@@ -91,21 +91,25 @@ export const notify = {
  */
 export const confirms = {
 
-    confirm(context: string, title?: string, type?: string) {
+    confirm(context: string, title?: string, type?: string,confirmButtonText?:string,cancelButtonText?:string)
+    :Promise<MessageBoxData>
+    {        
         // @ts-ignore
-        ElMessageBox.alert(
+        return ElMessageBox.alert(
             context,
             title || '系统提示',
             {
-                confirmButtonText: '确认',
-                cancelButtonText: '取消',
+                cancelButtonText: cancelButtonText || '取消',
+                confirmButtonText: confirmButtonText || '确认',
                 type: type || "warning",
             }
         )
     },
-    prompt(content: string, title?: string, type?: string) {
+    prompt(content: string, title?: string, type?: string) 
+    :Promise<MessageBoxData>
+    {
         // @ts-ignore
-        ElMessageBox.prompt(content,
+        return  ElMessageBox.prompt(content,
             title || "系统提示", {
             confirmButtonText: '确定',
             cancelButtonText: '取消',

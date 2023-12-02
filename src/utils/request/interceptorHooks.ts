@@ -1,4 +1,3 @@
-import { messages } from './../message/MessageUtils';
 import { refreshToken } from '@/api/login/login'
 import { getAccessToken, getRefreshToken } from '../cache/auth'
 import { LoginCode, SuccessCode } from './BaseConstants'
@@ -9,12 +8,14 @@ import { useUserStore } from '@/stores/user'
 import Request from './Request'
 import { request } from "@/utils/request";
 import router from '@/router'
-import { messages } from '../message/MessageUtils'
+import { confirms, messages } from "@/utils/message/MessageUtils"
 
 
 let requestList: any[] = []
 let isRefresh = false
-
+const isLogin = {
+  show: false
+}
 
 
 
@@ -42,7 +43,7 @@ export const transform: InterceptorHooks = {
     if (res.data.code !== SuccessCode.SUCCESS) {
 
       if (res.config.requestOptions?.globalErrorMessage) {
-        messages.error(res.data.msg);
+        // messages.error(res.data.msg);
         // 这里全局提示错误
         console.error(res.data.msg)
       }
@@ -59,10 +60,9 @@ export const transform: InterceptorHooks = {
               requestList.forEach((item) => item(userStore.oauth2.accessToken))
               requestList = []
               // @ts-ignore
-              return request(res.config)
+              return request.request(res.config, { headers: { Authorization: userStore.oauth2.accessToken } })
             }).catch(error => {
               userStore.$resetOauth2();//重置
-              router.push("/")
               return Promise.reject(error)
             }).finally(() => {
               isRefresh = false// 关闭刷新
@@ -71,20 +71,23 @@ export const transform: InterceptorHooks = {
           return new Promise((resolve, reject) => {
             requestList.push((token: any) => {
               res.headers.Authorization = token
+              // 在刷新Token的请求中传递refreshConfig配置
               // @ts-ignore
-              resolve(request(res.config))
+              resolve(request.request(res.config, { headers: { Authorization: token } }))
             }
             )
           })
         }
-
       }
 
-      if(res.data.code===LoginCode.USER_REFRESH_TOKEN_EXPIRE){
+      if (res.data.code === LoginCode.USER_REFRESH_TOKEN_EXPIRE) {
         // 清空Oauth2_Obj
         userStore.$resetOauth2();
         // userStore
         userStore.$clearCache();
+        if (!isLogin.show) {
+          handleLogin()
+        }
       }
 
 
@@ -118,4 +121,21 @@ export const transform: InterceptorHooks = {
     console.error(message)
     return Promise.reject(err.response)
   },
+}
+
+const handleLogin = () => {
+  isLogin.show = true
+  confirms.confirm(
+    "抱歉,您当前账号登录状态已经过期,请重新登录或者留在当前页面",
+    "登录状态提示",
+    "warning",
+    "重新登录",
+    "取消登录"
+  ).then(res => {
+    isLogin.show = false
+    location.href = "/login"
+  }).catch(error => {
+    isLogin.show = false
+  })
+
 }

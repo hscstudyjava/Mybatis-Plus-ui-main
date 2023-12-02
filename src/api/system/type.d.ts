@@ -7,7 +7,7 @@ export interface SysRole {
 
     roleKey: string,
 
-    isDeleted: boolean,
+    isDeleted: number,
 
     status: string,
 
@@ -20,6 +20,40 @@ export interface SysRole {
     updateBy: string,
 
     remark: string,
+
+    sortValue:Number
+}
+
+
+export interface SysUser{
+
+     userId: Number
+
+     createDept: Number
+
+     userName: String
+
+     passWord: String
+
+     userNickName: String
+
+     telPhone: String
+
+     userEmil: String
+
+     createTime: Date
+
+     updateTime: Date
+
+     createBy: String
+
+     updateBy: String
+
+     sortValue: Number
+
+     isDeleted: Number
+
+     sex: String
 }
 
 export interface Page<T> {

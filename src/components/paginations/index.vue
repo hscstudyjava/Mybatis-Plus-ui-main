@@ -138,11 +138,11 @@ const handleSizeChange = (val: number) => {
         currentPage.value = 1;
     }
 
-    emit('paginations', { pageNum: currentPage.value, limit: val })
+    emit('paginations', { pageNumber: currentPage.value, pageSize: val })
 }
 
 const handleCurrentChange = (val: number) => {
-    emit('paginations', { pageNum: val, limit: currentSize.value  })
+    emit('paginations', { pageNumber: val, pageSize: currentSize.value  })
 }
 
 </script>

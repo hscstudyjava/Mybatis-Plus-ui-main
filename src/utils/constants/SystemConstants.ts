@@ -55,7 +55,7 @@ export const enum PermissionEnum{
     /**
      * 超级权限
      */
-    SPUPER_PERSSION="*.*.*",
+    SPUPER_PERSSION="*:*:*",
 
     /**
      * 超级管理员
@@ -64,4 +64,11 @@ export const enum PermissionEnum{
 
 
 
+}
+
+export const enum SystemEnum{
+
+    DEFAULT_SPLIT_SYMBOL=","
+
+    
 }
