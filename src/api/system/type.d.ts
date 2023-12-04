@@ -1,3 +1,4 @@
+import { SimpleTree } from './type.d';
 
 export interface SysRole {
 
@@ -21,39 +22,39 @@ export interface SysRole {
 
     remark: string,
 
-    sortValue:Number
+    sortValue: Number
 }
 
 
-export interface SysUser{
+export interface SysUser {
 
-     userId: Number
+    userId: Number
 
-     createDept: Number
+    createDept: Number
 
-     userName: String
+    userName: String
 
-     passWord: String
+    passWord: String
 
-     userNickName: String
+    userNickName: String
 
-     telPhone: String
+    telPhone: String
 
-     userEmil: String
+    userEmil: String
 
-     createTime: Date
+    createTime: Date
 
-     updateTime: Date
+    updateTime: Date
 
-     createBy: String
+    createBy: String
 
-     updateBy: String
+    updateBy: String
 
-     sortValue: Number
+    sortValue: Number
 
-     isDeleted: Number
+    isDeleted: Number
 
-     sex: String
+    sex: String
 }
 
 export interface Page<T> {
@@ -88,4 +89,64 @@ export interface Page<T> {
     pageSize: number
 
 
+}
+
+/**
+ * 通用简化树形结构
+ */
+export interface SimpleTree<T> {
+
+    id: Number | String,
+
+    parentId: Number | String,
+
+    label: String,
+
+    children: Array<T>
+}
+
+export interface BaseEnity{
+
+    createTime:Date,
+
+    updateTime:Date,
+
+    /**
+     * 默认设置ID
+     */
+    createBy:String,
+
+    /**
+     * 默认设置ID
+     */
+    updateBy:String,
+
+    isDeleted:Number
+
+}
+
+
+export interface SysPermisson extends SimpleTree<SysPermisson>{
+
+    permissionName: String,
+
+    permissionValue: String,
+
+    permissionType: String,
+
+    menuIcon: String,
+
+    menuPath:String,
+    
+    menuParam:String
+
+    hasHidden:boolean
+
+    hasCache:boolean
+
+    hasFrame:boolean
+
+    status:String,
+
+    sortValue:String
 }

@@ -29,8 +29,8 @@
 <script lang="ts" setup>
 import defaultPng from "@/assets/img/default/index.png"
 import defaultPng1 from "@/assets/img/default/index1.png"
-import { isExternal,isArray } from "@/utils/verify"
-import type { PropType } from 'vue'
+import { isExternal, isArray } from "@/utils/verify"
+import { computed, type PropType } from 'vue'
 import { SystemEnum } from '@/utils/constants/SystemConstants'
 const default_split = SystemEnum.DEFAULT_SPLIT_SYMBOL
 const prop = defineProps({
@@ -50,7 +50,6 @@ const prop = defineProps({
      */
     url: {
         type: [String, Array] as PropType<string | string[]>,
-        required: true,
         // setting a img
         default: defaultPng1
     },
@@ -132,17 +131,19 @@ const realHeight = computed(() => {
  * /file/a.png=>fasle base+url
  */
 const isExternalUrl = (url: String): String => {
-    if (isExternal(url)) return url;
-    return prop.baseUrl + url
+    if (isExternal(url as string)) return url;
+    return prop.baseUrl as string + url
 }
 
 /** 
  * 如果是个列表需要渲染
  */
 const urlList = computed(() => {
-    const srcList = []
-    console.log(realUrl.value);
+    const srcList: any[] = []
+    // @ts-ignore
     if (isArray(realUrl.value)) {
+        // @ts-ignore
+
         realUrl.value.map(currentUrl => {
             srcList.push(currentUrl)
         })

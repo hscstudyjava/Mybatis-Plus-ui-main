@@ -52,6 +52,12 @@ const router = createRouter({
         name: 'role',
         component: () => import('@/views/system/role/index.vue'),
         meta: { title: '角色信息', icon: 'role' }
+      },
+      {
+        path:'permisson',
+        name:'permission',
+        component:()=>import('@/views/system/permission/index.vue'),
+        meta:{title:'权限信息',icon:'role'}
       }
       ]
     }

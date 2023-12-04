@@ -1,17 +1,15 @@
 <template>
-
-    <div style="font-family:Nabla ;">
-        <imgShow/>
+    <div >
+        <uploadFiles/>
     </div>
+</template>
     
-    </template>
-    
-    <script setup lang="ts">
-    
-    
-    
-    const success=()=>{
-       
-    }
-    
-    </script>
+<script setup lang="ts">
+
+
+
+const success = () => {
+
+}
+
+</script>

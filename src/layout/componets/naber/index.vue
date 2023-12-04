@@ -64,7 +64,7 @@ import Hamburger from './Hamburger.vue';
 import Breadcrumb from './breadcrumb.vue';
 
 import { DeviceEnum } from '@/utils/constants/SystemConstants';
-import { messages } from '@/utils/message/MessageUtils';
+import { messages, notify } from '@/utils/message/MessageUtils';
 
 import router from '@/router';
 import { computed } from 'vue';
@@ -89,13 +89,14 @@ const moddileDevice = DeviceEnum.MOBILE;//手机模式
 const logout = () => {
     userSotre.userLogout()
         .then(res => {
-            messages.success(res.msg)
-            router.push("/")
+            // messages.success(res.msg)
+            router.push("/login")
+            notify.success("系统提示",res.msg)
         }).catch(error => {
             // 捕捉异常
             userSotre.$resetOauth2();// 重置Oauth2
-            messages.success("退出成功")
-            router.push("/")
+            // messages.success("退出成功")
+            router.push("/login")
             new Error(error)
         })
 }

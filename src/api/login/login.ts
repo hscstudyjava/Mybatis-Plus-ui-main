@@ -120,7 +120,7 @@ export function logout(currentToken:Oauth2Resp):Promise<AjaxResult<void>>{
         currentToken,
         {
             requestOptions:{
-                globalSuccessMessage:true
+                globalSuccessMessage:false
             }
         }
     )

@@ -3,7 +3,7 @@
         <el-form :inline="true" v-show="showQuery" :model="state.params" class="demo-form-inline" @submit.native.prevent>
 
             <el-form-item label="用户昵称">
-                <el-input v-model="state.params.userNickName" placeholder="请输入用户昵称" @keyup.enter.native="loading"
+                <el-input v-model="state.params.userNickName" placeholder="请输入用户昵称" @keyup.enter.native="loadList"
                     clearable></el-input>
             </el-form-item>
 
@@ -100,7 +100,7 @@
     </div>
 </template>
 <script setup lang="ts">
-import { onMounted, reactive } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import { pageUser } from '@/api/system/user/index'
 import type { SysUser } from '@/api/system/type';
 const prefixPer = "system:user:";
@@ -108,6 +108,7 @@ const prefixPer = "system:user:";
 
 const showQuery = ref(true)
 const state = reactive({
+
     loading: false,
 
     single: true,

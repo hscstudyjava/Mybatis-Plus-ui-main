@@ -1,8 +1,10 @@
+import { FileTypeEnum } from "../constants/SystemConstants"
+
 /**
  * @param {string} path
  * @returns {Boolean}
  */
-export function isExternal(path:string):boolean {
+export function isExternal(path: string): boolean {
     return /^(https?:|mailto:|tel:)/.test(path)
 }
 
@@ -10,7 +12,7 @@ export function isExternal(path:string):boolean {
  * @param {string} str
  * @returns {Boolean}
  */
-export function validUsername(str:string):boolean {
+export function validUsername(str: string): boolean {
     const valid_map = ['admin', 'editor']
     return valid_map.indexOf(str.trim()) >= 0
 }
@@ -19,7 +21,7 @@ export function validUsername(str:string):boolean {
  * @param {string} url
  * @returns {Boolean}
  */
-export function validURL(url:string):boolean {
+export function validURL(url: string): boolean {
     const reg = /^(https?|ftp):\/\/([a-zA-Z0-9.-]+(:[a-zA-Z0-9.&%$-]+)*@)*((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}|([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(:[0-9]+)*(\/($|[a-zA-Z0-9.,?'\\+&%$#=~_-]+))*$/
     return reg.test(url)
 }
@@ -28,7 +30,7 @@ export function validURL(url:string):boolean {
  * @param {string} str
  * @returns {Boolean}
  */
-export function validLowerCase(str:string):boolean{
+export function validLowerCase(str: string): boolean {
     const reg = /^[a-z]+$/
     return reg.test(str)
 }
@@ -37,7 +39,7 @@ export function validLowerCase(str:string):boolean{
  * @param {string} str
  * @returns {Boolean}
  */
-export function validUpperCase(str:string):boolean {
+export function validUpperCase(str: string): boolean {
     const reg = /^[A-Z]+$/
     return reg.test(str)
 }
@@ -46,7 +48,7 @@ export function validUpperCase(str:string):boolean {
  * @param {string} str
  * @returns {Boolean}
  */
-export function validAlphabets(str:string):boolean {
+export function validAlphabets(str: string): boolean {
     const reg = /^[A-Za-z]+$/
     return reg.test(str)
 }
@@ -55,7 +57,7 @@ export function validAlphabets(str:string):boolean {
  * @param {string} email
  * @returns {Boolean}
  */
-export function validEmail(email:string):boolean{
+export function validEmail(email: string): boolean {
     const reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     return reg.test(email)
 }
@@ -64,7 +66,7 @@ export function validEmail(email:string):boolean{
  * @param {string} str
  * @returns {Boolean}
  */
-export function isString(str:String):boolean {
+export function isString(str: String): boolean {
     if (typeof str === 'string' || str instanceof String) {
         return true
     }
@@ -75,9 +77,40 @@ export function isString(str:String):boolean {
  * @param {Array} arg
  * @returns {Boolean}
  */
-export function isArray(arg:[]):boolean {
+export function isArray(arg: []): boolean {
     if (typeof Array.isArray === 'undefined') {
         return Object.prototype.toString.call(arg) === '[object Array]'
     }
     return Array.isArray(arg)
+}
+
+
+export function toByte(value: number, type: FileTypeEnum): number {
+    switch (type) {
+        case FileTypeEnum.BYTE:
+            return value;
+        case FileTypeEnum.KB:
+            return value * 1024;
+        case FileTypeEnum.MB:
+            return value * 1024 * 1024;
+        case FileTypeEnum.GB:
+            return value * 1024 * 1024 * 1024;
+        default:
+            throw new Error('Invalid file type');
+    }
+}
+
+export function fromByte(value: number, type: FileTypeEnum): number {
+    switch (type) {
+        case FileTypeEnum.BYTE:
+            return value;
+        case FileTypeEnum.KB:
+            return value / 1024;
+        case FileTypeEnum.MB:
+            return value / 1024 / 1024;
+        case FileTypeEnum.GB:
+            return value / 1024 / 1024 / 1024;
+        default:
+            throw new Error('Invalid file type');
+    }
 }

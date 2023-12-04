@@ -72,3 +72,23 @@ export const enum SystemEnum{
 
     
 }
+
+/**
+ * 字节、KB、MB、GB
+ */
+export const enum FileTypeEnum{
+
+    /** 
+     * 现在
+     */
+    BYTE="byte",
+
+    KB="Kb",
+
+    MB="Mb",
+
+    GB="Gb"
+
+
+
+}
