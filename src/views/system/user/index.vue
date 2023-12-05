@@ -175,6 +175,8 @@ const toggleQuery = () => {
 }
 
 onMounted(() => {
+    console.log(import.meta.glob("@/views/**/*.vue"));
+    
     loadList()
 })
 </script>

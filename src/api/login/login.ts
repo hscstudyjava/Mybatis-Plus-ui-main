@@ -126,7 +126,7 @@ export function logout(currentToken:Oauth2Resp):Promise<AjaxResult<void>>{
     )
 }
 
-export function getRouter():Promise<AjaxResult<Menu>>{
+export function getRouter():Promise<AjaxResult<Array<Menu>>>{
     return request.get(
         baseUrl+'getRouter'
     )
