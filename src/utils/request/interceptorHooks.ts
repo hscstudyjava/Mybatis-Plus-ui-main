@@ -9,6 +9,7 @@ import Request from './Request'
 import { request } from "@/utils/request";
 import router from '@/router'
 import { confirms, messages } from "@/utils/message/MessageUtils"
+import { tansParams } from '../common'
 
 
 let requestList: any[] = []
@@ -25,6 +26,13 @@ export const transform: InterceptorHooks = {
     const token = getAccessToken()
     if (token) {
       config.headers.Authorization = token
+    }
+    // get请求映射params参数
+    if (config.method === 'get' && config.params) {
+      let url = config.url + '?' + tansParams(config.params);
+      url = url.slice(0, -1);
+      config.params = {};
+      config.url = url;
     }
     return config
   },

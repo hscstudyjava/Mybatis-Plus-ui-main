@@ -96,37 +96,37 @@ export interface Page<T> {
  */
 export interface SimpleTree<T> {
 
-    id: Number | String,
+    id: Number | String | null,
 
-    parentId: Number | String,
+    parentId: Number | String | null,
 
     label: String,
 
     children: Array<T>
 }
 
-export interface BaseEnity{
+export interface BaseEnity {
 
-    createTime:Date,
+    createTime: Date,
 
-    updateTime:Date,
-
-    /**
-     * 默认设置ID
-     */
-    createBy:String,
+    updateTime: Date,
 
     /**
      * 默认设置ID
      */
-    updateBy:String,
+    createBy: String,
 
-    isDeleted:Number
+    /**
+     * 默认设置ID
+     */
+    updateBy: String,
+
+    isDeleted: Number
 
 }
 
 
-export interface SysPermisson extends SimpleTree<SysPermisson>{
+export interface SysPermisson extends SimpleTree<SysPermisson> {
 
     permissionName: String,
 
@@ -136,17 +136,33 @@ export interface SysPermisson extends SimpleTree<SysPermisson>{
 
     menuIcon: String,
 
-    menuPath:String,
+    menuPath: String,
+
+    menuParam: String
+
+    menuComponent?:String
+
+    hasHidden?: boolean
+
+    hasCache?: boolean
+
+    hasFrame?: boolean
+
+    status: String,
+
+    sortValue: Number|String
+}
+
+export interface Captcha{
+
+    activeProfile:string,
+
+    open:boolean,
+
+    result:string,
+
+    base64Img:string,
+
+    uuid:string
     
-    menuParam:String
-
-    hasHidden:boolean
-
-    hasCache:boolean
-
-    hasFrame:boolean
-
-    status:String,
-
-    sortValue:String
 }

@@ -25,7 +25,7 @@
         <!-- 表单数组 -->
         <el-row :gutter="10" class="mb8">
 
-            <el-col :span="1.5" v-peri="['system:role:add']">
+            <el-col :span="1.5" v-peri="['system:role:save']">
                 <el-button type="success" plain @click="handleInsert(ruleFormRef)">
                     <template #icon>
                         <el-icon>

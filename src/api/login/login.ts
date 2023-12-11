@@ -1,6 +1,7 @@
 import type { Menu } from "@/types/menu";
 import { request } from "@/utils/request";
 import type { AjaxResult } from "@/utils/request/type";
+import type { Captcha } from "../system/type";
 
 
 const baseUrl="/auth/"
@@ -129,5 +130,11 @@ export function logout(currentToken:Oauth2Resp):Promise<AjaxResult<void>>{
 export function getRouter():Promise<AjaxResult<Array<Menu>>>{
     return request.get(
         baseUrl+'getRouter'
+    )
+}
+
+export function getCaptchaInfo():Promise<AjaxResult<Captcha> >{
+    return request.get(
+        '/system/captcha/info'
     )
 }

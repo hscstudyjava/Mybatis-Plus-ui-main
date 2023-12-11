@@ -16,32 +16,40 @@ import 'element-plus/theme-chalk/el-loading.css'
  */
 export const messages =
 {
-    info(context: string, showClose?: boolean) {
+    info(context: string, showClose?: boolean, hasHtml?: boolean) {
         ElMessage({
             message: context,
             type: 'info',
-            showClose: showClose
-        })
-    },
-    success(context: string, showClose?: boolean) {
-        ElMessage({
-            message: context,
-            type: 'success',
-            showClose: showClose
+            showClose: showClose,
+            dangerouslyUseHTMLString: hasHtml
 
         })
     },
-    error(context: string) {
+    success(context: string, showClose?: boolean, hasHtml?: boolean) {
+        ElMessage({
+            message: context,
+            type: 'success',
+            showClose: showClose,
+            dangerouslyUseHTMLString: hasHtml
+
+        })
+    },
+    error(context: string, showClose?: boolean, hasHtml?: boolean) {
         ElMessage({
             message: context,
             type: 'error',
+            showClose: showClose,
+            dangerouslyUseHTMLString: hasHtml
         })
     },
-    warn(context: string) {
+    warn(context: string, showClose?: boolean, hasHtml?: boolean) {
         ElMessage(
             {
                 message: context,
                 type: 'error',
+                showClose: showClose,
+                dangerouslyUseHTMLString: hasHtml
+
             }
         )
     }
@@ -51,35 +59,42 @@ export const messages =
  * 消息提示
  */
 export const notify = {
-    info(title: string, context: string, showClose?: boolean) {
+    info(title: string, context: string, showClose?: boolean, hasHtml?: boolean) {
         ElNotification({
             title: title,
             message: context,
             type: 'info',
-            showClose: showClose
+            showClose: showClose,
+            dangerouslyUseHTMLString: hasHtml
         })
     },
-    success(title: string, context: string, showClose?: boolean) {
+    success(title: string, context: string, showClose?: boolean, hasHtml?: boolean) {
         ElNotification({
             title: title,
             message: context,
             type: 'success',
-            showClose: showClose
+            showClose: showClose,
+            dangerouslyUseHTMLString: hasHtml
+
         })
     },
-    error(title: string, context: string) {
+    error(title: string, context: string, showClose?: boolean, hasHtml?: boolean) {
         ElNotification({
             title: title,
             message: context,
             type: 'error',
+            showClose: showClose,
+            dangerouslyUseHTMLString: hasHtml
         })
     },
-    warn(title: string, context: string) {
+    warn(title: string, context: string, showClose?: boolean, hasHtml?: boolean) {
         ElNotification(
             {
                 title: title,
                 message: context,
                 type: 'error',
+                showClose: showClose,
+                dangerouslyUseHTMLString: hasHtml
             }
         )
     }
@@ -91,9 +106,8 @@ export const notify = {
  */
 export const confirms = {
 
-    confirm(context: string, title?: string, type?: string,confirmButtonText?:string,cancelButtonText?:string)
-    :Promise<MessageBoxData>
-    {        
+    confirm(context: string, title?: string, type?: string, confirmButtonText?: string, cancelButtonText?: string)
+        : Promise<MessageBoxData> {
         // @ts-ignore
         return ElMessageBox.alert(
             context,
@@ -105,11 +119,10 @@ export const confirms = {
             }
         )
     },
-    prompt(content: string, title?: string, type?: string) 
-    :Promise<MessageBoxData>
-    {
+    prompt(content: string, title?: string, type?: string)
+        : Promise<MessageBoxData> {
         // @ts-ignore
-        return  ElMessageBox.prompt(content,
+        return ElMessageBox.prompt(content,
             title || "系统提示", {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
@@ -122,19 +135,19 @@ export const confirms = {
 /**
  * loading服务
  */
-let loadingInstance:any;
+let loadingInstance: any;
 export const loading = {
     // 开启
-    open(content?:string) {
+    open(content?: string) {
         loadingInstance = ElLoading.service({
             lock: true,
-            text: content|| '努力加载中!!!',
+            text: content || '努力加载中!!!',
             //      spinner: "el-icon-loading",
             background: "rgba(0, 0, 0, 0.7)",
         })
     },
     // 关闭
-    close() { 
+    close() {
         loadingInstance.close()
     }
 }

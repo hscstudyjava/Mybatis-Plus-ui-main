@@ -58,8 +58,9 @@ import { useUserStore } from '@/stores/user'
 // @ts-ignore
 import type { AjaxResult } from '@/utils/request/type';
 import { defineStore, storeToRefs } from 'pinia';
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { messages } from '@/utils/message/MessageUtils';
+import { getCaptchaInfo } from '@/api/login/login';
 const { title } = storeToRefs(useSettingStore())
 
 const userStore = useUserStore()
@@ -86,6 +87,17 @@ const onSubmit = () => {
     
   })
 }
+onMounted(()=>{
+  initCaptcha();
+})
+
+const initCaptcha=()=>{
+  getCaptchaInfo().then(res=>{
+
+  })
+}
+
+
 </script>
  
 <style lang="scss" scoped>

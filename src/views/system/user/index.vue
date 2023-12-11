@@ -24,7 +24,7 @@
         <!-- 表单数组 -->
         <el-row :gutter="10" class="mb8">
 
-            <el-col :span="1.5" v-peri="[`${prefixPer}add`]">
+            <el-col :span="1.5" v-peri="[`${prefixPer}save`]">
                 <el-button type="success" plain>
                     <template #icon>
                         <el-icon>
