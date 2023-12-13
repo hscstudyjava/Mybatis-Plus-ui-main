@@ -58,7 +58,13 @@ const router = createRouter({
         name:'permission',
         component:()=>import('@/views/system/permission/index.vue'),
         meta:{title:'权限信息',icon:'role'}
-      }
+      },  {
+        path:'dept',
+        name:'deptt',
+        component:()=>import('@/views/system/dept/index.vue'),
+        meta:{title:'部门信息',icon:'dept'}
+      },
+
       ]
     }
   ]

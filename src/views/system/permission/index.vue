@@ -1,12 +1,8 @@
 <template>
     <div class="app-context">
         <el-row>
-            <el-col :span="4">
 
-                <el-tree-v2 :data="state.simpleList" :height="208" />
-            </el-col>
-            <el-col :span="20">
-
+            <el-col :span="24">
                 <el-form v-show="state.showQuery" :inline="true" :model="state.params" class="demo-form-inline"
                     @submit.native.prevent>
                     <el-form-item label="菜单名称">
@@ -24,10 +20,8 @@
                         <el-button @click="resetQuery">重置</el-button>
                     </el-form-item>
                 </el-form>
-
                 <!-- 表单数组 -->
                 <el-row :gutter="10" class="mb8">
-
                     <el-col :span="1.5" v-peri="[basePeri + 'save']">
                         <!-- @click="handleInsert(ruleFormRef)" -->
                         <el-button type="success" plain @click="handleSave('0')">
@@ -40,10 +34,8 @@
                         </el-button>
                     </el-col>
 
-
-
-                    <el-col :span="1.5" v-peri="[basePeri + 'download']">
-                        <el-button type="warning" plain @click="handleExpand">
+                    <el-col :span="1.5" >
+                        <el-button type="warning" plain @click="toggleExpansion()">
                             <template #icon>
                                 <i-ep-Switch />
                             </template>
@@ -55,7 +47,7 @@
                     </el-col>
                 </el-row>
 
-                <el-table :data="state.list" style="width: 100%" row-key="id" lazy 
+                <el-table ref="treeTableRef" stripe border :data="state.list" style="width: 100%" row-key="id" lazy
                     :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
                     <el-table-column prop="permissionName" show-overflow-tooltip align="center" label="权限名称" />
                     <el-table-column prop="permissionValue" show-overflow-tooltip align="center" label="权限字符" />
@@ -95,26 +87,35 @@
                                 更新
                             </el-button>
 
-                            <el-dropdown @command="handleCommand($event, socpe.row)">
-                                <el-button link>
-                                    更多
-                                </el-button>
-                                <template #dropdown>
-                                    <el-dropdown-menu>
-                                        <el-dropdown-item command="remove" v-peri="[`${basePeri}remove`]">删除</el-dropdown-item>
-                                        <el-dropdown-item command="generation" 
-                                        v-if="socpe.row.permissionType==='R'"
-                                        v-peri="[`${basePeri}createPermission`]">一键生成</el-dropdown-item>
-                                    </el-dropdown-menu>
-                                </template>
-                            </el-dropdown>
+                            <!-- 判断一下是否两个条件任意一个成立 -->
+                            <template v-if="socpe.row.permissionType === 'R' || socpe.row.children.length === 0">
+                                <el-dropdown @command="handleCommand($event, socpe.row)" teleported>
 
-                            <!--   <el-button link type="danger"  @click="handleDelete(socpe.row)">
-                                <template #icon>
-                                    <i-ep-delete />
-                                </template>
-                                删除
-                            </el-button> -->
+                                    <el-button link>
+                                        更多
+                                    </el-button>
+
+                                    <template #dropdown>
+                                        <el-dropdown-menu>
+
+                                            <template v-peri="[`${basePeri}createPermission`]"
+                                                v-if="socpe.row.permissionType === 'R'">
+                                                <el-dropdown-item command="generation">一键生成</el-dropdown-item>
+                                            </template>
+
+
+                                            <template v-peri="[`${basePeri}remove`]" v-if="socpe.row.children.length === 0">
+                                                <el-dropdown-item command="remove">删除数据</el-dropdown-item>
+                                            </template>
+
+
+                                        </el-dropdown-menu>
+                                    </template>
+                                </el-dropdown>
+                            </template>
+
+
+
                         </template>
                     </el-table-column>
                 </el-table>
@@ -354,10 +355,12 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import { queryPermissionAllTree, basePeri, permissionType, queryPermissionSimple, insertPermission, updatePermission, getPermissionInfoById, removePermission, generationPermission } from '@/api/system/permission'
 import type { SysPermisson, SimpleTree } from '@/api/system/type';
 import { confirms, messages } from '@/utils/message/MessageUtils';
+const treeTableRef = ref(null);//注册
+
 const state = reactive({
 
     showQuery: false,
@@ -432,12 +435,6 @@ const state = reactive({
         hasFrame: false
     } as SysPermisson
 })
-/** 
- * 展开Table
- */
-const handleExpand = () => {
-
-}
 
 const handleDelete = (row: SysPermisson) => {
     if (row.id) {
@@ -466,7 +463,7 @@ const handleCommand = (type: string, row: SysPermisson) => {
             Object.assign(state.generationForm, {
                 id: row.id,
                 prefix: "",
-                prefixName:row.permissionName,
+                prefixName: row.permissionName,
                 hasInsert: true,
                 hasUpdate: true,
                 hasRemove: true,
@@ -480,6 +477,33 @@ const handleCommand = (type: string, row: SysPermisson) => {
     }
 
 }
+
+// @ts-ignore
+const TabData = (data, status) => {  //循环数据赋值
+    data.forEach((i) => {
+        treeTableRef.value.toggleRowExpansion(i, status)
+        if (i.children) {
+            forArr(i.children, status);
+        }
+    });
+}
+// @ts-ignore
+const forArr = (arr, status) => {     //关闭展开逻辑
+    arr.forEach((i) => {
+        treeTableRef.value.toggleRowExpansion(i, status)
+        if (i.children) {
+            forArr(i.children, status);
+        }
+    });
+};
+
+const toggleExpansion = () => {   //展开
+    // 重新赋值给expandAll
+    state.expandAll = !state.expandAll
+    TabData(state.list, state.expandAll);
+}
+
+
 /***********操作表单************ */
 const handleSave = (id: String | Number) => {
 
@@ -544,9 +568,9 @@ const loadingPermission = () => {
 }
 
 const generationPeri = () => {
-    generationPermission(state.generationForm).then(res=>{
+    generationPermission(state.generationForm).then(res => {
         messages.success(res.msg),
-        cancel();
+            cancel();
         loadList()
     })
 
@@ -583,7 +607,7 @@ const cancel = () => {
     Object.assign(state.generationForm, {
         id: null,
         prefix: "",
-        prefixName:"",
+        prefixName: "",
         hasInsert: true,
         hasUpdate: true,
         hasRemove: true,

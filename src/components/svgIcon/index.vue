@@ -46,7 +46,7 @@ const iconProp = defineProps({
   // icon
   iconClass: {
     type: String,
-    required: true
+    default: ''
   },
   // 默认样式
   className: {

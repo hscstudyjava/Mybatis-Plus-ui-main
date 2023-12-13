@@ -1,4 +1,4 @@
-import { SimpleTree } from './type.d';
+import { SimpleTree, BaseEnity, SysDept } from './type.d';
 
 export interface SysRole {
 
@@ -23,6 +23,22 @@ export interface SysRole {
     remark: string,
 
     sortValue: Number
+}
+
+interface BaseEnity {
+
+    id: string | number | any
+
+    createTime?: Date | any | string;
+
+    updateTime?: Date | any | string;
+
+    createBy?: string | number,
+
+    updateBy?: string | number,
+
+    isDeleted?: number | string | boolean | any
+
 }
 
 
@@ -140,7 +156,7 @@ export interface SysPermisson extends SimpleTree<SysPermisson> {
 
     menuParam: String
 
-    menuComponent?:String
+    menuComponent?: String
 
     hasHidden?: boolean
 
@@ -150,19 +166,36 @@ export interface SysPermisson extends SimpleTree<SysPermisson> {
 
     status: String,
 
-    sortValue: Number|String
+    sortValue: Number | String
 }
 
-export interface Captcha{
+export interface Captcha {
 
-    activeProfile:string,
+    activeProfile: string,
 
-    open:boolean,
+    open: boolean,
 
-    result:string,
+    result: string,
 
-    base64Img:string,
+    base64Img: string,
 
-    uuid:string
-    
+    uuid: string
+
+}
+
+export interface SysDept extends BaseEnity, SimpleTree<SysDept> {
+
+    deptName: string,
+
+    leader: string
+
+    email: string
+
+    phoneNumber: string
+
+    fullChinesePinyin?: string
+
+    simpleChinesePinyin?: string
+
+    status: string
 }

@@ -19,14 +19,14 @@
             <template #title>
                 <icon v-if="item.meta" :icon="item.meta && item.meta.icon" :title="item.meta.title" />
             </template>
-            <!--    :base-path="resolvePath(child.path)" -->
+            <!--    :base-path="resolvePath(child.path)"  class="nest-menu" -->
             <sub-item 
                 v-for="child in item.children" 
                 :key="child.path" 
                 :isNest="true" 
                 :item="child"
                 :baseUrl="resolvePath(child.path)"
-                 class="nest-menu" />
+                 />
         </el-sub-menu>
 
     </template>

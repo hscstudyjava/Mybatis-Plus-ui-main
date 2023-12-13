@@ -73,7 +73,11 @@
             <el-table-column label="账号" show-overflow-tooltip prop="userName" align="center" />
             <el-table-column label="昵称" show-overflow-tooltip prop="userNickName" align="center" />
             <el-table-column label="排序"  prop="sortValue" align="center" />
-            <el-table-column label="创建时间"  prop="createTime" align="center" />
+            <el-table-column label="创建时间"   align="center" >
+                <template #default="scope">
+                {{ parseTime(scope.row.createTime) }}
+                </template>
+            </el-table-column>
             <el-table-column label="操作" align="center">
                 <template #default="scope">
                     <el-button link v-peri="[`${prefixPer}update`]" type="primary">
@@ -101,6 +105,7 @@
 </template>
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue';
+import{parseTime }from '@/utils/common'
 import { pageUser } from '@/api/system/user/index'
 import type { SysUser } from '@/api/system/type';
 const prefixPer = "system:user:";
@@ -175,7 +180,6 @@ const toggleQuery = () => {
 }
 
 onMounted(() => {
-    console.log(import.meta.glob("@/views/**/*.vue"));
     
     loadList()
 })
