@@ -1,4 +1,21 @@
 import { SimpleTree, BaseEnity, SysDept } from './type.d';
+interface BaseEnity {
+
+    id: string | number | any
+
+    createTime?: Date | any | string;
+
+    updateTime?: Date | any | string;
+
+    createBy?: string | number,
+
+    updateBy?: string | number,
+
+    isDeleted?: number | string | boolean | any
+
+    remark?: string
+
+}
 
 export interface SysRole {
 
@@ -25,21 +42,6 @@ export interface SysRole {
     sortValue: Number
 }
 
-interface BaseEnity {
-
-    id: string | number | any
-
-    createTime?: Date | any | string;
-
-    updateTime?: Date | any | string;
-
-    createBy?: string | number,
-
-    updateBy?: string | number,
-
-    isDeleted?: number | string | boolean | any
-
-}
 
 
 export interface SysUser {
@@ -198,4 +200,20 @@ export interface SysDept extends BaseEnity, SimpleTree<SysDept> {
     simpleChinesePinyin?: string
 
     status: string
+
+    sortValue:number
+}
+
+
+export interface SysConfig extends BaseEnity, SimpleTree<SysConfig> {
+
+    configName: string,
+
+    configKey: string
+
+    configValue: string
+
+    configType: string
+
+    sortValue:number
 }

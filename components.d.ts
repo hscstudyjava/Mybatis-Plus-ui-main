@@ -50,6 +50,7 @@ declare module 'vue' {
     IEpPlus: typeof import('~icons/ep/plus')['default']
     IEpPointer: typeof import('~icons/ep/pointer')['default']
     IEpRefresh: typeof import('~icons/ep/refresh')['default']
+    IEpRemove: typeof import('~icons/ep/remove')['default']
     IEpRight: typeof import('~icons/ep/right')['default']
     IEpSearch: typeof import('~icons/ep/search')['default']
     IEpSwitch: typeof import('~icons/ep/switch')['default']

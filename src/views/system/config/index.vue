@@ -3,19 +3,14 @@
 
         <!-- 表单 -->
         <el-form :inline="true" :model="state.params" class="demo-form-inline" @submit.native.prevent>
-            <el-form-item label="部门名称">
-                <el-input v-model="state.params.deptName" placeholder="请输入部门名称" @keyup.enter.native="loadList" clearable />
-            </el-form-item>
-
-            <el-form-item label="部门缩写">
-                <el-input v-model="state.params.simpleChinesePinyin" placeholder="请输入部门缩写" @keyup.enter.native="loadList"
+            <el-form-item label="配置名称">
+                <el-input v-model="state.params.configName" placeholder="请输入配置名称" @keyup.enter.native="loadList"
                     clearable />
             </el-form-item>
 
-            <!--  <el-form-item label="删除状态">
-                <el-switch v-model="params.isDeleted" active-value="1" inactive-value="0" class="ml-2" @change="queryPage"
-                    style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949" />
-            </el-form-item> -->
+            <el-form-item label="配置字符">
+                <el-input v-model="state.params.configKey" placeholder="请输入配置字符" @keyup.enter.native="loadList" clearable />
+            </el-form-item>
 
             <el-form-item>
                 <el-button type="primary" @click="loadList">查询</el-button>
@@ -53,11 +48,15 @@
 
         <el-table ref="treeTableRef" stripe border :data="state.list" style="width: 100%" row-key="id" lazy
             :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
-            <el-table-column prop="deptName" show-overflow-tooltip align="center" label="部门名称" />
-            <el-table-column prop="leader" show-overflow-tooltip align="center" label="负责人" />
-            <el-table-column prop="phoneNumber" show-overflow-tooltip align="center" label="手机号码" />
-            <el-table-column prop="simpleChinesePinyin" align="center" show-overflow-tooltip label="缩写拼音" />
-            <el-table-column prop="email" align="center" show-overflow-tooltip label="邮箱" />
+            <el-table-column prop="configName" show-overflow-tooltip align="center" label="配置名称" />
+            <el-table-column prop="configKey" show-overflow-tooltip align="center" label="配置字符" />
+            <el-table-column prop="configValue" show-overflow-tooltip align="center" label="配置数据" />
+            <el-table-column prop="configType" show-overflow-tooltip align="center" label="配置类型" />
+            <el-table-column show-overflow-tooltip align="center" label="创建时间">
+                <template #default="scope">
+                    {{ parseTime(scope.row.createTime) }}
+                </template>
+            </el-table-column>
             <el-table-column label="操作" align="center" width="200px">
                 <template #default="socpe">
                     <el-button link v-peri="[`${basePeri}save`]" type="success"
@@ -97,39 +96,36 @@
             <el-form :model="state.form" :rules="rules" ref="ruleFormRef" status-icon label-width="100px">
                 <el-row>
                     <el-col :span="24">
-                        <el-form-item label="上级部门">
+                        <el-form-item label="上级类型">
                             <el-tree-select style="width:100%" v-model="state.form.parentId" node-key="id"
                                 :data="state.simpleList" check-strictly :render-after-expand="false" />
                         </el-form-item>
                     </el-col>
 
                     <el-col :span=12>
-                        <el-form-item prop="deptName" label="部门名称">
-                            <el-input v-model="state.form.deptName" placeholder="请填写部门名称" clearable />
+                        <el-form-item prop="configName" label="配置名称">
+                            <el-input v-model="state.form.configName" placeholder="请填写配置名称" clearable />
                         </el-form-item>
                     </el-col>
 
                     <el-col :span=12>
-                        <el-form-item prop="leader" label="负责人">
-                            <el-input v-model="state.form.leader" placeholder="请填写部门负责人" clearable />
+                        <el-form-item prop="configKey" label="配置字符">
+                            <el-input v-model="state.form.configKey" placeholder="请填写配置字符" clearable />
                         </el-form-item>
                     </el-col>
+
                     <el-col :span=12>
-                        <el-form-item prop="phoneNumber" label="手机号">
-                            <el-input v-model="state.form.phoneNumber" placeholder="请填写部门负责人手机号" clearable />
+                        <el-form-item prop="configType" label="配置类型">
+                            <el-input v-model="state.form.configType" placeholder="请填写配置类型" clearable />
                         </el-form-item>
                     </el-col>
+
                     <el-col :span=12>
-                        <el-form-item prop="email" label="邮箱">
-                            <el-input v-model="state.form.email" placeholder="请填写部门邮箱" clearable />
+                        <el-form-item prop="configValue" label="配置数据">
+                            <el-input v-model="state.form.configValue" placeholder="请填写配置数据" clearable />
                         </el-form-item>
                     </el-col>
-                    <el-col :span=12>
-                        <el-form-item prop="sortValue" label="邮箱">
-                            <el-input-number style="width: 100%;" :min="1" :max="10000" size="small" controls-position="right"
-                                v-model="state.form.sortValue" placeholder="请填写部门邮箱" clearable />
-                        </el-form-item>
-                    </el-col>
+
 
                     <el-col :span=24>
                         <el-form-item prop="remark" label="备注">
@@ -168,14 +164,14 @@
 </template>
 
 <script  setup lang="ts" >
-import { selectSysDeptList, selectSysDeptSimpleList, insertSysDept, updateSysDept, getSysDeptById, removeSysDept, basePeri } from '@/api/system/dept';
-import{parseTime }from '@/utils/common'
-
-import type { SimpleTree, SysDept } from '@/api/system/type';
+import { selectSysConfigList, selectSysConfigSimpleList, insertSysConfig, updateSysConfig, getSysConfigById, removeSysConfig, basePeri } from '@/api/system/config';
+import type { SimpleTree, SysConfig } from '@/api/system/type';
 import { confirms, messages, notify } from '@/utils/message/MessageUtils';
 import { validateEmail, validateTelPhone } from '@/utils/verify/formVerify';
 import type { FormInstance, FormRules, TableInstance } from 'element-plus';
 import type form from 'element-plus/es/components/form/index.mjs';
+import { parseTime } from '@/utils/common'
+
 import { onMounted, reactive, ref } from 'vue';
 const treeTableRef = ref<TableInstance>();//注册
 const ruleFormRef = ref<FormInstance>()
@@ -211,33 +207,38 @@ const state = reactive({
 
     title: '',
 
-    list: [] as Array<SysDept>,
+    list: [] as Array<SysConfig>,
 
-    simpleList: [] as Array<SimpleTree<SysDept>>,
+    simpleList: [] as Array<SimpleTree<SysConfig>>,
 
     params: {
-        deptName: '',
-        simpleChinesePinyin: ""
+        configName: "",
+
+        configKey: "",
+
+        configValue: "",
+
+        configType: "",
     },
 
     form: {
-        id: "",
-        parentId: null,
-        deptName: '',
-        email: '',
-        phoneNumber: '',
-        leader: '',
-        status: '',
-        remark: '',
-        sortValue: 0,
-    } as SysDept
+        configName: "",
+
+        configKey: "",
+
+        configValue: "",
+
+        configType: "",
+
+        sortValue: 0
+    } as SysConfig
 
 
 })
 
 const loadList = () => {
     state.loading = true
-    selectSysDeptList(state.params).then(res => {
+    selectSysConfigList(state.params).then(res => {
         state.list = res.data
         state.loading = false
     })
@@ -254,12 +255,12 @@ const resetQuery = () => {
 const loadSimpleList = () => {
     // 重置数据
     state.simpleList = [];
-    selectSysDeptSimpleList(state.params).then(res => {
-        let parentObj: SimpleTree<SysDept> = {
+    selectSysConfigSimpleList(state.params).then(res => {
+        let parentObj: SimpleTree<SysConfig> = {
             id: '0',
             parentId: '',
             label: '主类目',
-            children: [] as Array<SysDept>
+            children: [] as Array<SysConfig>
         }
         // @ts-ignore
         parentObj.children = res.data;
@@ -272,7 +273,7 @@ const toggleQuery = () => {
 }
 
 // @ts-ignore
-const TabData = (data: Array<SysDept>, status: boolean) => {  //循环数据赋值
+const TabData = (data: Array<SysConfig>, status: boolean) => {  //循环数据赋值
     data.forEach((i) => {
         // @ts-ignore
         treeTableRef.value.toggleRowExpansion(i, status)
@@ -283,7 +284,7 @@ const TabData = (data: Array<SysDept>, status: boolean) => {  //循环数据赋�
 }
 
 // @ts-ignore
-const forArr = (arr: Array<SysDept>, status: boolean) => {     //关闭展开逻辑
+const forArr = (arr: Array<SysConfig>, status: boolean) => {     //关闭展开逻辑
     arr.forEach((i) => {
         // @ts-ignore
 
@@ -302,15 +303,15 @@ const toggleExpansion = () => {   //展开
 
 const handleInsert = (id: string = "0", formEl?: FormInstance | undefined) => {
     state.open = true;
-    state.title = "新增角色"
+    state.title = "新增系统配置"
     resetFormRule(formEl);// 清空表单
     loadSimpleList();
     state.form.parentId = id
 }
 
-const handleRemove = (row: SysDept) => {
-    confirms.confirm(`您是否删除当前部门:${row.deptName}信息???`).then(res => {
-        removeSysDept(row.id).then(res => {
+const handleRemove = (row: SysConfig) => {
+    confirms.confirm(`您是否删除当前配置:${row.configName}信息???`).then(res => {
+        removeSysConfig(row.id).then(res => {
             loadList();
             if (res.data.error) notify.error("系统提示", res.data.error, true, true)
             else notify.success("系统提示", res.data.success, true, true)
@@ -325,7 +326,7 @@ const handleUpdate = (id: string, formEl: FormInstance | undefined) => {
     state.open = true;
     state.title = "更新角色"
     loadSimpleList();
-    getSysDeptById(id).then(res => {
+    getSysConfigById(id).then(res => {
         resetFormRule(formEl);// 清空表单
         Object.assign(state.form, res.data)
     }).catch(e => {
@@ -346,7 +347,7 @@ const submit = () => {
             return
         }
         if (state.form.id) {
-            updateSysDept(state.form).then(res => {
+            updateSysConfig(state.form).then(res => {
                 messages.success(res.msg)
                 state.open = false;
                 loadList()
@@ -357,7 +358,7 @@ const submit = () => {
                 // state.open = false;
             })
         } else {
-            insertSysDept(state.form).then(res => {
+            insertSysConfig(state.form).then(res => {
                 messages.success(res.msg)
                 state.open = false;
                 loadList();
@@ -379,14 +380,11 @@ const resetFormRule = (formEl?: FormInstance | undefined) => {
     Object.assign(state.form, {
         id: "",
         parentId: null,
-        deptName: '',
-        email: '',
-        phoneNumber: '',
-        leader: '',
-        status: '0',
-        remark: '',
-        sortValue: 0,
-
+        configName: "",
+        configKey: "",
+        configValue: "",
+        configType: "",
+        sortValue: 0
     })
     if (!formEl) return
     formEl.resetFields()

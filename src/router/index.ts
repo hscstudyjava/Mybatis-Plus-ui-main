@@ -60,9 +60,14 @@ const router = createRouter({
         meta:{title:'权限信息',icon:'role'}
       },  {
         path:'dept',
-        name:'deptt',
+        name:'dept',
         component:()=>import('@/views/system/dept/index.vue'),
         meta:{title:'部门信息',icon:'dept'}
+      }, {
+        path:'config',
+        name:'config',
+        component:()=>import('@/views/system/config/index.vue'),
+        meta:{title:'配置信息',icon:'config'}
       },
 
       ]

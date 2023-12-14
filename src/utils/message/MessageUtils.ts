@@ -92,7 +92,7 @@ export const notify = {
             {
                 title: title,
                 message: context,
-                type: 'error',
+                type: 'warn',
                 showClose: showClose,
                 dangerouslyUseHTMLString: hasHtml
             }
