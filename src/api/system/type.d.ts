@@ -201,7 +201,7 @@ export interface SysDept extends BaseEnity, SimpleTree<SysDept> {
 
     status: string
 
-    sortValue:number
+    sortValue: number
 }
 
 
@@ -215,5 +215,53 @@ export interface SysConfig extends BaseEnity, SimpleTree<SysConfig> {
 
     configType: string
 
-    sortValue:number
+    sortValue: number
+}
+
+
+/**
+ * 
+ */
+export interface SysNoticeTemplate extends BaseEnity {
+    /**
+        * 通知消息主键
+        */
+
+
+
+    templateTitle: string,
+
+    /**
+     * 模板内容
+     */
+    templateContext: string
+
+    /**
+     * 模板编码
+     */
+    templateCode: string
+
+    /**
+     * 详情可见字典数据
+     */
+    templateType: string
+
+    /**
+     * 发送人员名称
+     */
+    nickName: string
+
+    /**
+     * 模板参数数组
+     */
+    templateParams: string | Array<string>,
+
+    /**
+     * 状态
+     */
+    status: String
+
+    remark: string
+
+
 }

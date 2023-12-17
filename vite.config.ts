@@ -37,7 +37,7 @@ export default defineConfig({
 
             imports: ['vue', 'vue-router'],
 
-            
+
         }),
         Components({
             resolvers: [
@@ -57,5 +57,17 @@ export default defineConfig({
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url))
         }
-    }
+    },
+    // ...其他配置项
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks(id) {
+                    if (id.includes('index.html')) {
+                        return 'index';
+                    }
+                },
+            },
+        },
+    },
 })

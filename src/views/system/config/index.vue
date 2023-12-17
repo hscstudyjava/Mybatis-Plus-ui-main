@@ -1,98 +1,101 @@
 <template>
     <div class="app-context">
 
-        <!-- 表单 -->
-        <el-form :inline="true" :model="state.params" class="demo-form-inline" @submit.native.prevent>
-            <el-form-item label="配置名称">
-                <el-input v-model="state.params.configName" placeholder="请输入配置名称" @keyup.enter.native="loadList"
-                    clearable />
-            </el-form-item>
+        <el-card>
+            <!-- 表单 -->
+            <el-form :inline="true" :model="state.params" class="demo-form-inline" @submit.native.prevent>
+                <el-form-item label="配置名称">
+                    <el-input v-model="state.params.configName" placeholder="请输入配置名称" @keyup.enter.native="loadList"
+                        clearable />
+                </el-form-item>
 
-            <el-form-item label="配置字符">
-                <el-input v-model="state.params.configKey" placeholder="请输入配置字符" @keyup.enter.native="loadList" clearable />
-            </el-form-item>
+                <el-form-item label="配置字符">
+                    <el-input v-model="state.params.configKey" placeholder="请输入配置字符" @keyup.enter.native="loadList"
+                        clearable />
+                </el-form-item>
 
-            <el-form-item>
-                <el-button type="primary" @click="loadList">查询</el-button>
-                <el-button @click="resetQuery">重置</el-button>
-            </el-form-item>
-        </el-form>
+                <el-form-item>
+                    <el-button type="primary" @click="loadList">查询</el-button>
+                    <el-button @click="resetQuery">重置</el-button>
+                </el-form-item>
+            </el-form>
 
-        <!-- 表单数组 -->
-        <el-row :gutter="10" class="mb8">
-            <el-col :span="1.5" v-peri="[basePeri + 'save']">
-                <!-- @click="handleInsert(ruleFormRef)" -->
-                <el-button type="success" plain @click="handleInsert()">
-                    <template #icon>
-                        <el-icon>
-                            <i-ep-Plus />
-                        </el-icon>
-                    </template>
-                    新增
-                </el-button>
-            </el-col>
-
-            <el-col :span="1.5">
-                <el-button type="warning" plain @click="toggleExpansion()">
-                    <template #icon>
-                        <i-ep-Switch />
-                    </template>
-                    {{ state.expandAll ? "关闭" : "展开" }}
-                </el-button>
-            </el-col>
-
-            <el-col>
-                <rightQuery :query="state.showQuery" @toggleQuery="toggleQuery" @refresh="loadList" />
-            </el-col>
-        </el-row>
-
-        <el-table ref="treeTableRef" stripe border :data="state.list" style="width: 100%" row-key="id" lazy
-            :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
-            <el-table-column prop="configName" show-overflow-tooltip align="center" label="配置名称" />
-            <el-table-column prop="configKey" show-overflow-tooltip align="center" label="配置字符" />
-            <el-table-column prop="configValue" show-overflow-tooltip align="center" label="配置数据" />
-            <el-table-column prop="configType" show-overflow-tooltip align="center" label="配置类型" />
-            <el-table-column show-overflow-tooltip align="center" label="创建时间">
-                <template #default="scope">
-                    {{ parseTime(scope.row.createTime) }}
-                </template>
-            </el-table-column>
-            <el-table-column label="操作" align="center" width="200px">
-                <template #default="socpe">
-                    <el-button link v-peri="[`${basePeri}save`]" type="success"
-                        @click="handleInsert(socpe.row.id, ruleFormRef)">
+            <!-- 表单数组 -->
+            <el-row :gutter="10" class="mb8">
+                <el-col :span="1.5" v-peri="[basePeri + 'save']">
+                    <!-- @click="handleInsert(ruleFormRef)" -->
+                    <el-button type="success" plain @click="handleInsert()">
                         <template #icon>
                             <el-icon>
-                                <i-ep-plus />
+                                <i-ep-Plus />
                             </el-icon>
                         </template>
                         新增
                     </el-button>
+                </el-col>
 
-                    <el-button link v-peri="[`${basePeri}update`]" @click="handleUpdate(socpe.row.id, ruleFormRef)"
-                        type="primary">
+                <el-col :span="1.5">
+                    <el-button type="warning" plain @click="toggleExpansion()">
                         <template #icon>
-                            <el-icon>
-                                <i-ep-Edit />
-                            </el-icon>
+                            <i-ep-Switch />
                         </template>
-                        更新
+                        {{ state.expandAll ? "关闭" : "展开" }}
                     </el-button>
-                    <el-button link v-peri="[`${basePeri}remove`]" @click="handleRemove(socpe.row)" type="danger">
-                        <template #icon>
-                            <el-icon>
-                                <i-ep-delete />
-                            </el-icon>
-                        </template>
-                        更新
-                    </el-button>
+                </el-col>
 
-                </template>
-            </el-table-column>
-        </el-table>
+                    <rightQuery :query="state.showQuery" @toggleQuery="toggleQuery" @refresh="loadList" />
+            </el-row>
+        </el-card>
+
+        <el-card class="mt-10">
+            <el-table ref="treeTableRef" stripe border :data="state.list" style="width: 100%" row-key="id" lazy
+                :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
+                <el-table-column prop="configName" show-overflow-tooltip align="center" label="配置名称" />
+                <el-table-column prop="configKey" show-overflow-tooltip align="center" label="配置字符" />
+                <el-table-column prop="configValue" show-overflow-tooltip align="center" label="配置数据" />
+                <el-table-column prop="configType" show-overflow-tooltip align="center" label="配置类型" />
+                <el-table-column show-overflow-tooltip align="center" label="创建时间">
+                    <template #default="scope">
+                        {{ parseTime(scope.row.createTime) }}
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" align="center" width="200px">
+                    <template #default="socpe">
+                        <el-button link v-peri="[`${basePeri}save`]" type="success"
+                            @click="handleInsert(socpe.row.id, ruleFormRef)">
+                            <template #icon>
+                                <el-icon>
+                                    <i-ep-plus />
+                                </el-icon>
+                            </template>
+                            新增
+                        </el-button>
+
+                        <el-button link v-peri="[`${basePeri}update`]" @click="handleUpdate(socpe.row.id, ruleFormRef)"
+                            type="primary">
+                            <template #icon>
+                                <el-icon>
+                                    <i-ep-Edit />
+                                </el-icon>
+                            </template>
+                            更新
+                        </el-button>
+                        <el-button link v-peri="[`${basePeri}remove`]" @click="handleRemove(socpe.row)" type="danger">
+                            <template #icon>
+                                <el-icon>
+                                    <i-ep-delete />
+                                </el-icon>
+                            </template>
+                            更新
+                        </el-button>
+
+                    </template>
+                </el-table-column>
+            </el-table>
+        </el-card>
 
         <!--新增OR更新 -->
-        <el-dialog v-model="state.open" :title="state.title" width="50%">
+        <el-dialog v-model="state.open" :title="state.title" width="50%" draggable>
             <el-form :model="state.form" :rules="rules" ref="ruleFormRef" status-icon label-width="100px">
                 <el-row>
                     <el-col :span="24">
@@ -324,7 +327,7 @@ const handleRemove = (row: SysConfig) => {
 
 const handleUpdate = (id: string, formEl: FormInstance | undefined) => {
     state.open = true;
-    state.title = "更新角色"
+    state.title = "更新系统配置"
     loadSimpleList();
     getSysConfigById(id).then(res => {
         resetFormRule(formEl);// 清空表单

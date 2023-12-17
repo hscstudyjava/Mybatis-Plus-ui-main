@@ -5,8 +5,10 @@ import 'nprogress/nprogress.css' // progress bar style
 import router from './router'
 import { getAccessToken, removeAccessToken } from './utils/cache/auth'
 import { useUserStore } from '@/stores/user'
+import { useSettingStore } from '@/stores/setting'
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
-
+import { useTitle } from '@vueuse/core'
+const title = useTitle()
 let whiteList = [
     "/login"
 ]
@@ -16,6 +18,8 @@ let whiteList = [
 // 路由权限
 router.beforeEach((to, from, next) => {
     const userStore = useUserStore()
+    const useSetting = useSettingStore()
+    title.value = dynamicTitle(useSetting.title, useSetting.dynamicTitle, to.meta.title as string)
 
     NProgress.start();
 
@@ -48,6 +52,16 @@ router.beforeEach((to, from, next) => {
     }
 
 })
+
+/**
+ * 
+ * @param routerTitle 路由标题
+ * @param systemTitle 系统标题
+ */
+const dynamicTitle = (systemTitle: string, dynamicType: boolean, routerTitle?: any): string => {
+    if (dynamicType) return `${systemTitle}-${routerTitle}`
+    return systemTitle;
+}
 
 // 
 router.afterEach(() => {

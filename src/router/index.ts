@@ -4,6 +4,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import login from '@/views/login.vue';
 // @ts-ignore
 import Layout from '@/layout/index.vue'
+import ParentView from '@/components/ParentView/index.vue'
 // @ts-ignore
 import NotFound from '@/views/NotFound/index.vue';
 const router = createRouter({
@@ -17,7 +18,7 @@ const router = createRouter({
     {
       path: '/404',
       name: '404',
-      component:NotFound,
+      component: NotFound,
     },
     {
       path: '/',
@@ -54,20 +55,41 @@ const router = createRouter({
         meta: { title: '角色信息', icon: 'role' }
       },
       {
-        path:'permisson',
-        name:'permission',
-        component:()=>import('@/views/system/permission/index.vue'),
-        meta:{title:'权限信息',icon:'role'}
-      },  {
-        path:'dept',
-        name:'dept',
-        component:()=>import('@/views/system/dept/index.vue'),
-        meta:{title:'部门信息',icon:'dept'}
+        path: 'permisson',
+        name: 'permission',
+        component: () => import('@/views/system/permission/index.vue'),
+        meta: { title: '权限信息', icon: 'role' }
       }, {
-        path:'config',
-        name:'config',
-        component:()=>import('@/views/system/config/index.vue'),
-        meta:{title:'配置信息',icon:'config'}
+        path: 'dept',
+        name: 'dept',
+        component: () => import('@/views/system/dept/index.vue'),
+        meta: { title: '部门信息', icon: 'dept' }
+      },
+      {
+        path: 'config',
+        name: 'config',
+        component: () => import('@/views/system/config/index.vue'),
+        meta: { title: '配置信息', icon: 'config' }
+      },
+      {
+        path: 'notice',
+        name: 'notice',
+        component: ParentView,
+        meta: { title: '信息管理', icon: 'config' },
+        children: [
+          {
+            path: 'template',
+            name: 'template',
+            component: () => import('@/views/system/notice/template/index.vue'),
+            meta: { title: '模板管理', icon: 'config' }
+          },  
+          {
+            path: 'log',
+            name: 'log',
+            component: () => import('@/views/system/notice/template/log.vue'),
+            meta: { title: '消息记录', icon: 'config' }
+          },
+        ]
       },
 
       ]

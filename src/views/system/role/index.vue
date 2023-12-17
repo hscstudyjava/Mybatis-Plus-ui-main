@@ -1,89 +1,45 @@
 
 <template>
     <div class="app-context">
-        <!-- 表单 -->
-        <el-form :inline="true" :model="params" class="demo-form-inline" @submit.native.prevent>
-            <el-form-item label="角色名称">
-                <el-input v-model="params.roleName" placeholder="请输入角色名称" @keyup.enter.native="queryPage" clearable />
-            </el-form-item>
+        <el-card>
 
-            <el-form-item label="角色字符">
-                <el-input v-model="params.roleKey" placeholder="请输入角色字符" @keyup.enter.native="queryPage" clearable />
-            </el-form-item>
+            <!-- 表单 -->
+            <el-form :inline="true" :model="params" class="demo-form-inline" @submit.native.prevent>
+                <el-form-item label="角色名称">
+                    <el-input v-model="params.roleName" placeholder="请输入角色名称" @keyup.enter.native="queryPage" clearable />
+                </el-form-item>
 
-            <!--  <el-form-item label="删除状态">
+                <el-form-item label="角色字符">
+                    <el-input v-model="params.roleKey" placeholder="请输入角色字符" @keyup.enter.native="queryPage" clearable />
+                </el-form-item>
+
+                <!--  <el-form-item label="删除状态">
                 <el-switch v-model="params.isDeleted" active-value="1" inactive-value="0" class="ml-2" @change="queryPage"
                     style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949" />
             </el-form-item> -->
 
-            <el-form-item>
-                <el-button type="primary" @click="queryPage">查询</el-button>
-                <el-button @click="resetQuery">重置</el-button>
-            </el-form-item>
-        </el-form>
+                <el-form-item>
+                    <el-button type="primary" @click="queryPage">查询</el-button>
+                    <el-button @click="resetQuery">重置</el-button>
+                </el-form-item>
+            </el-form>
 
-        <!-- 表单数组 -->
-        <el-row :gutter="10" class="mb8">
+            <!-- 表单数组 -->
+            <el-row :gutter="10" class="mb8">
 
-            <el-col :span="1.5" v-peri="['system:role:save']">
-                <el-button type="success" plain @click="handleInsert(ruleFormRef)">
-                    <template #icon>
-                        <el-icon>
-                            <i-ep-Plus />
-                        </el-icon>
-                    </template>
-                    新增
-                </el-button>
-            </el-col>
+                <el-col :span="1.5" v-peri="['system:role:save']">
+                    <el-button type="success" plain @click="handleInsert(ruleFormRef)">
+                        <template #icon>
+                            <el-icon>
+                                <i-ep-Plus />
+                            </el-icon>
+                        </template>
+                        新增
+                    </el-button>
+                </el-col>
 
-            <el-col :span="1.5" v-peri="['system:role:update']">
-                <el-button type="primary" plain :disabled="selectObj.single" @click="hadnleUpdate(undefined)">
-                    <template #icon>
-                        <el-icon>
-                            <i-ep-Edit />
-                        </el-icon>
-                    </template>
-                    更新
-                </el-button>
-            </el-col>
-
-            <el-col :span="1.5" v-peri="['system:role:remove']">
-                <el-button type="danger" :disabled="selectObj.multiple" @click="removeRole()" plain>
-                    <template #icon>
-                        <i-ep-delete />
-                    </template>
-                    删除
-                </el-button>
-            </el-col>
-
-            <el-col :span="1.5" v-peri="['system:role:download']">
-                <el-button type="warning" plain>
-                    <template #icon>
-                        <i-ep-Download />
-                    </template>
-                    下载</el-button>
-            </el-col>
-
-        </el-row>
-
-
-        <!-- 表格 -->
-        <el-table :data="objList.records"
-        row-key="roleId"
-        v-loading="loading" stripe @selection-change="handleSelectionChange"
-            style="width: 100%">
-            <el-table-column type="selection" width="55" align="center" />
-            <el-table-column prop="roleId" label="ID" align="center" />
-            <el-table-column prop="roleName" label="角色名称" align="center" />
-            <el-table-column prop="roleKey" label="角色字符" align="center" />
-            <el-table-column prop="createTime" label="创建时间" align="center" />
-            <el-table-column prop="updateTime" label="更新时间" align="center" />
-            <el-table-column prop="status" label="角色状态" align="center" />
-            <el-table-column label="操作" align="center">
-                <template #default="scope">
-                    <el-button link v-peri="['system:role:update']"
-                        type="primary"  
-                        @click="hadnleUpdate(scope.row.roleId)">
+                <el-col :span="1.5" v-peri="['system:role:update']">
+                    <el-button type="primary" plain :disabled="selectObj.single" @click="hadnleUpdate(undefined)">
                         <template #icon>
                             <el-icon>
                                 <i-ep-Edit />
@@ -91,24 +47,70 @@
                         </template>
                         更新
                     </el-button>
+                </el-col>
 
-                    <el-button link
-                    type="danger"  
-                    v-peri="['system:role:remove']" @click="removeRole(scope.row)" >
+                <el-col :span="1.5" v-peri="['system:role:remove']">
+                    <el-button type="danger" :disabled="selectObj.multiple" @click="removeRole()" plain>
                         <template #icon>
                             <i-ep-delete />
                         </template>
                         删除
                     </el-button>
-                </template>
-            </el-table-column>
-        </el-table>
+                </el-col>
 
-        <!-- 分页 -->
-        <!-- <Paginations :limit.sync="params.pageSize" :pageNum.sync="params.pageNumer" :total="objList.totalRow" @paginations="queryPage"> -->
-        <Paginations v-show="objList.totalRow > 0" :limit="params.pageSize" :pageNum="params.pageNumber"
-            :total="objList.totalRow" @paginations="queryPage">
-        </Paginations>
+                <el-col :span="1.5" v-peri="['system:role:download']">
+                    <el-button type="warning" plain>
+                        <template #icon>
+                            <i-ep-Download />
+                        </template>
+                        下载</el-button>
+                </el-col>
+
+            </el-row>
+        </el-card>
+
+
+        <el-card class="mt-10">
+            <!-- 表格 -->
+            <el-table :data="objList.records" row-key="roleId" v-loading="loading" stripe
+                @selection-change="handleSelectionChange" style="width: 100%">
+                <el-table-column type="selection" width="55" align="center" />
+                <el-table-column prop="roleId" label="ID" align="center" />
+                <el-table-column prop="roleName" label="角色名称" align="center" />
+                <el-table-column prop="roleKey" label="角色字符" align="center" />
+                <el-table-column prop="createTime" label="创建时间" align="center" />
+                <el-table-column prop="updateTime" label="更新时间" align="center" />
+                <el-table-column prop="status" label="角色状态" align="center" />
+                <el-table-column label="操作" align="center">
+                    <template #default="scope">
+                        <el-button link v-peri="['system:role:update']" type="primary"
+                            @click="hadnleUpdate(scope.row.roleId)">
+                            <template #icon>
+                                <el-icon>
+                                    <i-ep-Edit />
+                                </el-icon>
+                            </template>
+                            更新
+                        </el-button>
+
+                        <el-button link type="danger" v-peri="['system:role:remove']" @click="removeRole(scope.row)">
+                            <template #icon>
+                                <i-ep-delete />
+                            </template>
+                            删除
+                        </el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+            <!-- 分页 -->
+            <!-- <Paginations :limit.sync="params.pageSize" :pageNum.sync="params.pageNumer" :total="objList.totalRow" @paginations="queryPage"> -->
+            <Paginations v-show="objList.totalRow > 0" :limit="params.pageSize" :pageNum="params.pageNumber"
+                :total="objList.totalRow" @paginations="queryPage">
+            </Paginations>
+        </el-card>
+
+
 
         <!-- 弹窗 -->
         <el-dialog v-model="openDialog" :title="title" :close-on-click-modal="false" :draggable="true" :align-center="true"
@@ -259,7 +261,7 @@ const handleSelectionChange = (rows?: SysRole[]) => {
 const queryPage = (value?: any) => {
     // 重新修改后
     if (value != null) {
-        Object.assign(params,value)
+        Object.assign(params, value)
     }
     loading.value = true
     queryRolePage(params).then(res => {

@@ -1,99 +1,103 @@
 <template>
     <div class="app-context">
 
-        <!-- 表单 -->
-        <el-form :inline="true" :model="state.params" class="demo-form-inline" @submit.native.prevent>
-            <el-form-item label="部门名称">
-                <el-input v-model="state.params.deptName" placeholder="请输入部门名称" @keyup.enter.native="loadList" clearable />
-            </el-form-item>
+        <el-card>
+            <!-- 表单 -->
+            <el-form :inline="true" :model="state.params" class="demo-form-inline" @submit.native.prevent>
+                <el-form-item label="部门名称">
+                    <el-input v-model="state.params.deptName" placeholder="请输入部门名称" @keyup.enter.native="loadList"
+                        clearable />
+                </el-form-item>
 
-            <el-form-item label="部门缩写">
-                <el-input v-model="state.params.simpleChinesePinyin" placeholder="请输入部门缩写" @keyup.enter.native="loadList"
-                    clearable />
-            </el-form-item>
+                <el-form-item label="部门缩写">
+                    <el-input v-model="state.params.simpleChinesePinyin" placeholder="请输入部门缩写"
+                        @keyup.enter.native="loadList" clearable />
+                </el-form-item>
 
-            <!--  <el-form-item label="删除状态">
+                <!--  <el-form-item label="删除状态">
                 <el-switch v-model="params.isDeleted" active-value="1" inactive-value="0" class="ml-2" @change="queryPage"
                     style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949" />
             </el-form-item> -->
 
-            <el-form-item>
-                <el-button type="primary" @click="loadList">查询</el-button>
-                <el-button @click="resetQuery">重置</el-button>
-            </el-form-item>
-        </el-form>
+                <el-form-item>
+                    <el-button type="primary" @click="loadList">查询</el-button>
+                    <el-button @click="resetQuery">重置</el-button>
+                </el-form-item>
+            </el-form>
 
-        <!-- 表单数组 -->
-        <el-row :gutter="10" class="mb8">
-            <el-col :span="1.5" v-peri="[basePeri + 'save']">
-                <!-- @click="handleInsert(ruleFormRef)" -->
-                <el-button type="success" plain @click="handleInsert()">
-                    <template #icon>
-                        <el-icon>
-                            <i-ep-Plus />
-                        </el-icon>
-                    </template>
-                    新增
-                </el-button>
-            </el-col>
-
-            <el-col :span="1.5">
-                <el-button type="warning" plain @click="toggleExpansion()">
-                    <template #icon>
-                        <i-ep-Switch />
-                    </template>
-                    {{ state.expandAll ? "关闭" : "展开" }}
-                </el-button>
-            </el-col>
-
-            <el-col>
-                <rightQuery :query="state.showQuery" @toggleQuery="toggleQuery" @refresh="loadList" />
-            </el-col>
-        </el-row>
-
-        <el-table ref="treeTableRef" stripe border :data="state.list" style="width: 100%" row-key="id" lazy
-            :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
-            <el-table-column prop="deptName" show-overflow-tooltip align="center" label="部门名称" />
-            <el-table-column prop="leader" show-overflow-tooltip align="center" label="负责人" />
-            <el-table-column prop="phoneNumber" show-overflow-tooltip align="center" label="手机号码" />
-            <el-table-column prop="simpleChinesePinyin" align="center" show-overflow-tooltip label="缩写拼音" />
-            <el-table-column prop="email" align="center" show-overflow-tooltip label="邮箱" />
-            <el-table-column label="操作" align="center" width="200px">
-                <template #default="socpe">
-                    <el-button link v-peri="[`${basePeri}save`]" type="success"
-                        @click="handleInsert(socpe.row.id, ruleFormRef)">
+            <!-- 表单数组 -->
+            <el-row :gutter="10" class="mb8">
+                <el-col :span="1.5" v-peri="[basePeri + 'save']">
+                    <!-- @click="handleInsert(ruleFormRef)" -->
+                    <el-button type="success" plain @click="handleInsert()">
                         <template #icon>
                             <el-icon>
-                                <i-ep-plus />
+                                <i-ep-Plus />
                             </el-icon>
                         </template>
                         新增
                     </el-button>
+                </el-col>
 
-                    <el-button link v-peri="[`${basePeri}update`]" @click="handleUpdate(socpe.row.id, ruleFormRef)"
-                        type="primary">
+                <el-col :span="1.5">
+                    <el-button type="warning" plain @click="toggleExpansion()">
                         <template #icon>
-                            <el-icon>
-                                <i-ep-Edit />
-                            </el-icon>
+                            <i-ep-Switch />
                         </template>
-                        更新
+                        {{ state.expandAll ? "关闭" : "展开" }}
                     </el-button>
-                    <el-button link v-peri="[`${basePeri}remove`]" @click="handleRemove(socpe.row)" type="danger">
-                        <template #icon>
-                            <el-icon>
-                                <i-ep-delete />
-                            </el-icon>
-                        </template>
-                        更新
-                    </el-button>
+                </el-col>
 
-                </template>
-            </el-table-column>
-        </el-table>
+                    <rightQuery :query="state.showQuery" @toggleQuery="toggleQuery" @refresh="loadList" />
+            </el-row>
+        </el-card>
 
+        <el-card class="mt-10">
+
+            <el-table ref="treeTableRef" stripe border :data="state.list" style="width: 100%" row-key="id" lazy
+                :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
+                <el-table-column prop="deptName" show-overflow-tooltip align="center" label="部门名称" />
+                <el-table-column prop="leader" show-overflow-tooltip align="center" label="负责人" />
+                <el-table-column prop="phoneNumber" show-overflow-tooltip align="center" label="手机号码" />
+                <el-table-column prop="simpleChinesePinyin" align="center" show-overflow-tooltip label="缩写拼音" />
+                <el-table-column prop="email" align="center" show-overflow-tooltip label="邮箱" />
+                <el-table-column label="操作" align="center" width="200px">
+                    <template #default="socpe">
+                        <el-button link v-peri="[`${basePeri}save`]" type="success"
+                            @click="handleInsert(socpe.row.id, ruleFormRef)">
+                            <template #icon>
+                                <el-icon>
+                                    <i-ep-plus />
+                                </el-icon>
+                            </template>
+                            新增
+                        </el-button>
+
+                        <el-button link v-peri="[`${basePeri}update`]" @click="handleUpdate(socpe.row.id, ruleFormRef)"
+                            type="primary">
+                            <template #icon>
+                                <el-icon>
+                                    <i-ep-Edit />
+                                </el-icon>
+                            </template>
+                            更新
+                        </el-button>
+                        <el-button link v-peri="[`${basePeri}remove`]" @click="handleRemove(socpe.row)" type="danger">
+                            <template #icon>
+                                <el-icon>
+                                    <i-ep-delete />
+                                </el-icon>
+                            </template>
+                            更新
+                        </el-button>
+
+                    </template>
+                </el-table-column>
+            </el-table>
+
+        </el-card>
         <!--新增OR更新 -->
-        <el-dialog v-model="state.open" :title="state.title" width="50%">
+        <el-dialog v-model="state.open" :title="state.title" width="50%" draggable>
             <el-form :model="state.form" :rules="rules" ref="ruleFormRef" status-icon label-width="100px">
                 <el-row>
                     <el-col :span="24">
@@ -126,8 +130,8 @@
                     </el-col>
                     <el-col :span=12>
                         <el-form-item prop="sortValue" label="邮箱">
-                            <el-input-number style="width: 100%;" :min="1" :max="10000" size="small" controls-position="right"
-                                v-model="state.form.sortValue" placeholder="请填写部门邮箱" clearable />
+                            <el-input-number style="width: 100%;" :min="1" :max="10000" size="small"
+                                controls-position="right" v-model="state.form.sortValue" placeholder="请填写部门邮箱" clearable />
                         </el-form-item>
                     </el-col>
 
@@ -169,7 +173,7 @@
 
 <script  setup lang="ts" >
 import { selectSysDeptList, selectSysDeptSimpleList, insertSysDept, updateSysDept, getSysDeptById, removeSysDept, basePeri } from '@/api/system/dept';
-import{parseTime }from '@/utils/common'
+import { parseTime } from '@/utils/common'
 
 import type { SimpleTree, SysDept } from '@/api/system/type';
 import { confirms, messages, notify } from '@/utils/message/MessageUtils';

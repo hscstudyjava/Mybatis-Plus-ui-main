@@ -1,15 +1,16 @@
 import { LayoutThemeEnum } from "../constants/SystemConstants"
 
 export interface SettingInterface {
+    title: string,
     /**
      * 侧边栏主题 深色主题theme-dark，浅色主题theme-light
      */
-    sideTheme: String,
+    sideTheme: string,
 
     /**
      * 侧边栏颜色
      */
-    themeColor:string,
+    themeColor: string,
     /**
      * 是否系统布局配置
      */
@@ -43,12 +44,12 @@ export interface SettingInterface {
     /**
      * 是否显示水印
      */
-    watermark:boolean,
+    watermark: boolean,
 
     /**
      * 水印内容
      */
-    watermarkContext:string,
+    watermarkContext: string,
 
     /**
      * @type {string | array} 'production' | ['production', 'development']
@@ -63,15 +64,19 @@ export interface SettingInterface {
  * 默认配置e
  */
 export const DefaultSetting: SettingInterface = {
+    /** 
+  * 系统标题
+  */
+    title: "芒星智慧管理平台",
     /**
  * 侧边栏主题 深色主题theme-dark，浅色主题theme-light
  */
-    sideTheme:LayoutThemeEnum.THEME_DARK,
+    sideTheme: LayoutThemeEnum.THEME_DARK,
 
-    /** 
-     * 
+    /**
+     *
      */
-    themeColor:'#409EFF',
+    themeColor: '#409EFF',
     /**
      * 是否系统布局配置
      */
@@ -100,7 +105,7 @@ export const DefaultSetting: SettingInterface = {
     /**
      * 是否显示动态标题
      */
-    dynamicTitle: false,
+    dynamicTitle: true,
 
     /**
      * @type {string | array} 'production' | ['production', 'development']
@@ -109,15 +114,16 @@ export const DefaultSetting: SettingInterface = {
      * If you want to also use it in dev, you can pass ['production', 'development']
      */
     errorLog: 'production',
-    
+
     /**
      * 是否显示水印
      */
-    watermark:true,
+    watermark: true,
 
     /**
      * 水印内容
      */
-    watermarkContext:"hsc",
+    watermarkContext: "hsc",
+
 }
 

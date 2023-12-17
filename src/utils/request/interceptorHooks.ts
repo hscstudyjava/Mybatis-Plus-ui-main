@@ -46,12 +46,12 @@ export const transform: InterceptorHooks = {
     const userStore = useUserStore()
 
     // 与后端约定的请求成功码
-    if (res.status !== 200) return Promise.reject(res)
+    if (res.status !== 200 ) return Promise.reject(res)
 
     if (res.data.code !== SuccessCode.SUCCESS) {
 
       if (res.config.requestOptions?.globalErrorMessage) {
-        // messages.error(res.data.msg);
+        messages.error(res.data.msg);
         // 这里全局提示错误
         console.error(res.data.msg)
       }
@@ -127,6 +127,8 @@ export const transform: InterceptorHooks = {
       mapErrorStatus.get(err.response.status) || '请求出错，请稍后再试'
     // 此处全局报错
     console.error(message)
+    messages.error(message);
+  
     return Promise.reject(err.response)
   },
 }

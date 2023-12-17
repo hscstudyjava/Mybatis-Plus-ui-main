@@ -3,127 +3,135 @@
         <el-row>
 
             <el-col :span="24">
-                <el-form v-show="state.showQuery" :inline="true" :model="state.params" class="demo-form-inline"
-                    @submit.native.prevent>
-                    <el-form-item label="菜单名称">
-                        <el-input v-model="state.params.permissionName" placeholder="请输入菜单名称" @keyup.enter.native="loadList"
-                            clearable />
-                    </el-form-item>
 
-                    <el-form-item label="角色字符">
-                        <el-input v-model="state.params.permissionValue" placeholder="请输入角色字符"
-                            @keyup.enter.native="loadList" clearable />
-                    </el-form-item>
+                <el-card class="box-card">
+                    <el-form v-show="state.showQuery" :inline="true" :model="state.params" class="demo-form-inline"
+                        @submit.native.prevent>
+                        <el-form-item label="菜单名称">
+                            <el-input v-model="state.params.permissionName" placeholder="请输入菜单名称"
+                                @keyup.enter.native="loadList" clearable />
+                        </el-form-item>
 
-                    <el-form-item>
-                        <el-button type="primary" @click="loadList">查询</el-button>
-                        <el-button @click="resetQuery">重置</el-button>
-                    </el-form-item>
-                </el-form>
-                <!-- 表单数组 -->
-                <el-row :gutter="10" class="mb8">
-                    <el-col :span="1.5" v-peri="[basePeri + 'save']">
-                        <!-- @click="handleInsert(ruleFormRef)" -->
-                        <el-button type="success" plain @click="handleSave('0')">
-                            <template #icon>
-                                <el-icon>
-                                    <i-ep-Plus />
-                                </el-icon>
-                            </template>
-                            新增
-                        </el-button>
-                    </el-col>
+                        <el-form-item label="角色字符">
+                            <el-input v-model="state.params.permissionValue" placeholder="请输入角色字符"
+                                @keyup.enter.native="loadList" clearable />
+                        </el-form-item>
 
-                    <el-col :span="1.5" >
-                        <el-button type="warning" plain @click="toggleExpansion()">
-                            <template #icon>
-                                <i-ep-Switch />
-                            </template>
-                            展开</el-button>
-                    </el-col>
-
-                    <el-col>
-                        <rightQuery :query="state.showQuery" @toggleQuery="toggleQuery" @refresh="loadList" />
-                    </el-col>
-                </el-row>
-
-                <el-table ref="treeTableRef" stripe border :data="state.list" style="width: 100%" row-key="id" lazy
-                    :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
-                    <el-table-column prop="permissionName" show-overflow-tooltip align="center" label="权限名称" />
-                    <el-table-column prop="permissionValue" show-overflow-tooltip align="center" label="权限字符" />
-                    <el-table-column prop="menuPath" show-overflow-tooltip align="center" label="跳转路径" />
-                    <el-table-column prop="menuComponent" align="center" show-overflow-tooltip label="菜单路径" />
-                    <el-table-column label="Icon" align="center">
-                        <template #default="scope">
-                            <svg-icon :iconClass="scope.row.menuIcon" />
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="权限类型" align="center">
-                        <template #default="scope">
-                            <el-tag v-if="scope.row.permissionType === 'P'" type="success">权限</el-tag>
-                            <el-tag v-else-if="scope.row.permissionType === 'M'" type="warning">路由</el-tag>
-                            <el-tag v-else>菜单</el-tag>
-                        </template>
-                    </el-table-column>
-
-                    <el-table-column label="操作" align="center" width="200px">
-                        <template #default="socpe">
-                            <el-button link v-peri="[`${basePeri}save`]" type="success" @click="handleSave(socpe.row.id)">
+                        <el-form-item>
+                            <el-button type="primary" @click="loadList">查询</el-button>
+                            <el-button @click="resetQuery">重置</el-button>
+                        </el-form-item>
+                    </el-form>
+                    <!-- 表单数组 -->
+                    <el-row :gutter="10" class="mb8">
+                        <el-col :span="1.5" v-peri="[basePeri + 'save']">
+                            <!-- @click="handleInsert(ruleFormRef)" -->
+                            <el-button type="success" plain @click="handleSave('0')">
                                 <template #icon>
                                     <el-icon>
-                                        <i-ep-plus />
+                                        <i-ep-Plus />
                                     </el-icon>
                                 </template>
                                 新增
                             </el-button>
+                        </el-col>
 
-                            <el-button link v-peri="[`${basePeri}update`]" @click="handleUpdate(socpe.row.id)"
-                                type="primary">
+                        <el-col :span="1.5">
+                            <el-button type="warning" plain @click="toggleExpansion()">
                                 <template #icon>
-                                    <el-icon>
-                                        <i-ep-Edit />
-                                    </el-icon>
+                                    <i-ep-Switch />
                                 </template>
-                                更新
-                            </el-button>
+                                展开</el-button>
+                        </el-col>
 
-                            <!-- 判断一下是否两个条件任意一个成立 -->
-                            <template v-if="socpe.row.permissionType === 'R' || socpe.row.children.length === 0">
-                                <el-dropdown @command="handleCommand($event, socpe.row)" teleported>
+                            <rightQuery :query="state.showQuery" @toggleQuery="toggleQuery" @refresh="loadList" />
+                    </el-row>
+                </el-card>
 
-                                    <el-button link>
-                                        更多
-                                    </el-button>
+                <el-card class="mt-10">
 
-                                    <template #dropdown>
-                                        <el-dropdown-menu>
-
-                                            <template v-peri="[`${basePeri}createPermission`]"
-                                                v-if="socpe.row.permissionType === 'R'">
-                                                <el-dropdown-item command="generation">一键生成</el-dropdown-item>
-                                            </template>
-
-
-                                            <template v-peri="[`${basePeri}remove`]" v-if="socpe.row.children.length === 0">
-                                                <el-dropdown-item command="remove">删除数据</el-dropdown-item>
-                                            </template>
-
-
-                                        </el-dropdown-menu>
-                                    </template>
-                                </el-dropdown>
+                    <el-table ref="treeTableRef" stripe border :data="state.list" style="width: 100%" row-key="id" lazy
+                        :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
+                        <el-table-column prop="permissionName" show-overflow-tooltip align="center" label="权限名称" />
+                        <el-table-column prop="permissionValue" show-overflow-tooltip align="center" label="权限字符" />
+                        <el-table-column prop="menuPath" show-overflow-tooltip align="center" label="跳转路径" />
+                        <el-table-column prop="menuComponent" align="center" show-overflow-tooltip label="菜单路径" />
+                        <el-table-column label="Icon" align="center">
+                            <template #default="scope">
+                                <svg-icon :iconClass="scope.row.menuIcon" />
                             </template>
+                        </el-table-column>
+                        <el-table-column label="权限类型" align="center">
+                            <template #default="scope">
+                                <el-tag v-if="scope.row.permissionType === 'P'" type="success">权限</el-tag>
+                                <el-tag v-else-if="scope.row.permissionType === 'M'" type="warning">路由</el-tag>
+                                <el-tag v-else>菜单</el-tag>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column label="操作" align="center" width="200px">
+                            <template #default="socpe">
+                                <el-button link v-peri="[`${basePeri}save`]" type="success"
+                                    @click="handleSave(socpe.row.id)">
+                                    <template #icon>
+                                        <el-icon>
+                                            <i-ep-plus />
+                                        </el-icon>
+                                    </template>
+                                    新增
+                                </el-button>
+
+                                <el-button link v-peri="[`${basePeri}update`]" @click="handleUpdate(socpe.row.id)"
+                                    type="primary">
+                                    <template #icon>
+                                        <el-icon>
+                                            <i-ep-Edit />
+                                        </el-icon>
+                                    </template>
+                                    更新
+                                </el-button>
+
+                                <!-- 判断一下是否两个条件任意一个成立 -->
+                                <template v-if="socpe.row.permissionType === 'R' || socpe.row.children.length === 0">
+                                    <el-dropdown @command="handleCommand($event, socpe.row)" teleported>
+
+                                        <el-button link>
+                                            更多
+                                        </el-button>
+
+                                        <template #dropdown>
+                                            <el-dropdown-menu>
+
+                                                <template v-peri="[`${basePeri}createPermission`]"
+                                                    v-if="socpe.row.permissionType === 'R'">
+                                                    <el-dropdown-item command="generation">一键生成</el-dropdown-item>
+                                                </template>
+
+
+                                                <template v-peri="[`${basePeri}remove`]"
+                                                    v-if="socpe.row.children.length === 0">
+                                                    <el-dropdown-item command="remove">删除数据</el-dropdown-item>
+                                                </template>
+
+
+                                            </el-dropdown-menu>
+                                        </template>
+                                    </el-dropdown>
+                                </template>
 
 
 
-                        </template>
-                    </el-table-column>
-                </el-table>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-card>
             </el-col>
         </el-row>
 
+
+
         <!--新增OR更新 -->
-        <el-dialog v-model="state.firstDialog.open" :title="state.firstDialog.title" width="50%">
+        <el-dialog v-model="state.firstDialog.open" :title="state.firstDialog.title" width="50%" draggable>
             <el-form :model="state.form" status-icon label-width="100px">
                 <el-row>
                     <el-col :span="24">
@@ -287,7 +295,7 @@
             </template>
         </el-dialog>
         <!-- 一键生成 -->
-        <el-dialog v-model="state.firstDialog.openGeneration" :title="state.firstDialog.title" width="50%">
+        <el-dialog v-model="state.firstDialog.openGeneration" :title="state.firstDialog.title" width="50%" draggable>
             <el-form :model="state.form" status-icon label-width="100px">
                 <el-form-item>
                     <template #label>
@@ -368,6 +376,8 @@ const state = reactive({
     expandAll: false,
 
     loading: false,
+
+    
 
     list: [] as SysPermisson[],
 
