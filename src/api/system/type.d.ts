@@ -226,9 +226,6 @@ export interface SysNoticeTemplate extends BaseEnity {
     /**
         * 通知消息主键
         */
-
-
-
     templateTitle: string,
 
     /**
@@ -261,7 +258,45 @@ export interface SysNoticeTemplate extends BaseEnity {
      */
     status: String
 
+    /**
+     * 备注
+     */
     remark: string
 
+
+}
+
+
+/** 
+ * 字典类型
+ */
+
+export interface SysDictType extends BaseEnity {
+
+    id: number | string,
+
+    title: string,
+
+    key: string,
+
+    type: string,
+
+
+    sortValue: number,
+
+    /**
+     * 状态
+     */
+    status: String
+
+    /**
+     * 备注
+     */
+    remark: string
+
+    /**
+     * 扩展参数
+     */
+    optionsParams: string | object,
 
 }

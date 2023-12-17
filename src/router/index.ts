@@ -72,6 +72,12 @@ const router = createRouter({
         meta: { title: '配置信息', icon: 'config' }
       },
       {
+        path: 'dict',
+        name: 'dict',
+        component: () => import('@/views/system/dict/type.vue'),
+        meta: { title: '字典管理', icon: 'config' }
+      },
+      {
         path: 'notice',
         name: 'notice',
         component: ParentView,
@@ -82,7 +88,7 @@ const router = createRouter({
             name: 'template',
             component: () => import('@/views/system/notice/template/index.vue'),
             meta: { title: '模板管理', icon: 'config' }
-          },  
+          },
           {
             path: 'log',
             name: 'log',
