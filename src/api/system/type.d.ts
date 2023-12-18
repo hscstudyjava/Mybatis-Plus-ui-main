@@ -300,3 +300,42 @@ export interface SysDictType extends BaseEnity {
     optionsParams: string | object,
 
 }
+
+export interface SysDictValue extends BaseEnity {
+
+    id: number | string,
+
+    typeId: number | string,
+
+    label: string,
+
+    key: string,
+
+    value: string,
+
+    icon: string,
+
+    btnClass: string,
+
+    customStyle: string,
+
+    hasDefault: string,
+
+    sortValue: number,
+
+    /**
+     * 状态
+     */
+    status: string
+
+    /**
+     * 备注
+     */
+    remark: string
+
+    /**
+     * 扩展参数
+     */
+    optionsParams: string | object,
+
+}

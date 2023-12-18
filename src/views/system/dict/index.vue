@@ -85,7 +85,7 @@
                         {{ parseTime(scope.row.createTime) }}
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" align="center">
+                <el-table-column label="操作" align="center" width="200px">
                     <template #default="scope">
                         <el-button link v-peri="[`${basePeri}update`]" type="primary"
                             @click="handleUpdate(scope.row.id, ruleFormRef)">
@@ -96,6 +96,10 @@
                             </template>
                             更新
                         </el-button>
+
+                        <router-link :to="'/system/dict/value/' + scope.row.id">
+                            <el-button link type="primary">数据</el-button>
+                        </router-link>
 
                         <el-button link type="danger" v-peri="[`${basePeri}:remove`]" @click="handleDelete(scope.row)">
                             <template #icon>
@@ -177,14 +181,15 @@ import {
     removeSysDictType,
     basePeri
 }
-    from '@/api/system/dict/type.ts';
+    from '@/api/system/dict/type';
 import { onMounted, reactive, ref } from 'vue';
 import type { SysDictType } from '@/api/system/type';
 import { confirms, messages, notify } from '@/utils/message/MessageUtils';
 import type { FormInstance, FormRules } from 'element-plus';
 import { parseTime } from '@/utils/common'
-const ruleFormRef = ref<FormInstance>()
-const rules = reactive<FormRules<typeof form>>({
+
+const ruleFormRef = ref()
+const rules = reactive({
     title: [
         { message: '字典标题必须填写', trigger: 'blur', required: true },
         { min: 2, max: 200, message: '字典标题长度 2 - 200之间', trigger: 'blur' }
@@ -241,6 +246,7 @@ const state = reactive({
 
 
 })
+
 
 const loadList = (value?: any) => {
     if (value != null) Object.assign(state.params, value)

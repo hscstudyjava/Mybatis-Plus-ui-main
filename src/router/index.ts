@@ -74,8 +74,23 @@ const router = createRouter({
       {
         path: 'dict',
         name: 'dict',
-        component: () => import('@/views/system/dict/type.vue'),
-        meta: { title: '字典管理', icon: 'config' }
+        component: ParentView,
+        meta: { title: '字典管理', icon: 'config' },
+        children: [
+          {
+            path: 'type',
+            name: 'type',
+            component: () => import('@/views/system/dict/index.vue'),
+            meta: { title: '字典类型', icon: 'config' },
+          },
+          {
+            path: 'value/:typeId(\\d+)',
+            name: 'value',
+            component: () => import('@/views/system/dict/value/index.vue'),
+            meta: { title: '字典数据', icon: 'config'},
+          },
+
+        ]
       },
       {
         path: 'notice',

@@ -1,19 +1,18 @@
 import { request } from "@/utils/request";
 import type { AjaxResult } from "@/utils/request/type";
-import type { Page, SysDictType } from "../type";
-import type { promises } from "dns";
+import type { Page, SysDictValue } from "../type";
 
 /**
  * 基础Url
  */
-const baseUrl = "/admin-api/system/dict-type/"
+const baseUrl = "/admin-api/system/dict-value/"
 
 /**
  * 基础权限
  */
-export const basePeri = "system:dict-type:"
+export const basePeri = "system:dict-value:"
 
-export function selectSysDictTypeList(params: any): Promise<AjaxResult<Page<SysDictType>>> {
+export function selectSysDictValueList(params: any): Promise<AjaxResult<Page<SysDictValue>>> {
     return request.get(
         baseUrl + 'page',
         {
@@ -22,13 +21,7 @@ export function selectSysDictTypeList(params: any): Promise<AjaxResult<Page<SysD
     )
 }
 
-export function selectSysDictTypeSimpleList(params:any):Promise<AjaxResult<Array<SysDictType>>>{
-    return request.get(
-        baseUrl+'simple-list'
-    )
-}
-
-export function insertSysDictType(data: SysDictType): Promise<AjaxResult<undefined>> {
+export function insertSysDictValue(data: SysDictValue): Promise<AjaxResult<undefined>> {
     return request.post(
         baseUrl,
         data,
@@ -40,7 +33,7 @@ export function insertSysDictType(data: SysDictType): Promise<AjaxResult<undefin
     )
 }
 
-export function updateSysDictType(data: SysDictType): Promise<AjaxResult<undefined>> {
+export function updateSysDictValue(data: SysDictValue): Promise<AjaxResult<undefined>> {
     return request.put(
         baseUrl,
         data,
@@ -52,7 +45,7 @@ export function updateSysDictType(data: SysDictType): Promise<AjaxResult<undefin
     )
 }
 
-export function getSysDictTypeId(id: string | number | []): Promise<AjaxResult<Array<SysDictType>>> {
+export function getSysDictValueId(id: string | number | []): Promise<AjaxResult<Array<SysDictValue>>> {
     return request.get(
         baseUrl + id,
         {
@@ -63,7 +56,7 @@ export function getSysDictTypeId(id: string | number | []): Promise<AjaxResult<A
     )
 }
 
-export function removeSysDictType(id: string | number | []): Promise<AjaxResult<any>> {
+export function removeSysDictValue(id: string | number | Array<number>): Promise<AjaxResult<any>> {
     return request.delete(
         baseUrl + id,
        
