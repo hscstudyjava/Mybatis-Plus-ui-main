@@ -45,7 +45,7 @@ export function updateSysDictValue(data: SysDictValue): Promise<AjaxResult<undef
     )
 }
 
-export function getSysDictValueId(id: string | number | []): Promise<AjaxResult<Array<SysDictValue>>> {
+export function getSysDictValueId(id: string | number | []): Promise<AjaxResult<SysDictValue>> {
     return request.get(
         baseUrl + id,
         {

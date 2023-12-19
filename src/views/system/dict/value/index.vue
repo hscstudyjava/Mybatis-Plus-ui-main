@@ -59,13 +59,25 @@
                 </el-col>
 
                 <el-col :span="1.5" v-peri="[basePeri + 'remove']">
-                    <el-button type="danger" :disabled="state.multiple" @click="handleDelete()" plain>
+                    <el-button type="danger" :disabled="state.multiple" @click="handleDelete(undefined)" plain>
                         <template #icon>
                             <i-ep-delete />
                         </template>
                         删除
                     </el-button>
                 </el-col>
+
+                <el-col :span="1.5" v-peri="[basePeri + 'remove']">
+                    <router-link to="/system/dict/type">
+                        <el-button type="info" plain>
+                            <template #icon>
+                                <i-ep-Back />
+                            </template>
+                            回退
+                        </el-button>
+                    </router-link>
+                </el-col>
+
 
                 <rightQuery style="float: right;" v-model:query="state.showQuery" @toggleQuery="toggleQuery"
                     @refresh="loadList" />
@@ -90,7 +102,7 @@
                 <el-table-column label="操作" align="center">
                     <template #default="scope">
                         <el-button link v-peri="[`${basePeri}update`]" type="primary"
-                            @click="openForm('update',scope.row.id)">
+                            @click="openForm('update', scope.row.id)">
                             <template #icon>
                                 <el-icon>
                                     <i-ep-Edit />
@@ -167,8 +179,8 @@ const state = reactive({
 const submitForm = ref();
 const openForm = (type: string, id?: number) => {
     var currentId = id
-    if(!state.single){
-        currentId=state.ids[0]
+    if (!state.single) {
+        currentId = state.ids[0]
     }
     submitForm.value.openDialog(type, currentId, state.params.typeId)
 }
@@ -183,11 +195,16 @@ const loadList = async () => {
         state.loading = false
     }
 }
-const handleDelete = async (row: SysDictValue) => {
+const handleDelete = async (row?: SysDictValue) => {
     try {
-        await confirms.confirm(`您确定这些数据${row.label === undefined ? row.label : state.ids}删除数据`)
-        const { msg } = await removeSysDictValue(row.id || state.ids)
-        messages.success(msg)
+        if (row) {
+            await confirms.confirm(`您确定这些字典数据(${row.label})删除数据`)
+            await removeSysDictValue(row.id)
+        } else {
+            await confirms.confirm(`您确定这些字典数据(${state.ids})删除数据`)
+            await removeSysDictValue(state.ids)
+        }
+        messages.success("删除成功")
         await loadList()
     } catch {
 

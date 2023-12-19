@@ -92,7 +92,7 @@ export const notify = {
             {
                 title: title,
                 message: context,
-                type: 'warn',
+                type: 'error',
                 showClose: showClose,
                 dangerouslyUseHTMLString: hasHtml
             }
@@ -109,13 +109,14 @@ export const confirms = {
     confirm(context: string, title?: string, type?: string, confirmButtonText?: string, cancelButtonText?: string)
         : Promise<MessageBoxData> {
         // @ts-ignore
-        return ElMessageBox.alert(
+        return ElMessageBox.confirm(
             context,
             title || '系统提示',
             {
-                cancelButtonText: cancelButtonText || '取消',
-                confirmButtonText: confirmButtonText || '确认',
                 type: type || "warning",
+                distinguishCancelAndClose: true,
+                confirmButtonText: confirmButtonText || "确认",
+                cancelButtonText: cancelButtonText || "取消",
             }
         )
     },

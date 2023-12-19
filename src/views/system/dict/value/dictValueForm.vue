@@ -97,7 +97,8 @@ const props = defineProps({
         type: Array as PropType<Array<SysDictType>>,
     },
     typeId: {
-        type: String as PropType<string>
+        type: String as PropType<string
+        >
     }
 })
 
@@ -110,7 +111,6 @@ const currentTypeId = computed({
     set(val) {
         emit('update:typeId', val)
     }
-
 })
 
 /** 
@@ -170,7 +170,7 @@ const ruleFormRef = ref()
 const resetForm = () => {
     Object.assign(form, {
         id: '',
-        typeId: '',
+        typeId: 0,
         label: '',
         key: '',
         value: '',
@@ -203,6 +203,7 @@ const openDialog = async (types: string, id?: number, typeId?: number) => {
             try {
                 const { data } = await getSysDictValueId(id)
                 Object.assign(form, data)
+                form.typeId = String(data.typeId)//解决数据无法回显问题
             } finally {
                 loading.value = false
             }
