@@ -345,7 +345,7 @@ export type SysDictSimpleResult={
 
     key: string,
 
-    value: string,
+    value: string|boolean|number,
 
     icon: string,
 
@@ -353,7 +353,7 @@ export type SysDictSimpleResult={
 
     customStyle: string,
 
-    hasDefault: string,
+    hasDefault: boolean,
 }
 
 export type SysGroupSimpleValueResult={

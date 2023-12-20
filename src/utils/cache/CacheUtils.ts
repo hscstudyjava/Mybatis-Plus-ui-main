@@ -8,7 +8,6 @@
 
 import Cookies from 'js-cookie'
 import WebStorageCache from 'web-storage-cache'
-import Storage from 'web-storage-cache'
 
 
 const sessionCache =
@@ -140,13 +139,11 @@ type CacheType = 'localStorage' | 'sessionStorage'
 /** 
  * 使用ws模式存储数据
  */
-const useWsStore = (type: CacheType = 'localStorage') => {
+export const useWsStore = (type: CacheType = 'localStorage') => {
     const wsCache: WebStorageCache = new WebStorageCache({
         storage: type
     })
-    return {
-        wsCache
-    }
+    return wsCache
 }
 
 
@@ -167,7 +164,6 @@ export default {
     /** 
      * 使用别人封装好ws_cache
      */
-    useWsStore,
     
 
 

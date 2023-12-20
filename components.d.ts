@@ -8,6 +8,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     Dialog: typeof import('./src/components/Dialog/src/Dialog.vue')['default']
+    DictTag: typeof import('./src/components/DictTag/index.vue')['default']
     ElBreadcrumb: typeof import('element-plus/es')['ElBreadcrumb']
     ElBreadcrumbItem: typeof import('element-plus/es')['ElBreadcrumbItem']
     ElButton: typeof import('element-plus/es')['ElButton']
@@ -65,6 +66,7 @@ declare module 'vue' {
     RightQuery: typeof import('./src/components/rightQuery/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    Src: typeof import('./src/components/DictTag/src/index.vue')['default']
     SvgIcon: typeof import('./src/components/svgIcon/index.vue')['default']
     UploadFiles: typeof import('./src/components/uploads/uploadFiles/index.vue')['default']
     UploadImages: typeof import('./src/components/uploads/uploadImages/index.vue')['default']

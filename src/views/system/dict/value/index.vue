@@ -1,5 +1,7 @@
 <template>
     <div class="app-context">
+
+
         <el-card class="box-card">
             <el-form ref="queryFrom" :inline="true" v-show="state.showQuery" :model="state.params" @submit.native.prevent>
 
@@ -94,6 +96,11 @@
                 <el-table-column label="字符" show-overflow-tooltip prop="key" align="center" />
                 <el-table-column label="排序" prop="sortValue" align="center" />
                 <el-table-column label="备注" show-overflow-tooltip prop="remark" align="center" />
+                <el-table-column label="状态" align="center">
+                    <template #default="scope">
+                        <DictTag :type="DICT_TYPE.COMMON_DATA_STATUS" :value="scope.row.status" ></DictTag>
+                    </template>
+                </el-table-column>
                 <el-table-column label="创建时间" align="center">
                     <template #default="scope">
                         {{ parseTime(scope.row.createTime) }}
@@ -132,6 +139,7 @@
 </template>
 
 <script setup lang="ts">
+import { DICT_TYPE, getIntDictOptions } from '@/utils/common/dict'
 import { selectSysDictValueList, basePeri, removeSysDictValue } from '@/api/system/dict/value';
 import type { SysDictValue, SysDictType } from '@/api/system/type';
 import { onMounted, reactive, ref } from 'vue';

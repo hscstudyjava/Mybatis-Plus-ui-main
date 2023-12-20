@@ -6,6 +6,7 @@ import router from './router'
 import { getAccessToken, removeAccessToken } from './utils/cache/auth'
 import { useUserStore } from '@/stores/user'
 import { useSettingStore } from '@/stores/setting'
+import {useDictStore} from '@/stores/dict'
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 import { useTitle } from '@vueuse/core'
 const title = useTitle()
@@ -19,8 +20,13 @@ let whiteList = [
 router.beforeEach((to, from, next) => {
     const userStore = useUserStore()
     const useSetting = useSettingStore()
+    const userDict=useDictStore()
     title.value = dynamicTitle(useSetting.title, useSetting.dynamicTitle, to.meta.title as string)
 
+    if(!userDict.getIsSet){
+        // 拉取dict数据
+        userDict.loadingDictMap()
+    }
     NProgress.start();
 
     const accessToken = getAccessToken();//访问Token
