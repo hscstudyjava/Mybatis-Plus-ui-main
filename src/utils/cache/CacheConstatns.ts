@@ -25,5 +25,10 @@ export const enum CacheConstants {
    /**
     * 本地布局配置
     */
-   LOCAL_LAYOUT_CONFIIG_KEY = "local_loayout_config"
+   LOCAL_LAYOUT_CONFIIG_KEY = "local_loayout_config",
+
+   /** 
+    * 字典数据保存
+    */
+   DICT_KEY="dict_type"
 }

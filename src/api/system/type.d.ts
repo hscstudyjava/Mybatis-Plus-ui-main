@@ -339,3 +339,27 @@ export interface SysDictValue extends BaseEnity {
     optionsParams: string | object,
 
 }
+
+export type SysDictSimpleResult={
+    label: string,
+
+    key: string,
+
+    value: string,
+
+    icon: string,
+
+    btnClass: string,
+
+    customStyle: string,
+
+    hasDefault: string,
+}
+
+export type SysGroupSimpleValueResult={
+
+    key:string,
+
+    list:Array<SysDictSimpleResult>
+    
+}

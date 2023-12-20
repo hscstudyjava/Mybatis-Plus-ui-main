@@ -1,6 +1,6 @@
 import { request } from "@/utils/request";
 import type { AjaxResult } from "@/utils/request/type";
-import type { Page, SysDictValue } from "../type";
+import type { Page, SysDictValue, SysGroupSimpleValueResult } from "../type";
 
 /**
  * 基础Url
@@ -12,6 +12,8 @@ const baseUrl = "/admin-api/system/dict-value/"
  */
 export const basePeri = "system:dict-value:"
 
+
+
 export function selectSysDictValueList(params: any): Promise<AjaxResult<Page<SysDictValue>>> {
     return request.get(
         baseUrl + 'page',
@@ -20,6 +22,13 @@ export function selectSysDictValueList(params: any): Promise<AjaxResult<Page<Sys
         }
     )
 }
+export function groupSysDictValueList():Promise<AjaxResult<Array<SysGroupSimpleValueResult>>>{
+    return request.get(
+        baseUrl+'group-simple-list'
+    )
+}
+
+
 
 export function insertSysDictValue(data: SysDictValue): Promise<AjaxResult<undefined>> {
     return request.post(

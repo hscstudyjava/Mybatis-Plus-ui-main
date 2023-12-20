@@ -1,4 +1,14 @@
+
+/** 
+ * @author hsc
+ * @since 2023-12-20 20:36:34
+ * 
+ * 封装通用缓存处理中间件
+ */
+
 import Cookies from 'js-cookie'
+import WebStorageCache from 'web-storage-cache'
+import Storage from 'web-storage-cache'
 
 
 const sessionCache =
@@ -86,8 +96,8 @@ const cookieCache = {
         return false
     },
     setExpiredValue(key: string, value: any, expiredTime: number) {
-        var m =new Date().getTime()+expiredTime
-        
+        var m = new Date().getTime() + expiredTime
+
         if (!Cookies) {
             return false
         }
@@ -99,7 +109,7 @@ const cookieCache = {
         }
         return false
     },
-    get(key: string):any {
+    get(key: string): any {
         if (!Cookies) {
             return null
         }
@@ -126,6 +136,18 @@ const cookieCache = {
 
 
 }
+type CacheType = 'localStorage' | 'sessionStorage'
+/** 
+ * 使用ws模式存储数据
+ */
+const useWsStore = (type: CacheType = 'localStorage') => {
+    const wsCache: WebStorageCache = new WebStorageCache({
+        storage: type
+    })
+    return {
+        wsCache
+    }
+}
 
 
 
@@ -141,7 +163,12 @@ export default {
     /** 
      * cookieCache
      */
-    cookieCache
+    cookieCache,
+    /** 
+     * 使用别人封装好ws_cache
+     */
+    useWsStore,
+    
 
 
 }
