@@ -28,7 +28,7 @@ import { useSettingStore } from '@/stores/setting';
 import { useAppStore } from '@/stores/app';
 // @ts-ignore
 import sytleConstant from '@/assets/style/sytleConstant.module.scss'
-
+import { usePeriStroe } from '@/stores/permission';
 // components 
 // @ts-ignore
 import logo from './logo.vue';
@@ -39,11 +39,13 @@ import SubItem from './subItem.vue';
  */
 const settingStore = useSettingStore()
 const appStore = useAppStore()
+const usePri=usePeriStroe()
 // import router from '@/router';
 import router from '@/router';
 const route = router;
 
-var routerList=router.options.routes
+// var routerList=router.options.routes
+var routerList=usePri.sidebarRouters
 
 /** 
  * 激活菜单

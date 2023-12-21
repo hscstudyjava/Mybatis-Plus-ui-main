@@ -6,9 +6,12 @@ import router from './router'
 import { getAccessToken, removeAccessToken } from './utils/cache/auth'
 import { useUserStore } from '@/stores/user'
 import { useSettingStore } from '@/stores/setting'
-import {useDictStore} from '@/stores/dict'
+import { useDictStore } from '@/stores/dict'
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 import { useTitle } from '@vueuse/core'
+import { usePeriStroe } from '@/stores/permission';
+
+
 const title = useTitle()
 let whiteList = [
     "/login"
@@ -20,10 +23,12 @@ let whiteList = [
 router.beforeEach((to, from, next) => {
     const userStore = useUserStore()
     const useSetting = useSettingStore()
-    const userDict=useDictStore()
+    const userDict = useDictStore()
+    const usePri = usePeriStroe()
+
     title.value = dynamicTitle(useSetting.title, useSetting.dynamicTitle, to.meta.title as string)
 
-    if(!userDict.getIsSet){
+    if (!userDict.getIsSet) {
         // 拉取dict数据
         userDict.loadingDictMap()
     }
@@ -38,7 +43,14 @@ router.beforeEach((to, from, next) => {
             NProgress.done()
         } else {
             userStore.getCurrentUser().then(res => {
-                next();//放行
+                // 拉取菜单数据
+                usePri.loadingRouter().then(res=>{
+                    res.forEach(menu => {
+                        router.addRoute(menu)
+                    });
+                })
+                // return { ...to, replace: true }// hack方法 确保addRoute已完成
+                next()
             }).catch(error => {
                 next(`/login?redirect=${to.path}`)
                 NProgress.done()

@@ -1,31 +1,53 @@
+import { string } from 'vue-types';
+import type { RouteRecordRaw } from 'vue-router'
+import { defineComponent } from 'vue'
 // 类型文件
-export interface Meta {
-    title: String?= null
+export interface Meta extends Record<string | number | symbol, unknown> {
+    title?:string
 
-    icon: String?= null
+    icon?:string
 
-    keepAlive: Boolean = false;
+    keepAlive?:boolean
 
-    hasFrame: Boolean?= null
+    hasFrame?:boolean
 }
 
-export type Menu = {
+type Component<T = any> =
+    | ReturnType<typeof defineComponent>
+    | (() => Promise<typeof import('*.vue')>)
+    | (() => Promise<T>)
 
-    id: String?= null
 
-    path: String?= null
 
-    component: String?= null
+interface AppRouteRecordRaw extends Omit<RouteRecordRaw, 'meta'> {
+    name: string
+    meta?: Meta
+    component?: Component | string
+    children?: AppRouteRecordRaw[]
+    props?: Recordable
+    fullPath?: string
+    keepAlive?: boolean
+}
 
-    name: Boolean?= null
+export interface Menu extends Omit<RouteRecordRaw, 'meta'> {
 
-    hidden: Boolean?= null
+    id?: string
 
-    meta: Meta?= null
+    path: string
 
-    query: String?= null
+    component: string | Component
 
-    children: List<Menu>?= null
+    name: string
+
+    hidden?: boolean
+
+    meta?: Meta
+
+    query?: string
+
+    children?: Menu[]
+
+    redirect?: string
 
 }
 
