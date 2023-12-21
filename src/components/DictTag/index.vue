@@ -1,10 +1,12 @@
 <template>
     <!-- style={dictData.value?.customStyle ? 'color: #fff' : '' }  -->
-    {{ dictValue }}
+    <el-tag :type="dictValue?.btnClass" :style="dictValue?.customStyle ? '#fff' : ''">
+        {{ dictValue?.label }}
+    </el-tag>
 </template>
 
 <script setup lang="ts">
-import { PropType, onMounted, ref } from 'vue';
+import { type PropType, onMounted, ref } from 'vue';
 import { getDictOptions } from '@/utils/common/dict'
 
 
@@ -35,18 +37,14 @@ const props = defineProps({
 })
 const dictValue = ref<SysDictSimpleResult>()
 const getDictObj = (dictType: string, value: string) => {
-    console.log(dictType);
-    
+
     const dictOptions = getDictOptions(dictType)
-    console.log(dictOptions);
-    
+
     dictOptions.forEach((dict: SysDictSimpleResult) => {
         if (dict.value === value) {
-            if (dict.colorType + '' === 'primary' || dict.colorType + '' === 'default') {
-                dict.colorType = ''
+            if (dict.btnClass + '' === 'primary' || dict.btnClass + '' === 'default') {
+                dict.btnClass = ''
             }
-            console.log(dict);
-            
             dictValue.value = dict
         }
     })

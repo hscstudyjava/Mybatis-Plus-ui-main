@@ -21,6 +21,11 @@ const router = createRouter({
       component: NotFound,
     },
     {
+      path: '/:w+',
+      name:'*',
+      redirect: '/404'
+    },
+    {
       path: '/',
       name: 'home',
       component: Layout,

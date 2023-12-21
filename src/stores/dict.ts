@@ -43,11 +43,12 @@ export const useDictStore = defineStore('dict', () => {
      * 异步加载数据
      */
     const loadingDictMap = async () => {
-
         const cacheMap = ws.get(CacheConstants.DICT_KEY)
+
 
         if (cacheMap) {
             dictMap = new Map(Object.entries(cacheMap));
+            
             isSetDict.value = true//标识赋值完成
         }
 
@@ -57,7 +58,6 @@ export const useDictStore = defineStore('dict', () => {
         const dictDataMap = new Map<string, Array<SysDictSimpleResult>>()
 
         data.forEach(item => {
-
             // 获得 dictType 层级
             const enumValueObj = dictDataMap.get(item.key)
             if (!enumValueObj) {
@@ -72,8 +72,9 @@ export const useDictStore = defineStore('dict', () => {
         dictDataMap.forEach((values, key) => {
             dictMap.set(key, values);
         });
+
         isSetDict.value = true//标识赋值完成        
-        ws.set(CacheConstants.DICT_KEY, dictDataMap, { exp: 60 })
+        ws.set(CacheConstants.DICT_KEY, Object.fromEntries(dictDataMap), { exp: 60 })
     }
 
     /** 
@@ -104,7 +105,7 @@ export const useDictStore = defineStore('dict', () => {
         });
         isSetDict.value = true//标识赋值完成
 
-        ws.set(CacheConstants.DICT_KEY, dictDataMap, { exp: 60 })
+        ws.set(CacheConstants.DICT_KEY, Object.fromEntries(dictDataMap), { exp: 60 })
     }
 
     /**
@@ -112,9 +113,9 @@ export const useDictStore = defineStore('dict', () => {
      */
     const getDictByType = (type: string) => {
         if (!isSetDict.value) {
-            loadingDictMap()            
-        }        
-      
+            loadingDictMap()
+        }
+
         return dictMap.get(type)
     }
 
