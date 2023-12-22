@@ -8,20 +8,10 @@
             {{ dictValue?.label }}
         </el-tag>
     </template>
-    <span 
-    :class="dictValue.customStyle"
-    v-if="dictValue?.btnClass === 'default' || dictValue?.btnClass === ''">
-        {{ dictValue.label }}
-    </span>
-    <el-tag v-else 
-    :class="dictValue?.customStyle"
-    :type="dictValue?.btnClass">
-        {{ dictValue?.label }}
-    </el-tag>
 </template>
 
 <script setup lang="ts">
-import { type type PropType, onMounted, ref } from 'vue';
+import { type PropType, onMounted, ref } from 'vue';
 import { getDictOptions } from '@/utils/common/dict'
 
 
@@ -52,16 +42,10 @@ const props = defineProps({
 })
 const dictValue = ref<SysDictSimpleResult>()
 const getDictObj = (dictType: string, value: string) => {
-
-
     const dictOptions = getDictOptions(dictType)
-
-
     dictOptions.forEach((dict: SysDictSimpleResult) => {
         if (dict.value === value) {
             if (dict.btnClass + '' === 'primary' || dict.btnClass + '' === 'default') {
-                dict.btnClass = ''
-            if (dict.btnClass === 'primary' || dict.btnClass === 'default') {
                 dict.btnClass = ''
             }
             dictValue.value = dict
@@ -71,4 +55,5 @@ const getDictObj = (dictType: string, value: string) => {
 onMounted(() => {
     getDictObj(props.type, props.value.toString())
 })
+
 </script>

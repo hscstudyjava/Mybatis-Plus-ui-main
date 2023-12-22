@@ -86,13 +86,16 @@ router.beforeEach(async (to, from, next) => {
         if (to.path === '/login') {
             next({ path: '/' })
             NProgress.done()
-        } else {
+        } else
+         {
             const userDict = useDictStore()
             const usePri = usePeriStroe()
             const userStore = useUserStore()
-
+        
+            
+            
             if (!userDict.getIsSet) {
-                await userDict.loadingDictMap
+                await userDict.loadingDictMap()
             }
             if (!userStore.getIsUserSet) {
                 await userStore.getCurrentUser();// 拉取用户数据

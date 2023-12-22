@@ -14,7 +14,10 @@ import navbar from './componets/naber/index.vue'
 import sytleConstant from '@/assets/style/sytleConstant.module.scss'
 const variable = sytleConstant;
 
-
+// 设置名称
+defineOptions({
+    name: 'layout'
+})
 // @ts-ignore
 import { useSettingStore } from '@/stores/setting'
 import { useAppStore } from '@/stores/app';

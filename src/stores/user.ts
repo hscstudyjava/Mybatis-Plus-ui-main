@@ -111,11 +111,8 @@ export const useUserStore = defineStore('userStore', () => {
     })
 
     const setCurrentUser = (tagetUser: CurrentUser) => {
-        currentUser.isSupuerAdmin = tagetUser.isSupuerAdmin
-        currentUser.permissions = tagetUser.permissions
-        currentUser.userName = tagetUser.userName
-        currentUser.userId = tagetUser.userId
-        currentUser.userImg = tagetUser.userImg
+        Object.assign(currentUser,tagetUser)//设置数据
+        // 缓存到session中
     }
 
     const $resetCurrentUser = () => {
@@ -145,6 +142,7 @@ export const useUserStore = defineStore('userStore', () => {
         isUserSet.value=true;
         return result;
     }
+
 
     const getIsUserSet=computed(()=>{
         return isUserSet.value;

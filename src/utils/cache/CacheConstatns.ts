@@ -30,5 +30,13 @@ export const enum CacheConstants {
    /** 
     * 字典数据保存
     */
-   DICT_KEY="dict_type"
+   DICT_KEY="dict_type",
+
+   /** 
+    * 用户数据
+    */
+   USER_KEY="current_user"
+   
+
+   
 }

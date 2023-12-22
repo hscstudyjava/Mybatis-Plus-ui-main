@@ -8,6 +8,7 @@ import ParentView from '@/components/ParentView/index.vue'
 // @ts-ignore
 import NotFound from '@/views/NotFound/index.vue';
 import type { AppRouteRecordRaw, Menu } from '@/types/menu';
+import { shallowRef } from 'vue';
 
 /**
  *  {
@@ -136,12 +137,17 @@ export const defaultRouter :AppRouteRecordRaw[]= [
   {
     path: '/404',
     name: '404',
-    component: NotFound,
+    component: shallowRef(NotFound),
+  },
+  {
+    path: '/:w+',
+    name:'*',
+    redirect: '/404'
   },
   {
     path: '/',
     name: 'home',
-    component: Layout,
+    component: shallowRef(Layout),
     redirect: '/dashboard',
     children: [
       {

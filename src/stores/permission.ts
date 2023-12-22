@@ -3,13 +3,10 @@
 import Layout from '@/layout/index.vue';//基础组件
 // @ts-ignore
 import ParentView from '@/components/ParentView/index.vue';
-
 import { getRouter } from "@/api/login/login";
-
 import type { Menu } from "@/types/menu";
-import type { AjaxResult } from "@/utils/request/type";
 import { defineStore } from "pinia";
-import { reactive, ref } from "vue";
+import { ref, shallowRef } from "vue";
 
 import router, { defaultRouter, dynamicRoutes } from '@/router';
 // 获得目录下方所有的Vue组件
@@ -27,9 +24,10 @@ function filterAsyncRouter(asyncRouterMap: any,
     if (route.component) {
       // Layout ParentView 组件特殊处理
       if (route.component === 'Layout') {
-        route.component = Layout
+        // route.component = markRaw(defineAsyncComponent(()=>import('@/layout/index.vue')))
+        route.component = shallowRef(Layout)
       } else if (route.component === 'ParentView') {
-        route.component = ParentView
+        route.component = shallowRef(ParentView)
       } else if (route.component === 'InnerLink') {
         // route.component = InnerLink
       } else {
