@@ -19,6 +19,9 @@ export const useUserStore = defineStore('userStore', () => {
         }
     )
 
+    var isUserSet=ref(false);// 用户是否设置成功
+
+
     /**
      * 登录
      * @param loginParams 登录对象
@@ -131,6 +134,7 @@ export const useUserStore = defineStore('userStore', () => {
     async function getCurrentUser() {
         const user = (await getCurrentUserInfo()).data
         setCurrentUser(user);//set
+        isUserSet.value=true;
     }
 
     async function userLogout(): Promise<AjaxResult<void>> {
@@ -138,14 +142,19 @@ export const useUserStore = defineStore('userStore', () => {
         // 并且清除掉cache
         $resetOauth2();//重置oauth2
         $clearCache();//c
+        isUserSet.value=true;
         return result;
     }
+
+    const getIsUserSet=computed(()=>{
+        return isUserSet.value;
+    })
 
     return {
         currentUser,
         oauth2,
 
-
+        getIsUserSet,
         $resetOauth2,
         $clearCache,
 

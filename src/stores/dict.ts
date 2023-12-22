@@ -37,7 +37,7 @@ export const useDictStore = defineStore('dict', () => {
     })
 
     const getIsSet = computed(() => {
-        return isSetDict.value
+        return isSetDict.value.value
     })
 
     /**
@@ -73,7 +73,7 @@ export const useDictStore = defineStore('dict', () => {
         });
 
         isSetDict.value = true//标识赋值完成        
-        ws.set(CacheConstants.DICT_KEY, Object.fromEntries(dictDataMap), { exp: 60 })
+        ws.set(CacheConstants.DICT_KEY, Object.fromEntries(Object.fromEntries(dictDataMap)), { exp: 60 })
     }
 
     /** 
@@ -104,7 +104,7 @@ export const useDictStore = defineStore('dict', () => {
         });
         isSetDict.value = true//标识赋值完成
 
-        ws.set(CacheConstants.DICT_KEY, Object.fromEntries(dictDataMap), { exp: 60 })
+        ws.set(CacheConstants.DICT_KEY, Object.fromEntries(Object.fromEntries(dictDataMap)), { exp: 60 })
     }
 
     /**

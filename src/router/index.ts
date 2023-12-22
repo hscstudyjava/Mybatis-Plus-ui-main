@@ -1,12 +1,16 @@
-import { createRouter, createWebHistory } from 'vue-router'
-// import HomeView from '../views/HomeView.vue'
+import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 // @ts-ignore
 import login from '@/views/login.vue';
 // @ts-ignore
 import Layout from '@/layout/index.vue'
+// @ts-ignore
 import ParentView from '@/components/ParentView/index.vue'
 // @ts-ignore
 import NotFound from '@/views/NotFound/index.vue';
+import type { AppRouteRecordRaw, Menu } from '@/types/menu';
+
+/**
+ *  {
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -92,7 +96,7 @@ const router = createRouter({
             path: 'value/:typeId(\\d+)',
             name: 'value',
             component: () => import('@/views/system/dict/value/index.vue'),
-            meta: { title: '字典数据', icon: 'config'},
+            meta: { title: '字典数据', icon: 'config' },
           },
 
         ]
@@ -120,7 +124,47 @@ const router = createRouter({
 
       ]
     }
-  ]
+ */
+
+// 默认路由
+export const defaultRouter :AppRouteRecordRaw[]= [
+  {
+    path: '/login',
+    name: 'login',
+    component: login
+  },
+  {
+    path: '/404',
+    name: '404',
+    component: NotFound,
+  },
+  {
+    path: '/',
+    name: 'home',
+    component: Layout,
+    redirect: '/dashboard',
+    children: [
+      {
+        path: 'dashboard',
+        name: 'Dashboard',
+        // @ts-ignore
+        component: () => import('@/views/dashboard/index.vue'),
+        meta: { title: '首页', icon: 'dashboard' }
+      }
+    ]
+  }
+]
+
+
+// 动态路由/user/myinfo/{id}
+export const dynamicRoutes=[
+
+]
+
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: defaultRouter as RouteRecordRaw[],
+  scrollBehavior: () => ({ left: 0, top: 0 })
 })
 
 export default router
