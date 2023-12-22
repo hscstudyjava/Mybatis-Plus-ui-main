@@ -76,6 +76,11 @@
                 <el-table-column label="账号" show-overflow-tooltip prop="userName" align="center" />
                 <el-table-column label="昵称" show-overflow-tooltip prop="userNickName" align="center" />
                 <el-table-column label="排序" prop="sortValue" align="center" />
+                <el-table-column label="性别"  align="center" >
+                    <template #default="scope">
+                        <DictTag :value="scope.row.sex" :type="DICT_TYPE.USER_SEX"></DictTag>
+                    </template>
+                </el-table-column>
                 <el-table-column label="创建时间" align="center">
                     <template #default="scope">
                         {{ parseTime(scope.row.createTime) }}
@@ -111,6 +116,8 @@
     </div>
 </template>
 <script setup lang="ts">
+import { DICT_TYPE, getStrDictOptions } from '@/utils/common/dict'
+
 import { onMounted, reactive, ref } from 'vue';
 import { parseTime } from '@/utils/common'
 import { pageUser } from '@/api/system/user/index'

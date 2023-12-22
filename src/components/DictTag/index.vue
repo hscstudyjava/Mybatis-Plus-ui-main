@@ -1,6 +1,12 @@
 <template>
-    <!-- style={dictData.value?.customStyle ? 'color: #fff' : '' }  -->
-    <el-tag :type="dictValue?.btnClass" :style="dictValue?.customStyle ? '#fff' : ''">
+    <span 
+    :class="dictValue.customStyle"
+    v-if="dictValue?.btnClass === 'default' || dictValue?.btnClass === ''">
+        {{ dictValue.label }}
+    </span>
+    <el-tag v-else 
+    :class="dictValue?.customStyle"
+    :type="dictValue?.btnClass">
         {{ dictValue?.label }}
     </el-tag>
 </template>
@@ -42,7 +48,7 @@ const getDictObj = (dictType: string, value: string) => {
 
     dictOptions.forEach((dict: SysDictSimpleResult) => {
         if (dict.value === value) {
-            if (dict.btnClass + '' === 'primary' || dict.btnClass + '' === 'default') {
+            if (dict.btnClass === 'primary' || dict.btnClass === 'default') {
                 dict.btnClass = ''
             }
             dictValue.value = dict

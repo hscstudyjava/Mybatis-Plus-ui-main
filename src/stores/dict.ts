@@ -30,13 +30,14 @@ export const useDictStore = defineStore('dict', () => {
         // 缓存获得
         const cacheMap = ws.get(CacheConstants.DICT_KEY)
         if (cacheMap) {
-            Object.assign(dictMap, cacheMap)
+            // 重新复制
+            dictMap = new Map(Object.entries(cacheMap));
         }
         return cacheMap;
     })
 
     const getIsSet = computed(() => {
-        return isSetDict
+        return isSetDict.value
     })
 
     /**
@@ -45,10 +46,8 @@ export const useDictStore = defineStore('dict', () => {
     const loadingDictMap = async () => {
         const cacheMap = ws.get(CacheConstants.DICT_KEY)
 
-
         if (cacheMap) {
             dictMap = new Map(Object.entries(cacheMap));
-            
             isSetDict.value = true//标识赋值完成
         }
 
@@ -112,8 +111,8 @@ export const useDictStore = defineStore('dict', () => {
      * 从dictMap中拿数据
      */
     const getDictByType = (type: string) => {
-        if (!isSetDict.value) {
-            loadingDictMap()
+        if (!getIsSet) {
+            resertDictMap()//刷新DictMap并且存放到seesion中
         }
 
         return dictMap.get(type)

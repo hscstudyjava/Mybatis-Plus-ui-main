@@ -51,7 +51,7 @@ export const transform: InterceptorHooks = {
     if (res.data.code !== SuccessCode.SUCCESS) {
 
       if (res.config.requestOptions?.globalErrorMessage) {
-        messages.error(res.data.msg);
+        // messages.error(res.data.msg);
         // 这里全局提示错误
         console.error(res.data.msg)
       }
