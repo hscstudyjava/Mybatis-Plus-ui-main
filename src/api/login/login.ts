@@ -4,35 +4,35 @@ import type { AjaxResult } from "@/utils/request/type";
 import type { Captcha } from "../system/type";
 
 
-const baseUrl="/auth/"
+const baseUrl = "/auth/"
 
-export type Oauth2Resp={
+export type Oauth2Resp = {
     /**
      *
      * 当前Token
      */
-     accessToken: string,
+    accessToken: string,
 
     /**
      * 刷新Token
      */
-     refreshToken: string,
+    refreshToken: string,
 
     /**
      * 过期时间
      */
-     expiredTime: number,
+    expiredTime: number,
 }
 
-export type LoginReq={
+export type LoginReq = {
 
-     userName: String,
+    userName: String,
 
-     passWord: String,
+    passWord: String,
 
-     code?: String,
-    
-     uuid?: String,
+    code?: String,
+
+    uuid?: String,
 
 }
 
@@ -41,12 +41,17 @@ export interface CurrentUser {
     /**
      * 权限列表
      */
-    permissions: [],
+    permissions: string[],
+
+    /**
+     * 绑定的用户
+     */
+    roleList: string[],
 
     /**
      * 用户编号
      */
-    userId:number,
+    userId: number,
 
     /**
      * 用户信息
@@ -70,12 +75,12 @@ export interface CurrentUser {
  * @param refreshToken 刷新Token
  * @returns 返回结果
  */
-export function refreshToken(refreshToken?:string): Promise<AjaxResult<Oauth2Resp>>{
-   return request.get<AjaxResult<Oauth2Resp>>
-    (
-        baseUrl+`refreshToken/${refreshToken}`,
-        {}
-    )
+export function refreshToken(refreshToken?: string): Promise<AjaxResult<Oauth2Resp>> {
+    return request.get<AjaxResult<Oauth2Resp>>
+        (
+            baseUrl + `refreshToken/${refreshToken}`,
+            {}
+        )
 }
 
 /**
@@ -83,15 +88,15 @@ export function refreshToken(refreshToken?:string): Promise<AjaxResult<Oauth2Res
  * @param loginParams 登录
  * @returns 
  */
-export function authLogin(loginParams:LoginReq):Promise<AjaxResult<Oauth2Resp>>{
+export function authLogin(loginParams: LoginReq): Promise<AjaxResult<Oauth2Resp>> {
     return request.post<AjaxResult<Oauth2Resp>>(
-            baseUrl+"login",
-            loginParams,
-            {
-                requestOptions:{
-                    globalSuccessMessage:true
-                }
+        baseUrl + "login",
+        loginParams,
+        {
+            requestOptions: {
+                globalSuccessMessage: true
             }
+        }
     )
 }
 
@@ -99,12 +104,12 @@ export function authLogin(loginParams:LoginReq):Promise<AjaxResult<Oauth2Resp>>{
  * 用户信息
  * @returns 
  */
-export function getCurrentUserInfo():Promise<AjaxResult<CurrentUser>>{
+export function getCurrentUserInfo(): Promise<AjaxResult<CurrentUser>> {
     return request.get(
-        baseUrl+'userInfo',
+        baseUrl + 'userInfo',
         {
-            requestOptions:{
-                globalErrorMessage:true
+            requestOptions: {
+                globalErrorMessage: true
             }
         }
     )
@@ -115,25 +120,25 @@ export function getCurrentUserInfo():Promise<AjaxResult<CurrentUser>>{
  * @param currentToken 访问Token 
  * @returns  返回结果
  */
-export function logout(currentToken:Oauth2Resp):Promise<AjaxResult<void>>{
+export function logout(currentToken: Oauth2Resp): Promise<AjaxResult<void>> {
     return request.post(
-        baseUrl+'logout',
+        baseUrl + 'logout',
         currentToken,
         {
-            requestOptions:{
-                globalSuccessMessage:false
+            requestOptions: {
+                globalSuccessMessage: false
             }
         }
     )
 }
 
-export function getRouter():Promise<AjaxResult<Array<Menu>>>{
+export function getRouter(): Promise<AjaxResult<Array<Menu>>> {
     return request.get(
-        baseUrl+'getRouter'
+        baseUrl + 'getRouter'
     )
 }
 
-export function getCaptchaInfo():Promise<AjaxResult<Captcha> >{
+export function getCaptchaInfo(): Promise<AjaxResult<Captcha>> {
     return request.get(
         '/system/captcha/info'
     )

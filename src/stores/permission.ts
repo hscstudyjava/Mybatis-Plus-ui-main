@@ -4,11 +4,18 @@ import Layout from '@/layout/index.vue';//基础组件
 // @ts-ignore
 import ParentView from '@/components/ParentView/index.vue';
 import { getRouter } from "@/api/login/login";
-import type { Menu } from "@/types/menu";
+import type { AppRouteRecordRaw, Menu } from "@/types/menu";
 import { defineStore } from "pinia";
 import { ref, shallowRef } from "vue";
+import { useWsStore } from '@/utils/cache/CacheUtils';
+import {auth} from '@/hooks/web/auth/index'
+
+const ws = useWsStore('sessionStorage') //存储到Session中避免数据,个人设置60秒拉取数据
 
 import router, { defaultRouter, dynamicRoutes } from '@/router';
+import { CacheConstants } from '@/utils/cache/CacheConstatns';
+import { el } from 'element-plus/es/locales.mjs';
+import type { RouteRecordRaw } from 'vue-router';
 // 获得目录下方所有的Vue组件
 const modules = import.meta.glob('@/views/**/**.vue')
 
@@ -51,7 +58,11 @@ function filterAsyncRouter(asyncRouterMap: any,
   })
 }
 
-
+/**
+ * 建议需要按照这种格式填充数据
+ * @param view /system/user
+ * @returns 组件
+ */
 export const loadView = (view: String) => {
   return modules[`/src/views${view}/index.vue`]
 }
@@ -82,22 +93,23 @@ function filterChildren(childrenMap: any, lastRouter: any = false) {
 }
 
 // 动态路由遍历，验证是否具备权限
-/* export function filterDynamicRoutes(routes) {
-  const res = []
+export function filterDynamicRoutes(routes:AppRouteRecordRaw[]) {
+  const res:AppRouteRecordRaw[] = []
+  
   routes.forEach(route => {
-    if (route.permissions) {
-      if (auth.hasPermiOr(route.permissions)) {
+    if (route.meta?.premissions) {
+      if (auth().hasPermiOr(route.meta?.premissions)) {
         res.push(route)
       }
-    } else if (route.roles) {
-      if (auth.hasRoleOr(route.roles)) {
+    } else if (route.meta?.roles) {
+      if (auth().hasRoleOr(route.meta?.roles)) {
         res.push(route)
       }
     }
   })
   return res
 }
- */
+
 
 export const usePeriStroe = defineStore('permisionStore', () => {
 
@@ -125,22 +137,7 @@ export const usePeriStroe = defineStore('permisionStore', () => {
    * 侧边菜单
    */
   var sidebarRouters = ref<Array<Menu>>([])
-  /**
-   *  SET_ROUTES: (state, route) => {
-    state.addRoutes = route
-    state.routes = constantRoutes.concat(route)
-  },
 
-  SET_DEFAULT_ROUTES: (state, routes) => {
-    state.defaultRoutes = constantRoutes.concat(routes)
-  },
-  SET_TOPBAR_ROUTES: (state, routes) => {
-    state.topbarRouters = routes
-  },
-  SET_SIDEBAR_ROUTERS: (state, routes) => {
-    state.sidebarRouters = routes
-  },
-   */
   const setRouters = (route: Menu[]) => {
     allRouter.value = route
     // @ts-ignore
@@ -160,50 +157,59 @@ export const usePeriStroe = defineStore('permisionStore', () => {
     sidebarRouters.value = rotue
   }
 
-  /**
-   * 加载路由
-   * 
-   * 
-   */
-
-
   const loadingRouter = () => {
-    return new Promise(((resolve, reject) => {
+    return new Promise((resolve, reject) => {
+      try {
+        let data = [];
+        const cacheRouter = ws.get(CacheConstants.ROUTER_KEY);
+        if (cacheRouter) {
+          data = cacheRouter;
+          processRoutes(data, resolve);
+        } else {
+          getRouter().then((res) => {
+            data = res.data;
+            ws.set(CacheConstants.ROUTER_KEY, data, { exp: 60 });
+            processRoutes(data, resolve);
+          }).catch((error) => {
+            reject(error);
+          });
+        }
+      } catch (error) {
+        reject(error);
+      }
+    });
+  };
+  // @ts-ignore
+  const processRoutes = (data, resolve) => {
+    const sRouter = JSON.parse(JSON.stringify(data));
+    const rRouter = JSON.parse(JSON.stringify(data));
+    const sidebarRoutes = filterAsyncRouter(sRouter, true);
+    const rewriteRoutes = filterAsyncRouter(rRouter, false, true);
 
-      // 获得路由数据
-      getRouter().then(res => {
-        let { data } = res
-        const sRouter = JSON.parse(JSON.stringify(data));
-        const rRouter = JSON.parse(JSON.stringify(data));
-        // 侧边栏目
-        // @ts-ignore
-        const sidebarRoutes = filterAsyncRouter(sRouter)
-        // @ts-ignore
-        const rewriteRoutes = filterAsyncRouter(rRouter, false, true)
-        /** 
-         * commit('SET_ROUTES', rewriteRoutes)
-            commit('SET_SIDEBAR_ROUTERS', constantRoutes.concat(sidebarRoutes))
-            commit('SET_DEFAULT_ROUTES', sidebarRoutes)
-            commit('SET_TOPBAR_ROUTES', sidebarRoutes)
-         */
-        setRouters(rewriteRoutes)
-        // @ts-ignore
-        setSidebarRoute(defaultRouter.concat(sidebarRoutes))
-        setDefaultRoutes(sidebarRoutes)
-        setTopRouters(sidebarRoutes)
-        resolve(rewriteRoutes)
-      }).catch(error => {
-        reject(error)
-      })
+    //获得动态路由
+    const dynamicRoute=filterDynamicRoutes(dynamicRoutes)
+    // 这个数据也一并添加到rewriteRoutes
+    dynamicRoute.forEach(item=>{
+      router.addRoute(item as unknown as RouteRecordRaw)
+    })
 
-
-    }))
-
-  }
+    rewriteRoutes.push({
+      path: '/:pathMatch(.*)*',
+      name: '*',
+      redirect: '/error/404'
+    });
+    setRouters(rewriteRoutes);
+    //@ts-ignore
+    setSidebarRoute(defaultRouter.concat(sidebarRoutes));
+    setDefaultRoutes(sidebarRoutes);
+    setTopRouters(sidebarRoutes);
+    resolve(rewriteRoutes);
+  };
 
   return {
     loadingRouter,
-    sidebarRouters
+    sidebarRouters,
+    routes
   }
 
 })

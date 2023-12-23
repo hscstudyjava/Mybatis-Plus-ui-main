@@ -105,6 +105,7 @@ export const useUserStore = defineStore('userStore', () => {
     var currentUser = reactive<CurrentUser>({
         userId: 0,
         permissions: [],
+        roleList:[],
         userName: "",
         userImg: "",
         isSupuerAdmin: false
@@ -121,7 +122,8 @@ export const useUserStore = defineStore('userStore', () => {
             permissions: [],
             userName: "",
             userImg: "",
-            isSupuerAdmin: false
+            isSupuerAdmin: false,
+            roleList: []
         })
     }
 

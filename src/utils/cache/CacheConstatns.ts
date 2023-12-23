@@ -35,7 +35,12 @@ export const enum CacheConstants {
    /** 
     * 用户数据
     */
-   USER_KEY="current_user"
+   USER_KEY="current_user",
+
+   /** 
+    * 路由数据
+    */
+   ROUTER_KEY="current_router"
    
 
    

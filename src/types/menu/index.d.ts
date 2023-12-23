@@ -10,6 +10,15 @@ export interface Meta extends Record<string | number | symbol, unknown> {
     keepAlive?:boolean
 
     hasFrame?:boolean
+
+    /********权限********** */
+    premissions?:string[],
+
+    /**********那个角色************ */
+    roles?:string[],
+
+    /************激活那个菜单***** */
+    activeMenu?:string,
 }
 
 type Component<T = any> =
@@ -21,12 +30,20 @@ type Component<T = any> =
 
 interface AppRouteRecordRaw extends Omit<RouteRecordRaw, 'meta'> {
     name: string
+
     meta?: Meta
+
     component?: Component | string
+
     children?: AppRouteRecordRaw[]
+
     props?: Recordable
+
     fullPath?: string
-    keepAlive?: boolean
+
+    keepAlive?: boolean,
+
+    hidden?: boolean
 }
 
 export interface Menu extends Omit<RouteRecordRaw, 'meta'> {
@@ -39,15 +56,16 @@ export interface Menu extends Omit<RouteRecordRaw, 'meta'> {
 
     name: string
 
-    hidden?: boolean
-
     meta?: Meta
 
     query?: string
 
     children?: Menu[]
 
-    redirect?: string
+    redirect?: string,
+
+    hidden?: boolean
+
 
 }
 

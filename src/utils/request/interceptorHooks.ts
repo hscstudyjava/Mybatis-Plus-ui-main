@@ -1,6 +1,6 @@
 import { refreshToken } from '@/api/login/login'
 import { getAccessToken, getRefreshToken } from '../cache/auth'
-import { LoginCode, SuccessCode } from './BaseConstants'
+import { LoginCode, ResponseCodeErrorMessages, ResponseStatusErrorMessage, SuccessCode } from './BaseConstants'
 import type { InterceptorHooks, ExpandAxiosResponse } from './type'
 import CacheUtils from '../cache/CacheUtils'
 import { useUserStore } from '@/stores/user'
@@ -10,6 +10,7 @@ import { request } from "@/utils/request";
 import router from '@/router'
 import { confirms, messages } from "@/utils/message/MessageUtils"
 import { tansParams } from '../common'
+import type { AxiosError } from 'axios'
 
 
 let requestList: any[] = []
@@ -37,6 +38,7 @@ export const transform: InterceptorHooks = {
     return config
   },
   requestInterceptorCatch(err) {
+    console.log(`axios -->request error:${err}`);
     // 请求错误，这里可以用全局提示框进行提示
     return Promise.reject(err)
   },
@@ -46,7 +48,7 @@ export const transform: InterceptorHooks = {
     const userStore = useUserStore()
 
     // 与后端约定的请求成功码
-    if (res.status !== 200 ) return Promise.reject(res)
+    if (res.status !== 200) return Promise.reject(result)
 
     if (res.data.code !== SuccessCode.SUCCESS) {
 
@@ -88,6 +90,7 @@ export const transform: InterceptorHooks = {
         }
       }
 
+      // 刷新Token也过期
       if (res.data.code === LoginCode.USER_REFRESH_TOKEN_EXPIRE) {
         // 清空Oauth2_Obj
         userStore.$resetOauth2();
@@ -97,12 +100,6 @@ export const transform: InterceptorHooks = {
           handleLogin()
         }
       }
-
-
-
-
-
-
       return Promise.reject(res.data)
     }
 
@@ -114,38 +111,62 @@ export const transform: InterceptorHooks = {
     // 请求返回值，建议将 返回值 进行解构
     return res.data
   },
-  responseInterceptorCatch(err) {
-    // 这里用来处理 http 常见错误，进行全局提示
-    const mapErrorStatus = new Map([
-      [400, '请求方式错误'],
-      [401, '请重新登录'],
-      [403, '拒绝访问'],
-      [404, '请求地址有误'],
-      [500, '服务器出错'],
-    ])
-    const message =
-      mapErrorStatus.get(err.response.status) || '请求出错，请稍后再试'
-    // 此处全局报错
-    console.error(message)
-    messages.error(message);
-  
-    return Promise.reject(err.response)
-  },
+  responseInterceptorCatch(err: AxiosError) {
+    return handleResponseError(err)
+  }
 }
 
+/**
+ * 处理Response异常
+ * https://blog.csdn.net/lynn_rose/article/details/135143117
+ * 如何解决Ts中string、number和any等类型不能当做索引用
+ * const changePhase = (item: number) => {
+   const phase = phaseObj[item as keyof typeof phaseObj]
+}
+ * @param error 
+ * @returns 
+ */
+export function handleResponseError(error: AxiosError) {
+  if (error.response) {
+    // 根据状态码进行处理
+    const status = error.response.status;
+    const statusErrorMessage = (ResponseStatusErrorMessage as any)[status] || ResponseStatusErrorMessage.default;
+    messages.error(statusErrorMessage);
+    console.error(statusErrorMessage);
+  } else if (error.code) {
+    // 根据错误代码进行处理
+    const codeErrorMessage = (ResponseCodeErrorMessages as any)[error.code] || ResponseCodeErrorMessages.default;
+    messages.error(codeErrorMessage);
+    console.error(codeErrorMessage);
+  } else {
+    // 其他未知错误
+    const errorMessage = '发生了未知错误，请稍后再试！';
+    messages.error(errorMessage);
+    console.error(errorMessage);
+  }
+  return Promise.reject(error);
+}
 const handleLogin = () => {
-  isLogin.show = true
-  confirms.confirm(
-    "抱歉,您当前账号登录状态已经过期,请重新登录或者留在当前页面",
-    "登录状态提示",
-    "warning",
-    "重新登录",
-    "取消登录"
-  ).then(res => {
-    isLogin.show = false
-    location.href = "/login"
-  }).catch(error => {
-    isLogin.show = false
-  })
+  if (!isLogin.show) {
+    // 如果已经到重新登录页面则不进行弹窗提示
+    if (window.location.href.includes('login?redirect=')) {
+      return
+    }
+    isLogin.show = true
+    confirms.confirm(
+      "抱歉,您当前账号登录状态已经过期,请重新登录或者留在当前页面",
+      "登录状态提示",
+      "warning",
+      "重新登录",
+      "取消登录"
+    ).then(res => {
+      isLogin.show = false
+      // 干掉token后再走一次路由让它过router.beforeEach的校验
+      window.location.href = window.location.href
+    }).catch(error => {
+      isLogin.show = false
+    })
+  }
+
 
 }

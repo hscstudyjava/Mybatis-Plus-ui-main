@@ -34,12 +34,13 @@ export const messages =
 
         })
     },
-    error(context: string, showClose?: boolean, hasHtml?: boolean) {
+    error(context: string, showClose?: boolean, hasHtml?: boolean,grouping:boolean=true) {
         ElMessage({
             message: context,
             type: 'error',
             showClose: showClose,
-            dangerouslyUseHTMLString: hasHtml
+            dangerouslyUseHTMLString: hasHtml,
+            grouping
         })
     },
     warn(context: string, showClose?: boolean, hasHtml?: boolean) {

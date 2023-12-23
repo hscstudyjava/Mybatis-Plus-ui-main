@@ -306,7 +306,7 @@ const handleDelete = (row?: SysDictType) => {
 
 const submit = () => {
     if (!ruleFormRef) return
-    ruleFormRef.value.validate(v => {
+    ruleFormRef.value.validate((v:boolean) => {
         if (!v) {
             notify.error('系统提示', '抱歉您无法提交表单')
             return
