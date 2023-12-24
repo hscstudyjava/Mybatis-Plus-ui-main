@@ -45,12 +45,17 @@
 
             <el-form-item label="自定义样式" prop="customStyle">
                 <el-input v-model="form.customStyle" placeholder="请输入自定义样式" clearable></el-input>
-
             </el-form-item>
 
             <el-form-item label="排序值" prop="sortValue">
                 <el-input-number v-model="form.sortValue" style="width: 100%;" :min="0" :max="100"
                     controls-position="right" />
+            </el-form-item>
+
+
+            <el-form-item label="状态" prop="status">
+                <el-switch v-model="form.status" active-value="0" inactive-value="1" inline-prompt active-text="正常"
+                    inactive-text="禁用" />
             </el-form-item>
 
             <el-form-item label="备注" prop="remark">

@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { type PropType, onMounted, ref } from 'vue';
+import { type PropType, onMounted, ref, watch } from 'vue';
 import { getDictOptions } from '@/utils/common/dict'
 
 
@@ -41,7 +41,7 @@ const props = defineProps({
 
 })
 const dictValue = ref<SysDictSimpleResult>()
-const getDictObj = (dictType: string, value: string) => {
+const getDictObj = (dictType: string, value: string|number|boolean) => {
     const dictOptions = getDictOptions(dictType)
     dictOptions.forEach((dict: SysDictSimpleResult) => {
         if (dict.value === value) {
@@ -52,8 +52,14 @@ const getDictObj = (dictType: string, value: string) => {
         }
     })
 }
+
+// 监听 props.value 的变化
+watch(() => props.value, (newValue) => {
+  getDictObj(props.type, newValue.toString());
+});
+
 onMounted(() => {
-    getDictObj(props.type, props.value.toString())
+    getDictObj(props.type, props.value)
 })
 
 </script>

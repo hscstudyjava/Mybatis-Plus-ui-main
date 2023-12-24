@@ -43,7 +43,7 @@
                     </el-button>
                 </el-col>
 
-                    <rightQuery :query="state.showQuery" @toggleQuery="toggleQuery" @refresh="loadList" />
+                <rightQuery :query="state.showQuery" @toggleQuery="toggleQuery" @refresh="loadList" />
             </el-row>
         </el-card>
 
@@ -53,7 +53,15 @@
                 <el-table-column prop="configName" show-overflow-tooltip align="center" label="配置名称" />
                 <el-table-column prop="configKey" show-overflow-tooltip align="center" label="配置字符" />
                 <el-table-column prop="configValue" show-overflow-tooltip align="center" label="配置数据" />
-                <el-table-column prop="configType" show-overflow-tooltip align="center" label="配置类型" />
+
+                <el-table-column show-overflow-tooltip align="center" label="配置类型">
+
+                    <template #default="scope">
+                        <DictTag :type="DICT_TYPE.SYSTEM_MODULE" :value="scope.row.configType"></DictTag>
+                    </template>
+
+                </el-table-column>
+
                 <el-table-column show-overflow-tooltip align="center" label="创建时间">
                     <template #default="scope">
                         {{ parseTime(scope.row.createTime) }}
@@ -119,7 +127,12 @@
 
                     <el-col :span=12>
                         <el-form-item prop="configType" label="配置类型">
-                            <el-input v-model="state.form.configType" placeholder="请填写配置类型" clearable />
+                            <el-select v-model="state.params.configType"
+                            class="w-full"
+                            placeholder="请选择模板类型">
+                                <el-option v-for="item in getDictOptions(DICT_TYPE.SYSTEM_MODULE  )"
+                                    :key="item.value" :label="item.label" :value="item.value" />
+                            </el-select>
                         </el-form-item>
                     </el-col>
 
@@ -167,6 +180,7 @@
 </template>
 
 <script  setup lang="ts" >
+import { DICT_TYPE, getDictOptions } from '@/utils/common/dict'
 import { selectSysConfigList, selectSysConfigSimpleList, insertSysConfig, updateSysConfig, getSysConfigById, removeSysConfig, basePeri } from '@/api/system/config';
 import type { SimpleTree, SysConfig } from '@/api/system/type';
 import { confirms, messages, notify } from '@/utils/message/MessageUtils';

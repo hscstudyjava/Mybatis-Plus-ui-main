@@ -3,23 +3,27 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 
-import AutoImport from 'unplugin-auto-import/vite'
-import Components from 'unplugin-vue-components/vite'
+
 
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import path from 'path'
 // svg 请阅读--->https://blog.csdn.net/reed_0805/article/details/132962941
 import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
-
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 import Icons from 'unplugin-icons/vite'
+import UnoCSS from 'unocss/vite'
+
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [
         vue(),
+        UnoCSS(),
         createSvgIconsPlugin({
             iconDirs: [path.resolve(process.cwd(), 'src/assets/icons/svg')],
-            symbolId: 'icon-[dir]-[name]'
+            symbolId: 'icon-[dir]-[name]',
+            svgoOptions: true
         }),
         vueJsx(),
         AutoImport({
@@ -37,16 +41,16 @@ export default defineConfig({
 
             imports: ['vue', 'vue-router'],
 
-
         }),
         Components({
             resolvers: [
                 ElementPlusResolver(),
 
                 // 自动注册图标组件
-                IconsResolver({
+              /*   IconsResolver({
                     enabledCollections: ['ep'],
-                })
+                }), */
+                IconsResolver(),
             ]
         }),
         Icons({

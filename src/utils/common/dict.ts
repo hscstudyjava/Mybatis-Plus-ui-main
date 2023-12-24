@@ -99,6 +99,10 @@ export enum DICT_TYPE {
 
     /****************system */
     USER_SEX = 'system_user_sex',
-    COMMON_DATA_STATUS = "system_data_status"
+    
+    COMMON_DATA_STATUS = "system_data_status",
 
+    SYSTEM_NOTICE_TEMPLATE="system_notice_template",
+
+    SYSTEM_MODULE="system_module"
 }

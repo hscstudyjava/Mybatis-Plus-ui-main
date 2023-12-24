@@ -53,8 +53,9 @@
         </el-card>
 
         <el-card class="mt-10">
-
-            <el-table ref="treeTableRef" stripe border :data="state.list" style="width: 100%" row-key="id" lazy
+            <el-table ref="treeTableRef"
+            v-loading="state.loading"
+            stripe border :data="state.list" style="width: 100%" row-key="id" lazy
                 :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
                 <el-table-column prop="deptName" show-overflow-tooltip align="center" label="部门名称" />
                 <el-table-column prop="leader" show-overflow-tooltip align="center" label="负责人" />

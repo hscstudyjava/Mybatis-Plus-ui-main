@@ -1,5 +1,5 @@
 <template>
-  <div class="top-right-btn" :style="stylePx">
+  <div class="ml-auto" :style="stylePx">
     <el-tooltip placement="top" v-if="prop.showQuery">
       <template #content>
         <span v-text="prop.query ? '隐藏搜索' : '显示搜索'"></span>
@@ -20,7 +20,7 @@
   </div>
 </template>
   
-<script setup>
+<script setup lang="ts">
 import { defineProps, computed, ref, defineEmits } from "vue";
 
 const prop = defineProps({
@@ -43,6 +43,7 @@ const emit = defineEmits(["toggleQuery", "refresh"]);
 const stylePx = computed(() => {
   const ret = {};
   if (prop.gutter) {
+    // @ts-ignore
     ret.marginRight = `${prop.gutter / 2}px`;
   }
   return ret;

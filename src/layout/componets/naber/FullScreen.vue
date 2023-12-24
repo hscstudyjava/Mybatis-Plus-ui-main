@@ -6,12 +6,12 @@
     }">
         <el-icon v-if="isScreenfull" >
             <el-tooltip class="box-item" effect="dark" content="展开全屏" placement="bottom">
-                <svg-icon iconClass="screenFull" @click="toggleScreen"></svg-icon>
+                <svg-icon icon="screenFull" @click="toggleScreen"></svg-icon>
             </el-tooltip>
         </el-icon>
         <el-icon v-else>
             <el-tooltip class="box-item" effect="dark" content="取消全屏" placement="bottom">
-                <svg-icon iconClass="cancelFullScreen" @click="toggleScreen"></svg-icon>
+                <svg-icon icon="cancelFullScreen" @click="toggleScreen"></svg-icon>
             </el-tooltip>
         </el-icon>
     </div>

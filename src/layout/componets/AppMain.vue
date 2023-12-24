@@ -1,23 +1,19 @@
 <template>
     <section class="app-main">
         <transition name="fade-transform" mode="out-in">
-            <!--  <keep-alive :include="cachedViews">
-                <router-view v-if="!$route.meta.link" :key="key" />
-            </keep-alive>    -->
             <keep-alive>
-
                 <div v-if="config.hidden">
                     <el-watermark class="watermark" :content="config.content" :font="config.font" :z-index="config.zIndex"
                         :rotate="config.rotate" :gap="config.gap" :offset="config.offset">
                         <router-view v-if="!route.meta.link" :key="route.path" />
                     </el-watermark>
                 </div>
-
                 <div v-else>
                     <router-view v-if="!route.meta.link" :key="route.path" />
                 </div>
             </keep-alive>
         </transition>
+
         <!-- <iframe-toggle /> -->
     </section>
 </template>

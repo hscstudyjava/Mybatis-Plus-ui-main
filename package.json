@@ -15,6 +15,8 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.1.0",
+    "@iconify/json": "^2.2.161",
+    "@iconify/vue": "^4.1.1",
     "@vueuse/core": "^10.7.0",
     "axios": "^1.6.2",
     "crypto-js": "^4.2.0",
@@ -25,6 +27,7 @@
     "path-browserify": "^1.0.1",
     "pinia": "^2.1.7",
     "screenfull": "^6.0.2",
+    "unocss": "^0.58.0",
     "vue": "^3.3.4",
     "vue-router": "^4.2.5",
     "vue-types": "^5.1.1",

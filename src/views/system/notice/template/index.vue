@@ -10,14 +10,16 @@
                         clearable></el-input>
                 </el-form-item>
 
-                <el-form-item label="模板字符">
+                <el-form-item label="模板编码">
                     <el-input v-model="state.params.templateCode" placeholder="请输入用户模板字符" @keyup.enter.native="loadList"
                         clearable></el-input>
                 </el-form-item>
 
                 <el-form-item label="模板类型">
-                    <el-input v-model="state.params.templateType" placeholder="请输入模板类型字符" @keyup.enter.native="loadList"
-                        clearable></el-input>
+                    <el-select v-model="state.params.templateType" placeholder="请选择模板类型">
+                        <el-option v-for="item in getDictOptions(DICT_TYPE.SYSTEM_NOTICE_TEMPLATE)" :key="item.value"
+                            :label="item.label" :value="item.value" />
+                    </el-select>
                 </el-form-item>
 
                 <el-form-item label="发送人">
@@ -36,7 +38,7 @@
                             <i-ep-Refresh />
                         </template>
                         重置</el-button>
-              
+
                 </el-form-item>
             </el-form>
 
@@ -44,7 +46,7 @@
             <el-row :gutter="10" class="mb8">
                 <el-col :span="1.5" v-peri="[basePeri + 'save']">
                     <!-- @click="handleInsert(ruleFormRef)" -->
-                    <el-button type="success" plain @click="handleInsert()">
+                    <el-button type="success" plain @click="handleInsert(ruleFormRef)">
                         <template #icon>
                             <el-icon>
                                 <i-ep-Plus />
@@ -74,9 +76,7 @@
                     </el-button>
                 </el-col>
 
-                <rightQuery 
-                style="float: right;"
-                :query="state.showQuery" @toggleQuery="toggleQuery" @refresh="loadList" />
+                <rightQuery style="float: right;" :query="state.showQuery" @toggleQuery="toggleQuery" @refresh="loadList" />
             </el-row>
         </el-card>
 
@@ -89,6 +89,11 @@
                 <el-table-column label="模板标题" show-overflow-tooltip prop="templateTitle" align="center" />
                 <el-table-column label="发送昵称" show-overflow-tooltip prop="nickName" align="center" />
                 <el-table-column label="模板内容" show-overflow-tooltip prop="templateContext" align="center" />
+                <el-table-column label="模板类型" align="center">
+                    <template #default="scope">
+                        <dictTag :type="DICT_TYPE.SYSTEM_NOTICE_TEMPLATE" :value="scope.row.templateType"></dictTag>
+                    </template>
+                </el-table-column>
                 <el-table-column label="排序" prop="sortValue" align="center" />
                 <el-table-column label="创建时间" align="center" prop="createTime" />
                 <el-table-column label="操作" align="center">
@@ -154,7 +159,10 @@
                 </el-form-item>
 
                 <el-form-item label="模板类型" prop="templateType">
-                    <el-input v-model="state.form.templateType" placeholder="请输入模板类型" clearable></el-input>
+                    <el-select v-model="state.form.templateType" class="w-full" placeholder="请选择模板类型">
+                        <el-option v-for="item in getDictOptions(DICT_TYPE.SYSTEM_NOTICE_TEMPLATE)" :key="item.value"
+                            :label="item.label" :value="item.value" />
+                    </el-select>
                 </el-form-item>
 
                 <el-form-item label="发送人" prop="nickName">
@@ -172,7 +180,7 @@
 
             <template #footer>
                 <span class="dialog-footer">
-                    <el-button type="primary" @click="submit(ruleFormRef)">
+                    <el-button type="primary" @click="submit()">
                         提交
                     </el-button>
                 </span>
@@ -184,6 +192,7 @@
 </template>
 
 <script setup lang="ts">
+import { DICT_TYPE, getDictOptions, getIntDictOptions } from '@/utils/common/dict'
 import {
     selectSysNoticeTemplateList,
     insertSysNoticeTemplate,
@@ -191,18 +200,14 @@ import {
     getSysNoticeTemplateId,
     removeSysNoticeTemplate,
     basePeri
-}
-    from '@/api/system/notice/template.ts';
+} from '@/api/system/notice/template';
 import { useDark, useToggle } from '@vueuse/core'
 import { onMounted, reactive, ref } from 'vue';
 import type { SysNoticeTemplate } from '@/api/system/type';
 import { confirms, messages, notify } from '@/utils/message/MessageUtils';
 import type { FormInstance, FormRules } from 'element-plus';
-
-const isDark = useDark()
-const toggleDark = useToggle(isDark)
 const ruleFormRef = ref<FormInstance>()
-const rules = reactive<FormRules<typeof form>>({
+const rules = reactive({
     templateTitle: [
         { message: '模板标题必须填写', trigger: 'blur', required: true },
         { min: 2, max: 200, message: '模板标题长度 2 - 200之间', trigger: 'blur' }
@@ -214,6 +219,10 @@ const rules = reactive<FormRules<typeof form>>({
 
     templateContext: [
         { message: '模板内容必须填写', trigger: 'blur', required: true },
+    ],
+
+    templateType: [
+        { message: '模板类型必须填写', trigger: 'change', required: true }
     ]
 })
 const state = reactive({
@@ -257,8 +266,8 @@ const state = reactive({
         status: "0",
         sortValue: 0,
         remark: undefined,
-        templateParams:undefined,
-    } 
+        templateParams: undefined,
+    }
 
 
 })
@@ -279,10 +288,11 @@ const handleInsert = (formEl?: FormInstance | undefined) => {
     resetFormRule(formEl);// 清空表单
 }
 
-const handleUpdate = (id: string, formEl: FormInstance | undefined) => {
+const handleUpdate = (id?: string, formEl?: FormInstance) => {
     state.open = true;
-    state.title = "更新角色"
+    state.title = "更新模板"
     const currnetId = id || state.ids;
+    // @ts-ignore
     getSysNoticeTemplateId(currnetId).then(res => {
         resetFormRule(formEl);// 清空表单
         Object.assign(state.form, res.data)
@@ -292,7 +302,7 @@ const handleUpdate = (id: string, formEl: FormInstance | undefined) => {
 }
 
 const handleDelete = (row?: SysNoticeTemplate) => {
-    if (row.id) {
+    if (row) {
         confirms
             .confirm(`您是否删除${row.templateTitle}消息模板数据?`)
             .then((res) => {
@@ -304,6 +314,7 @@ const handleDelete = (row?: SysNoticeTemplate) => {
         confirms
             .confirm(`您是否删除${state.ids}这些数据?`)
             .then((res) => {
+                // @ts-ignore
                 removeSysNoticeTemplate(state.ids).then((res) => {
                     loadList();
                 });
@@ -320,6 +331,7 @@ const submit = () => {
             return
         }
         if (state.form.id) {
+            // @ts-ignore
             updateSysNoticeTemplate(state.form)
                 .then(res => {
                     messages.success(res.msg)
@@ -331,6 +343,7 @@ const submit = () => {
                     // state.open = false;
                 })
         } else {
+            // @ts-ignore
             insertSysNoticeTemplate(state.form).then(res => {
                 messages.success(res.msg)
                 state.open = false;
@@ -374,13 +387,14 @@ const resetFormRule = (formEl?: FormInstance | undefined) => {
         id: undefined,
         templateTitle: undefined,
         templateCode: undefined,
-        templateType: undefined,
+        templateType: "",
         templateContext: undefined,
         nickName: undefined,
         status: "0",
         sortValue: 0,
         remark: undefined,
     })
+
     if (!formEl) return
     formEl.resetFields()
 }

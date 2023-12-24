@@ -1,5 +1,8 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+
+// main.ts
+import 'virtual:uno.css'
 // import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import "@/routerPerssion"//使用路由
 import 'element-plus/theme-chalk/dark/css-vars.css'

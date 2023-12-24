@@ -77,6 +77,7 @@ export const dynamicRoutes: AppRouteRecordRaw[] = [
       {
         path:':typeId(\\d+)',
         name:'dict-value',
+        // @ts-ignore
         component:()=>import('@/views/system/dict/value/index.vue'),
         // component: () => import('@/views/dashboard/index.vue'),
         meta:{title:'系统菜单',activeMenu:'/system/dict/type'}

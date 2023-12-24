@@ -48,6 +48,7 @@
                 </el-col>
 
                 <el-col :span="1.5" v-peri="[basePeri + 'update']">
+                    <!--  -->
                     <el-button type="primary" plain :disabled="state.single" @click="handleUpdate(undefined, ruleFormRef)">
                         <template #icon>
                             <el-icon>
@@ -77,8 +78,18 @@
                 <el-table-column label="ID" prop="id" align="center" />
                 <el-table-column label="标题" show-overflow-tooltip prop="title" align="center" />
                 <el-table-column label="字符" show-overflow-tooltip prop="key" align="center" />
-                <el-table-column label="类型" show-overflow-tooltip prop="type" align="center" />
+                <el-table-column label="类型" show-overflow-tooltip align="center">
+                    <template #default="scope">
+                        <DictTag :type="DICT_TYPE.SYSTEM_MODULE" :value="scope.row.type"></DictTag>
+                    </template>
+                </el-table-column>
                 <el-table-column label="排序" prop="sortValue" align="center" />
+
+                <el-table-column label="状态" align="center">
+                    <template #default="scope">
+                        <DictTag :type="DICT_TYPE.COMMON_DATA_STATUS" :value="scope.row.status"></DictTag>
+                    </template>
+                </el-table-column>
                 <el-table-column label="备注" show-overflow-tooltip prop="remark" align="center" />
                 <el-table-column label="创建时间" align="center">
                     <template #default="scope">
@@ -145,7 +156,10 @@
                 </el-form-item>
 
                 <el-form-item label="类型" prop="type">
-                    <el-input v-model="state.form.type" placeholder="请输入字典类型" clearable></el-input>
+                    <el-select v-model="state.params.type" placeholder="请选择模块类型" class="w-full">
+                        <el-option v-for="item in getDictOptions(DICT_TYPE.SYSTEM_MODULE)" :key="item.value"
+                            :label="item.label" :value="item.value" />
+                    </el-select>
                 </el-form-item>
 
                 <el-form-item label="类型" prop="sortValue">
@@ -187,6 +201,7 @@ import type { SysDictType } from '@/api/system/type';
 import { confirms, messages, notify } from '@/utils/message/MessageUtils';
 import type { FormInstance, FormRules } from 'element-plus';
 import { parseTime } from '@/utils/common'
+import { DICT_TYPE, getDictOptions } from '@/utils/common/dict'
 
 const ruleFormRef = ref()
 const rules = reactive({
@@ -264,7 +279,7 @@ const handleInsert = (formEl?: FormInstance | undefined) => {
     resetFormRule(formEl);// 清空表单
 }
 
-const handleUpdate = (id: string, formEl: FormInstance | undefined) => {
+const handleUpdate = (id?: string, formEl?: FormInstance) => {
     state.open = true;
     state.title = "更新角色"
     const currnetId = id || state.ids;
@@ -306,7 +321,7 @@ const handleDelete = (row?: SysDictType) => {
 
 const submit = () => {
     if (!ruleFormRef) return
-    ruleFormRef.value.validate((v:boolean) => {
+    ruleFormRef.value.validate((v: boolean) => {
         if (!v) {
             notify.error('系统提示', '抱歉您无法提交表单')
             return

@@ -1,10 +1,17 @@
 <template>
     <div class="app-context">
+        <el-alert title="动态路由介绍" type="success"
+            description="            
+ 动态数据路由(/xx/xx/{id})这个模式,建议操作人员使用的时候使用嵌套进行新增比如(/system/dict)类型与数据,我们想类型去查询匹配的数据页面这样我们应该这样字典类型(/system/dict/type)跳转(/system/dict/value/{typeId}),注意{typeId}是动态的需要判断用户是否有么有这个权限才可以跳转 "
+            show-icon />
+        <br />
+        <el-alert title="侧边路由介绍" type="success"
+            description="对于父路由的路径需要有 /，子路由的路径可以不填写 /。例如，父路由可以是 /system，子路由可以是 user，不需要写成 /system/user。" show-icon />
         <el-row>
 
             <el-col :span="24">
-
-                <el-card class="box-card">
+                <!-- 真的建议各位使用unocss真的很好用!!!! -->
+                <el-card class="box-card mt-2">
                     <el-form v-show="state.showQuery" :inline="true" :model="state.params" class="demo-form-inline"
                         @submit.native.prevent>
                         <el-form-item label="菜单名称">
@@ -44,13 +51,15 @@
                                 展开</el-button>
                         </el-col>
 
-                            <rightQuery :query="state.showQuery" @toggleQuery="toggleQuery" @refresh="loadList" />
+                        <rightQuery :query="state.showQuery" @toggleQuery="toggleQuery" @refresh="loadList" />
+                       
                     </el-row>
                 </el-card>
 
                 <el-card class="mt-10">
 
-                    <el-table ref="treeTableRef" stripe border :data="state.list" style="width: 100%" row-key="id" lazy
+                    <el-table ref="treeTableRef" stripe border v-loading="state.loading" :data="state.list"
+                        style="width: 100%" row-key="id" lazy
                         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
                         <el-table-column prop="permissionName" show-overflow-tooltip align="center" label="权限名称" />
                         <el-table-column prop="permissionValue" show-overflow-tooltip align="center" label="权限字符" />
@@ -58,7 +67,7 @@
                         <el-table-column prop="menuComponent" align="center" show-overflow-tooltip label="菜单路径" />
                         <el-table-column label="Icon" align="center">
                             <template #default="scope">
-                                <svg-icon :iconClass="scope.row.menuIcon" />
+                                <svg-icon :icon="scope.row.menuIcon" />
                             </template>
                         </el-table-column>
                         <el-table-column label="权限类型" align="center">
@@ -173,6 +182,21 @@
                                 </span>
                             </template>
                             <el-input v-model="state.form.permissionName" placeholder="请填写权限名称" clearable />
+                        </el-form-item>
+                    </el-col>
+
+                    <el-col :span=12 v-show="state.form.permissionType === 'R' || state.form.permissionType === 'M'">
+                        <el-form-item prop="menuIcon">
+                            <template #label>
+                                <span>
+                                    Icon
+                                    <el-tooltip placement="top">
+                                        <template #content>Icon</template>
+                                        <svg-icon iconClass="question"></svg-icon>
+                                    </el-tooltip>
+                                </span>
+                            </template>
+                            <icon-select v-model="state.form.menuIcon" placeholder="请填写Icon" />
                         </el-form-item>
                     </el-col>
 
@@ -377,7 +401,7 @@ const state = reactive({
 
     loading: false,
 
-    
+
 
     list: [] as SysPermisson[],
 
@@ -490,7 +514,9 @@ const handleCommand = (type: string, row: SysPermisson) => {
 
 // @ts-ignore
 const TabData = (data, status) => {  //循环数据赋值
+    // @ts-ignore
     data.forEach((i) => {
+        // @ts-ignore
         treeTableRef.value.toggleRowExpansion(i, status)
         if (i.children) {
             forArr(i.children, status);
@@ -499,7 +525,9 @@ const TabData = (data, status) => {  //循环数据赋值
 }
 // @ts-ignore
 const forArr = (arr, status) => {     //关闭展开逻辑
+    // @ts-ignore
     arr.forEach((i) => {
+        // @ts-ignore
         treeTableRef.value.toggleRowExpansion(i, status)
         if (i.children) {
             forArr(i.children, status);

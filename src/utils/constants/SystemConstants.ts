@@ -89,6 +89,20 @@ export const enum FileTypeEnum{
 
     GB="Gb"
 
+}
 
+/** 
+ * 系统数据状态
+ */
+export const enum DataStatusEnum{
 
+    /**
+     * 正常
+     */
+    NORMAL="0",
+
+    /**
+     * 禁用
+     */
+    DISABLE="1"
 }
