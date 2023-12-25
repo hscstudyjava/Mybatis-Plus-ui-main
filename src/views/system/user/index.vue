@@ -27,7 +27,7 @@
             <el-row :gutter="10" class="mb8">
 
                 <el-col :span="1.5" v-peri="[`${prefixPer}save`]">
-                    <el-button type="success" plain>
+                    <el-button type="success" plain @click="openUserFrom('create', undefined)">
                         <template #icon>
                             <el-icon>
                                 <i-ep-Plus />
@@ -65,7 +65,7 @@
                         下载</el-button>
                 </el-col>
 
-                    <rightQuery :query="showQuery" @toggleQuery="toggleQuery" @refresh="loadList" />
+                <rightQuery :query="showQuery" @toggleQuery="toggleQuery" @refresh="loadList" />
             </el-row>
         </el-card>
 
@@ -76,7 +76,7 @@
                 <el-table-column label="账号" show-overflow-tooltip prop="userName" align="center" />
                 <el-table-column label="昵称" show-overflow-tooltip prop="userNickName" align="center" />
                 <el-table-column label="排序" prop="sortValue" align="center" />
-                <el-table-column label="性别"  align="center" >
+                <el-table-column label="性别" align="center">
                     <template #default="scope">
                         <DictTag :value="scope.row.sex" :type="DICT_TYPE.USER_SEX"></DictTag>
                     </template>
@@ -88,7 +88,8 @@
                 </el-table-column>
                 <el-table-column label="操作" align="center">
                     <template #default="scope">
-                        <el-button link v-peri="[`${prefixPer}update`]" type="primary">
+                        <el-button link v-peri="[`${prefixPer}update`]" @click="openUserFrom('update', scope.row.userId)"
+                            type="primary">
                             <template #icon>
                                 <el-icon>
                                     <i-ep-Edit />
@@ -103,28 +104,53 @@
                             </template>
                             删除
                         </el-button>
+
+                        <el-dropdown @command="handleCommand($event, scope.row)" teleported>
+                            <el-button link type="primary">
+                                更多<el-icon class="el-icon--right">
+                                    <svg-icon icon="ep:right"></svg-icon>
+                                </el-icon>
+                            </el-button>
+                            <template #dropdown>
+                                <el-dropdown-menu>
+                                    <el-dropdown-item command="reset">重置密码</el-dropdown-item>
+                                    <el-dropdown-item command="auth">授权角色</el-dropdown-item>
+                                </el-dropdown-menu>
+                            </template>
+                        </el-dropdown>
                     </template>
                 </el-table-column>
             </el-table>
 
-            <Paginations v-show="state.total > 0" :limit="state.params.pageSize" :pageNum="state.params.pageNumber"
-                :total="state.total" @paginations="loadList">
+            <Paginations v-show="state.total > 0" v-model:limit="state.params.pageSize"
+                v-model:pageNum="state.params.pageNumber" :total="state.total" @paginations="loadList">
             </Paginations>
         </el-card>
 
+        <!-- 用户 -->
+        <userFrom :post-list="simplePost" :dept-list="simpleDept" @success="loadList" ref="userFromRef" />
 
+        <!-- 授权 -->
+        <authRole :role-list="simpleRole" ref="authFromRef" @success="loadList" />
     </div>
 </template>
 <script setup lang="ts">
 import { DICT_TYPE, getStrDictOptions } from '@/utils/common/dict'
-
+import userFrom from './userFrom.vue';
 import { onMounted, reactive, ref } from 'vue';
 import { parseTime } from '@/utils/common'
-import { pageUser } from '@/api/system/user/index'
-import type { SysUser } from '@/api/system/type';
+import { pageUser, resetPassWord } from '@/api/system/user/index'
+import type { SimpleTree, SysDept, SysPost, SysRole, SysUser } from '@/api/system/type';
+import { selectSysDeptSimpleList } from '@/api/system/dept';
+// @ts-ignore
+import { selectSimplePost } from '@/api/system/post';
+import { confirms, messages } from '@/utils/message/MessageUtils';
+import { queryRoleAllList } from '@/api/system/role';
+import AuthRole from './authRole.vue';
 const prefixPer = "system:user:";
 /*****************参数************************* */
-
+const userFromRef = ref()
+const authFromRef = ref()
 const showQuery = ref(true)
 const state = reactive({
 
@@ -159,16 +185,76 @@ const state = reactive({
 
 })
 
+// 默认部门信息
+const simpleDept = ref<SimpleTree<SysDept>[]>([]);
+const simplePost = ref<SysPost[]>([]);
+const simpleRole = ref<SysRole[]>([]);
+
 /*********************** */
-const loadList = (value?: any) => {
-    // 重新修改后
-    if (value != null) Object.assign(state.params, value)
-    state.loading = true;
-    pageUser(state.params).then(res => {
+const loadList = async () => {
+    state.loading = true
+    try {
+        // 重新修改后
+        const { data } = await pageUser(state.params)
+        state.total = data.totalRow
+        state.list = data.records;
+
+    } finally {
         state.loading = false;
-        state.list = res.data.records
-        state.total = res.data.totalRow
-    })
+    }
+}
+
+const loadingOtherList = async () => {
+    try {
+        // 加载部门信息
+        simpleDept.value = (await selectSysDeptSimpleList({})).data
+        simplePost.value = (await selectSimplePost({})).data
+        simpleRole.value = (await queryRoleAllList({})).data
+    } finally {
+
+
+    }
+}
+
+const openUserFrom = async (type: string, userId?: number) => {
+    await loadingOtherList()
+    userFromRef.value.open(type, userId)
+}
+
+
+const handleCommand = (type: string, row: SysUser) => {
+
+    switch (type) {
+
+        case 'reset':
+            resetPasswd(row.userId!!)
+            break
+        case 'auth':
+            authFromOpen(row.userId!!)
+            break
+
+    }
+}
+const authFromOpen = (userId: number) => {
+    authFromRef.value.open(userId)
+}
+
+/** 
+ * 重置密码
+ */
+const resetPasswd = async (userId: number) => {
+    try {
+        const { value } = await confirms.prompt("请填充重置密码", "重置密码", "info")
+        // 判断密码是否为空
+        if (value === "" || value === null) {
+            messages.error("填写密码不能为空")
+            return
+        }
+        const { msg } = await resetPassWord(userId, value)
+        messages.success(msg)
+    } catch (error: any) {
+        messages.success(error.msg)
+    }
 }
 
 /** 
@@ -193,8 +279,8 @@ const toggleQuery = () => {
     showQuery.value = !showQuery.value
 }
 
-onMounted(() => {
-
-    loadList()
+onMounted(async () => {
+    await loadList()
+    await loadingOtherList()
 })
 </script>
