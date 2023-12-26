@@ -113,64 +113,79 @@ const submitForm = reactive({
 })
 
 // 校验对象
-const ruleFrom=ref()
+const ruleFrom = ref()
 // 校验规则
-const rule=[
-  {
+const rules = reactive({
 
-    userName:[
-      {
-        message:'用户名称不能为空',trigger:'bluer',require:true
-      }
-    ],
+  userName: [
+    {
+      message: '用户名称不能为空', trigger: 'blur', required: true
+    }
+  ],
 
-    passWord :[
-      {
-        message:'用户名称不能为空',trigger:'bluer',require:true
-      }
-    ],
+  passWord: [
+    {
+      message: '密码不能为空', trigger: 'blur', required: true
+    }
+  ],
+
+  // code单独判断,因为后续可能使用邮箱或者手机号
+  code: [
+    {
+      message: '验证码不能为空', trigger: 'blur', required: true
+    }
+  ]
 
 
-  }
-]
+})
 
-const login = () => {
-  loadings.value = true;
+const login = async () => {
+  if (!ruleFrom) return
+  const valid = await ruleFrom.value.validate()
+  if (!valid) return
   loading.open()
-  userStore.login({
-    userName: submitForm.userName.trim(),
-    passWord: submitForm.passWord.trim()
-  }).then(res => {
-    loadings.value = false;
+  try {
+    await userStore.login({
+      userName: submitForm.userName.trim(),
+      passWord: submitForm.passWord.trim()
+    })
     router.push("/")
-  }).catch(error => {
-    messages.error(error.msg)
+
+  } catch (error) {
     userStore.$clearCache();// 清空缓存中token
     userStore.$resetOauth2();//包括pinia中Oauth2对象
-    loadings.value = false;
-  }).finally(() => {
-    loading.close()
+    await getCaptcha()
+  } finally {
+    loading.close();
+  }
+}
+
+const getCaptcha = async () => {
+  if (!ruleFrom){
+    console.log(ruleFrom);
+
   }
 
-  )
-}
-
-const getCaptcha = () => {
-  getCaptchaInfo().then(res => {
-
-    captcha.value = res.data
-    // 判断是否开启pro,未开启直接赋值
-    if (captcha.value.activeProfile !== 'pro') {
-      submitForm.uuid = captcha.value.result
+  try {
+    const { data } = await getCaptchaInfo()
+    // 获得submitFrom表单属性
+    
+    captcha.value=data;
+    submitForm.uuid=data.uuid
+    // 我自己不想一直写code
+    if(data.activeProfile==='pro'){
+        submitForm.code=data.result
     }
+  }finally{
+    // 处理一下异常
 
-
-
-  })
+  }
+  
 }
 
-onMounted(() => {
-  getCaptcha();
+onMounted(async() => {
+  
+  await getCaptcha();
 })
 
 
