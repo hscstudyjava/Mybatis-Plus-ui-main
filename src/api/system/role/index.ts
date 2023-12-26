@@ -8,7 +8,7 @@ import type { Page, SysRole } from "../type";
  */
 const baseUrl = "/admin-api/system/role/"
 
-export function queryRoleAllList(params: SysRole): Promise<AjaxResult<SysRole>> {
+export function queryRoleAllList(params: any): Promise<AjaxResult<Array<SysRole>>> {
     return request.get(
         baseUrl + `role-list`,
         {

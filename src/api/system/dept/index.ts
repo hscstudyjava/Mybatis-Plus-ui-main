@@ -21,7 +21,7 @@ export function selectSysDeptList(params:any):Promise<AjaxResult<Array<SysDept>>
     )
 }
 
-export function selectSysDeptSimpleList(params:any):Promise<AjaxResult<SimpleTree<SysDept>>>{
+export function selectSysDeptSimpleList(params:any):Promise<AjaxResult<SimpleTree<SysDept>[]>>{
     return request.get(
         baseUrl+'tree-simple-list',
         {

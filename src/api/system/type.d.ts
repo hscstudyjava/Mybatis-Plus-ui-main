@@ -46,31 +46,29 @@ export interface SysRole {
 
 export interface SysUser {
 
-    userId: Number
+    userId?: number
 
-    createDept: Number
+    createDept?: number
 
-    userName: String
+    userName: string
 
-    passWord: String
+    passWord: string
 
-    userNickName: String
+    userNickName: string
 
-    telPhone: String
+    telPhone: string
 
-    userEmil: String
+    userEmil: string
 
-    createTime: Date
+    createTime?: Date
 
-    updateTime: Date
+    updateTime?: Date
 
-    createBy: String
+    createBy?: String
 
-    updateBy: String
+    updateBy?: String
 
-    sortValue: Number
-
-    isDeleted: Number
+    sortValue: number
 
     sex: String
 }
@@ -362,4 +360,18 @@ export type SysGroupSimpleValueResult={
 
     list:Array<SysDictSimpleResult>
     
+}
+
+export interface SysPost{
+
+     id?: number
+
+     postName?:string
+
+     postCode?:string
+
+     status?:string
+
+     sortValue?:number
+
 }
