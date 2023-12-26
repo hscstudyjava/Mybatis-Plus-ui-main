@@ -1,6 +1,9 @@
 <template class="">
   <!-- 登录容器 -->
   <div class=" login-container clearfix">
+<template class="">
+  <!-- 登录容器 -->
+  <div class=" login-container clearfix">
 
     <div class="login-left"></div>
 
@@ -9,53 +12,16 @@
       <!-- 标题 -->
       <img :src="logo" class="w-48px w-48px">
 
-      <el-divider border-style="dotted">
-        {{ title }}
-      </el-divider>
-
-      <div
-        class="
-        m-auto h-full w-[100%] flex flex-col items-center at-2xl:max-w-500px at-lg:max-w-500px at-md:max-w-500px at-xl:max-w-500px">
-        <h1 class="enter-x mb-3 text-center text-2xl font-bold xl:text-center xl:text-3xl">
-          登录
-        </h1>
-
-        <!-- 输入框 -->
-        <el-form :model="submitForm" size="large" class="w-full" :rules="rules" ref="ruleFrom" @submit.native.prevent>
-
-          <el-form-item prop="userName">
-            <el-input v-model="submitForm.userName" placeholder="请输入账号信息">
-              <template #prefix>
-                <svg-icon icon="ep:user"></svg-icon>
-              </template>
-            </el-input>
-          </el-form-item>
-
-          <el-form-item prop="passWord">
-            <el-input v-model="submitForm.passWord" placeholder="请输入账号密码">
-              <template #prefix>
-                <svg-icon icon="ep:lock"></svg-icon>
-              </template>
-            </el-input>
-          </el-form-item>
-
-          <!-- 验证码 -->
-          <el-form-item prop="code" v-show="captcha?.open">
-
-            <el-col :span="16">
-              <el-input v-model="submitForm.code" ref="codeRef" placeholder="请输入验证码" class="flex w-[70%]">
-                <template #prefix>
-                  <svg-icon icon="ep:key"></svg-icon>
-                </template>
-              </el-input>
-
-            </el-col>
-            <el-col :offset="2" :span="6">
-              <img @click="getCaptcha" :src="' data:image/gif;base64,' + captcha?.base64Img"
-                class="h-38px w-full ml-auto cursor-pointer  v-mid">
-            </el-col>
+        <el-divider size="large">
+          <span class="title">
+            {{ title }}
+          </span>
+        </el-divider>
+        <el-form :model="submitForm" size="large">
 
 
+          <el-form-item>
+            <el-input v-model="submitForm.userName" placeholder="用户账号" :prefix-icon="UserFilled" />
           </el-form-item>
 
           <el-form-item>
@@ -95,9 +61,10 @@ import router from '@/router';
 import { useSettingStore } from '@/stores/setting';
 import { useUserStore } from '@/stores/user'
 // @ts-ignore
-import { storeToRefs } from 'pinia';
-import { nextTick, onMounted, reactive, ref } from 'vue'
-import { loading, messages } from '@/utils/message/MessageUtils';
+import type { AjaxResult } from '@/utils/request/type';
+import { defineStore, storeToRefs } from 'pinia';
+import { onMounted, reactive, ref } from 'vue'
+import { messages } from '@/utils/message/MessageUtils';
 import { getCaptchaInfo } from '@/api/login/login';
 import type { Captcha } from '@/api/system/type';
 const { title } = storeToRefs(useSettingStore())
@@ -108,96 +75,33 @@ const captcha = ref<Captcha>()
 const submitForm = reactive({
   userName: '',
   passWord: '',
-  code: '',
-  uuid: '',
 })
 
-// 校验对象
-const ruleFrom = ref()
-const codeRef = ref()
-
-// 校验规则
-const rules = reactive({
-
-  userName: [
-    {
-      message: '用户名称不能为空', trigger: 'blur', required: true
-    }
-  ],
-
-  passWord: [
-    {
-      message: '密码不能为空', trigger: 'blur', required: true
-    }
-  ],
-
-  // code单独判断,因为后续可能使用邮箱或者手机号
-  code: [
-    {
-      message: '验证码不能为空', trigger: 'blur', required: true
-    }
-  ]
-
-
-})
-
-const login = async () => {
-  if (!ruleFrom) return
-  const valid = await ruleFrom.value.validate()
-  if (!valid) return
-  loading.open()
-  try {
-    await userStore.login({
-      userName: submitForm.userName.trim(),
-      passWord: submitForm.passWord.trim()
-    })
+const onSubmit = () => {
+  loading.value = true;
+  userStore.login({
+    userName: submitForm.userName.trim(),
+    passWord: submitForm.passWord.trim()
+  }).then(res => {
+    loading.value = false;
     router.push("/")
 
   } catch (error) {
     userStore.$clearCache();// 清空缓存中token
     userStore.$resetOauth2();//包括pinia中Oauth2对象
-    await getCaptcha()
-  } finally {
-    loading.close();
-  }
+    loading.value = false;
+    
+  })
 }
-
-const getCaptcha = async () => {
-  if (!ruleFrom) {
-    console.log(ruleFrom);
-
-  }
-
-  try {
-    const { data } = await getCaptchaInfo()
-    // 获得submitFrom表单属性
-
-    captcha.value = data;
-    submitForm.uuid = data.uuid
-    // 我自己不想一直写code
-    if (data.activeProfile === 'pro') {
-      submitForm.code = data.result
-    }
-    // 点击到这个input| 判断一下submitFrom中userName||password
-    if (submitForm.userName || submitForm.passWord) {
-      nextTick(() => {
-        codeRef.value.focus()
-      })
-    }
-
-
-  } finally {
-    // 处理一下异常
-
-  }
-
-}
-
-onMounted(async () => {
-
-  await getCaptcha();
+onMounted(()=>{
+  initCaptcha();
 })
 
+const initCaptcha=()=>{
+  getCaptchaInfo().then(res=>{
+
+  })
+}
 
 
 </script>
