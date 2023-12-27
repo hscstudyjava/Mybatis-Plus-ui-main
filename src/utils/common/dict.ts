@@ -106,5 +106,7 @@ export enum DICT_TYPE {
 
     SYSTEM_MODULE="system_module",
     
-    SYSTEM_OPERATION_TYPE="system_operation_type"
+    SYSTEM_OPERATION_TYPE="system_operation_type",
+
+    SYSTEM_LOGIN_STATUS="system_login_status"
 }

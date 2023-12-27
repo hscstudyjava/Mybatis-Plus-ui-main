@@ -378,7 +378,7 @@ export interface SysPost {
 
 // 操作日志
 export interface SysOperatorLog {
-    
+
     id: number;
 
     operatorType: number;
@@ -410,4 +410,28 @@ export interface SysOperatorLog {
     operateTime: string;
 
     timeStamp: number;
+}
+
+
+export interface SysLoginLog {
+    id?: number
+
+    userName: string 
+
+    ipAddr: string
+
+    ipLocation: string
+
+    status: string
+
+    msg: string
+
+    browser: string 
+
+    os: string
+
+    hasMobile: boolean
+
+    createTime?: Date
+
 }

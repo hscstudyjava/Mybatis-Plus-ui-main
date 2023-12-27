@@ -145,11 +145,16 @@ const login = async () => {
   try {
     await userStore.login({
       userName: submitForm.userName.trim(),
-      passWord: submitForm.passWord.trim()
+      passWord: submitForm.passWord.trim(),
+      uuid: submitForm.uuid.trim(),
+      code: submitForm.code.trim()
     })
     router.push("/")
 
-  } catch (error) {
+  } catch (error: any) {
+    if (error.msg) {
+      messages.error(error.msg)
+    }
     userStore.$clearCache();// 清空缓存中token
     userStore.$resetOauth2();//包括pinia中Oauth2对象
     await getCaptcha()
@@ -167,7 +172,6 @@ const getCaptcha = async () => {
   try {
     const { data } = await getCaptchaInfo()
     // 获得submitFrom表单属性
-
     captcha.value = data;
     submitForm.uuid = data.uuid
     // 我自己不想一直写code
