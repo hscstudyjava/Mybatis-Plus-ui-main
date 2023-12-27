@@ -57,5 +57,15 @@ export function resetPassWord(id:number,passwd:string):Promise<AjaxResult<void>>
             passWord:passwd.trim()
         }
     )
+}
 
+/*授权角色 */
+export function authUserRole(id:number,roleIdList:number[]):Promise<AjaxResult<void>>{
+    return request.post(
+        baseUrl+'auth-role',
+        {
+            userId:id,
+            roleIdList
+        }
+    )
 }

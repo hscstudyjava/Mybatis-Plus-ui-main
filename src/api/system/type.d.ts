@@ -112,11 +112,11 @@ export interface Page<T> {
  */
 export interface SimpleTree<T> {
 
-    id: Number | String | null,
+    id: number | string | null,
 
-    parentId: Number | String | null,
+    parentId: number | string | null,
 
-    label: String,
+    label: string,
 
     children: Array<T>
 }

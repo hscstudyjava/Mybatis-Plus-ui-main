@@ -4,7 +4,7 @@ import { parseTime } from '@/utils/common'
 import { DICT_TYPE, getDictOptions } from '@/utils/common/dict'
 import { confirms, messages, notify } from '@/utils/message/MessageUtils';
 import type { SysRole } from '@/api/system/type';
-import { getUserOnce, type SysUserReq } from '@/api/system/user';
+import { authUserRole, getUserOnce, type SysUserReq } from '@/api/system/user';
 //------------------------基础模板-------------------------------------------------
 defineOptions({ name: 'authRole' })
 
@@ -49,7 +49,13 @@ const emit = defineEmits(['success'])
 defineExpose({ open })
 
 const submit = async () => {
-
+    try{
+        await authUserRole(from.userId!!,from.roleIdList!!)
+        diologOpen.value = false,
+        emit('success')
+    }catch(error:any){
+        messages.error(error?.msg)
+    }
 }
 </script>
 <template>
