@@ -52,12 +52,13 @@ export const transform: InterceptorHooks = {
 
     if (res.data.code !== SuccessCode.SUCCESS) {
 
+
       if (res.config.requestOptions?.globalErrorMessage) {
         // messages.error(res.data.msg);
         // 这里全局提示错误
         console.error(res.data.msg)
       }
-
+      
       // 访问Token已经过期
       if (res.data.code === LoginCode.USER_TOKEN_EXPIRE) {
         if (!isRefresh) {

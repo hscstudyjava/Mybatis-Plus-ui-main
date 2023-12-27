@@ -3,7 +3,7 @@
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import router from './router'
-import { getAccessToken, removeAccessToken } from './utils/cache/auth'
+import { getAccessToken, removeAccessToken, getRefreshToken } from './utils/cache/auth'
 import { useUserStore } from '@/stores/user'
 import { useSettingStore } from '@/stores/setting'
 import { useDictStore } from '@/stores/dict'
@@ -36,71 +36,72 @@ router.beforeEach(async (to, from, next) => {
     NProgress.start();// 开始
 
     /*************常用store************** */
-    const useSetting = useSettingStore()
+    title.value = dynamicTitle(to.meta.title as string)
+    const accessToken = getAccessToken();
+    const refreshToken = getRefreshToken();
 
-    title.value = dynamicTitle(useSetting.title, useSetting.dynamicTitle, to.meta.title as string)
+       // 如果访问 Token 已经无效使用刷新 Token 拉取一下访问 Token
+    if (accessToken || refreshToken) {
+        const userDict = useDictStore();
+        const usePri = usePeriStroe();
+        const userStore = useUserStore();
 
-    if (getAccessToken()) {
-        // 登录状态去login跳转到/
-        if (loginWhiteList.indexOf(to.path) !== -1) {
+        // 刷新 Token
+        if (!accessToken && refreshToken) {
+            try {
+                await userStore.refresh(refreshToken);
+            } catch (error: any) {
+                userStore.$clearCache();
+            }
+        }
+
+        // 登录状态去 login 跳转到 /
+        if (loginWhiteList.includes(to.path)) {
             switch (to.path) {
                 case '/error/network':
                     next();
                     break;
-
                 default:
-                    next({ path: '/' })
+                    next({ path: '/' });
                     break;
             }
-            NProgress.done()
         } else {
-            const userDict = useDictStore()
-            const usePri = usePeriStroe()
-            const userStore = useUserStore()
-            // 拉取一下用户接口,建议返回到
             try {
                 if (!userDict.getIsSet) {
-                    await userDict.loadingDictMap()
+                    await userDict.loadingDictMap();
                 }
 
                 if (!userStore.getIsUserSet) {
-
-                    await userStore.getCurrentUser();// 拉取用户数据
-                    await usePri.loadingRouter();// 拉取后端数据
+                    await userStore.getCurrentUser(); // 拉取用户数据
+                    await usePri.loadingRouter(); // 拉取后端数据
 
                     usePri.routes.forEach(menu => {
-                        router.addRoute(menu as unknown as RouteRecordRaw)
-                    })
-                    const redirectPath = from.query.redirect || to.path
-                    const redirect = decodeURIComponent(redirectPath as string)
-                    const nextData = to.path === redirect ? { ...to, replace: true } : { path: redirect }
-                    next(nextData)
+                        router.addRoute(menu as unknown as RouteRecordRaw);
+                    });
+
+                    const redirectPath = from.query.redirect || to.path;
+                    const redirect = decodeURIComponent(redirectPath as string);
+                    const nextData = to.path === redirect ? { ...to, replace: true } : { path: redirect };
+                    next(nextData);
                 } else {
-                    next()
+                    next();
                 }
             } catch (error) {
-                // 处理异常，例如弹出提示框提醒用户
-                console.error(error)
-                // 跳转到异常页面,携带redirect当用户点击重试后跳转回去
-                next(`/error/network?redirect=${to.path}&message=${error}`)
-                NProgress.done()
+                console.error(error);
+                next(`/error/network?redirect=${to.path}&message=${error}`);
             }
         }
     } else {
-        /* has no token*/
-        if (whiteList.indexOf(to.path) !== -1) {
-            // in the free login whitelist, go directly
-            next()
+        // 访问 Token 无效如果是白名单自动跳转
+        if (whiteList.includes(to.path)) {
+            next();
         } else {
-            // other pages that do not have permission to access are redirected to the login page.
-            next(`/login?redirect=${to.path}`)
-            NProgress.done()
+            next(`/login?redirect=${to.path}`);
         }
-
     }
 
-})
-
+    NProgress.done(); // 完成
+});
 
 
 
@@ -111,9 +112,10 @@ router.beforeEach(async (to, from, next) => {
  * @param routerTitle 路由标题
  * @param systemTitle 系统标题
  */
-const dynamicTitle = (systemTitle: string, dynamicType: boolean, routerTitle?: any): string => {
-    if (dynamicType) return `${systemTitle}-${routerTitle}`
-    return systemTitle;
+const dynamicTitle = (routerTitle?: any): string => {
+    const useSetting = useSettingStore()
+    if (useSetting.dynamicTitle && routerTitle) return `${useSetting.title}-${routerTitle}`
+    return useSetting.title
 }
 
 // 

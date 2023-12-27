@@ -21,10 +21,7 @@
         <h1 class="enter-x mb-3 text-center text-2xl font-bold xl:text-center xl:text-3xl">
           登录
         </h1>
-        <el-form :model="submitForm" 
-        ref="ruleFrom"
-        :rules="rules"
-        size="large" class="w-full">
+        <el-form :model="submitForm" ref="ruleFrom" :rules="rules" size="large" class="w-full">
 
 
           <el-form-item prop="userName">
@@ -36,10 +33,7 @@
           </el-form-item>
 
           <el-form-item prop="passWord">
-            <el-input v-model="submitForm.passWord" 
-            type="password"
-            show-password
-            placeholder="请输入账号密码">
+            <el-input v-model="submitForm.passWord" type="password" show-password placeholder="请输入账号密码">
               <template #prefix>
                 <svg-icon icon="ep:lock"></svg-icon>
               </template>
@@ -103,6 +97,7 @@ import { nextTick, onMounted, reactive, ref } from 'vue'
 import { loading, messages } from '@/utils/message/MessageUtils';
 import { getCaptchaInfo } from '@/api/login/login';
 import type { Captcha } from '@/api/system/type';
+import { getRefreshToken } from '@/utils/cache/auth';
 const { title } = storeToRefs(useSettingStore())
 const userStore = useUserStore()
 
@@ -186,8 +181,12 @@ const getCaptcha = async () => {
 
 }
 
-onMounted(async () => {
+/** 
+ * 判断访问token或者长期token是否可以拉取
+ */
 
+onMounted(async () => {
+  // await hasLogin()
   await getCaptcha();
 })
 
