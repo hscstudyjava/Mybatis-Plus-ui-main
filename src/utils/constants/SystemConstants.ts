@@ -50,59 +50,68 @@ export const enum LayoutThemeEnum {
 /**
  * 权限常量
  */
-export const enum PermissionEnum{
+export const enum PermissionEnum {
 
     /**
      * 超级权限
      */
-    SPUPER_PERSSION="*:*:*",
+    SPUPER_PERSSION = "*:*:*",
 
     /**
      * 超级管理员
      */
-    SPUER_ROLE="admin",
+    SPUER_ROLE = "admin",
 
 
 
 }
 
-export const enum SystemEnum{
+export const enum SystemEnum {
 
-    DEFAULT_SPLIT_SYMBOL=","
+    DEFAULT_SPLIT_SYMBOL = ","
 
-    
+
 }
 
 /**
  * 字节、KB、MB、GB
  */
-export const enum FileTypeEnum{
+export const enum FileTypeEnum {
 
     /** 
      * 现在
      */
-    BYTE="byte",
+    BYTE = "byte",
 
-    KB="Kb",
+    KB = "Kb",
 
-    MB="Mb",
+    MB = "Mb",
 
-    GB="Gb"
+    GB = "Gb"
 
 }
 
 /** 
  * 系统数据状态
  */
-export const enum DataStatusEnum{
+export const enum DataStatusEnum {
 
     /**
      * 正常
      */
-    NORMAL="0",
+    NORMAL = "0",
 
     /**
      * 禁用
      */
-    DISABLE="1"
+    DISABLE = "1"
+}
+
+export const enum SystemConfigEnum {
+    // 系统密码策略
+    SYSTEM_PASSWD_STRATEGY = "system.user.passwd_strategy",
+    // 识别码策略
+    SYSTEM_CODE_STRATEGY = "system.login.code_strategy",
+    // 登录限制策略
+    SYSTEM_LOGIN_LIMIT = "system.login.limit"
 }

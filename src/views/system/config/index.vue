@@ -121,13 +121,16 @@
 
                     <el-col :span=12>
                         <el-form-item prop="configKey" label="配置字符">
-                            <el-input v-model="state.form.configKey" placeholder="请填写配置字符" clearable />
+                            <el-input 
+                            v-model="state.form.configKey" placeholder="请填写配置字符" 
+                            :disabled="state.form.id!==''"
+                            clearable />
                         </el-form-item>
                     </el-col>
 
                     <el-col :span=12>
                         <el-form-item prop="configType" label="配置类型">
-                            <el-select v-model="state.params.configType"
+                            <el-select v-model="state.form.configType"
                             class="w-full"
                             placeholder="请选择模板类型">
                                 <el-option v-for="item in getDictOptions(DICT_TYPE.SYSTEM_MODULE  )"
