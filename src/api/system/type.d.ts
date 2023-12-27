@@ -338,12 +338,12 @@ export interface SysDictValue extends BaseEnity {
 
 }
 
-export type SysDictSimpleResult={
+export type SysDictSimpleResult = {
     label: string,
 
     key: string,
 
-    value: string|boolean|number,
+    value: string | boolean | number,
 
     icon: string,
 
@@ -354,24 +354,60 @@ export type SysDictSimpleResult={
     hasDefault: boolean,
 }
 
-export type SysGroupSimpleValueResult={
+export type SysGroupSimpleValueResult = {
 
-    key:string,
+    key: string,
 
-    list:Array<SysDictSimpleResult>
-    
+    list: Array<SysDictSimpleResult>
+
 }
 
-export interface SysPost{
+export interface SysPost {
 
-     id?: number
+    id?: number
 
-     postName?:string
+    postName?: string
 
-     postCode?:string
+    postCode?: string
 
-     status?:string
+    status?: string
 
-     sortValue?:number
+    sortValue?: number
 
+}
+
+// 操作日志
+export interface SysOperatorLog {
+    
+    id: number;
+
+    operatorType: number;
+
+    operateTitle: string;
+
+    businessType: string;
+
+    operateIp: string;
+
+    operateAddress: string;
+
+    operateMethod: string;
+
+    operateUserName: string;
+
+    requestMethod: string;
+
+    requestParams: string;
+
+    requestUrl: string;
+
+    responseParams: string;
+
+    status: string;
+
+    errorMsg: string;
+
+    operateTime: string;
+
+    timeStamp: number;
 }
