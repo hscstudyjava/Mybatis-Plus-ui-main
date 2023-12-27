@@ -156,7 +156,7 @@
                 </el-form-item>
 
                 <el-form-item label="类型" prop="type">
-                    <el-select v-model="state.params.type" placeholder="请选择模块类型" class="w-full">
+                    <el-select v-model="state.form.type" placeholder="请选择模块类型" class="w-full">
                         <el-option v-for="item in getDictOptions(DICT_TYPE.SYSTEM_MODULE)" :key="item.value"
                             :label="item.label" :value="item.value" />
                     </el-select>
@@ -216,7 +216,7 @@ const rules = reactive({
     ],
 
     type: [
-        { message: '字典类型必须填写', trigger: 'blur', required: true },
+        { message: '字典类型必须填写', trigger: 'change', required: true },
     ]
 })
 const state = reactive({

@@ -9,16 +9,57 @@
       <!-- 标题 -->
       <img :src="logo" class="w-48px w-48px">
 
-        <el-divider size="large">
-          <span class="title">
-            {{ title }}
-          </span>
-        </el-divider>
-        <el-form :model="submitForm" size="large">
+      <el-divider size="large">
+        <span class="title">
+          {{ title }}
+        </span>
+      </el-divider>
+
+      <div
+        class="
+        m-auto h-full w-[100%] flex flex-col items-center at-2xl:max-w-500px at-lg:max-w-500px at-md:max-w-500px at-xl:max-w-500px">
+        <h1 class="enter-x mb-3 text-center text-2xl font-bold xl:text-center xl:text-3xl">
+          登录
+        </h1>
+        <el-form :model="submitForm" 
+        ref="ruleFrom"
+        :rules="rules"
+        size="large" class="w-full">
 
 
-          <el-form-item>
-            <el-input v-model="submitForm.userName" placeholder="用户账号" :prefix-icon="UserFilled" />
+          <el-form-item prop="userName">
+            <el-input v-model="submitForm.userName" placeholder="请输入账号信息">
+              <template #prefix>
+                <svg-icon icon="ep:user"></svg-icon>
+              </template>
+            </el-input>
+          </el-form-item>
+
+          <el-form-item prop="passWord">
+            <el-input v-model="submitForm.passWord" 
+            type="password"
+            show-password
+            placeholder="请输入账号密码">
+              <template #prefix>
+                <svg-icon icon="ep:lock"></svg-icon>
+              </template>
+            </el-input>
+          </el-form-item>
+
+          <!-- 验证码 -->
+          <el-form-item prop="code" v-show="captcha?.open">
+            <el-col :span="16">
+              <el-input v-model="submitForm.code" ref="codeRef" placeholder="请输入验证码" class="flex w-[70%]">
+                <template #prefix>
+                  <svg-icon icon="ep:key"></svg-icon>
+                </template>
+              </el-input>
+
+            </el-col>
+            <el-col :offset="2" :span="6">
+              <img @click="getCaptcha" :src="' data:image/gif;base64,' + captcha?.base64Img"
+                class="h-38px w-full ml-auto cursor-pointer  v-mid">
+            </el-col>
           </el-form-item>
 
           <el-form-item>
@@ -42,13 +83,12 @@
 
         </el-form>
 
-        <!-- 扩展第三方 -->
-
-        <!-- 按钮组 -->
       </div>
+
+      <!-- 扩展第三方 -->
+
+      <!-- 按钮组 -->
     </div>
-
-
   </div>
 </template>
  
@@ -124,7 +164,7 @@ const login = async () => {
 }
 
 const getCaptcha = async () => {
-  if (!ruleFrom){
+  if (!ruleFrom) {
     console.log(ruleFrom);
 
   }
@@ -132,22 +172,22 @@ const getCaptcha = async () => {
   try {
     const { data } = await getCaptchaInfo()
     // 获得submitFrom表单属性
-    
-    captcha.value=data;
-    submitForm.uuid=data.uuid
+
+    captcha.value = data;
+    submitForm.uuid = data.uuid
     // 我自己不想一直写code
-    if(data.activeProfile==='pro'){
-        submitForm.code=data.result
+    if (data.activeProfile === 'pro') {
+      submitForm.code = data.result
     }
-  }finally{
+  } finally {
     // 处理一下异常
 
   }
-  
+
 }
 
-onMounted(async() => {
-  
+onMounted(async () => {
+
   await getCaptcha();
 })
 

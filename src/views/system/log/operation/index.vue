@@ -1,10 +1,10 @@
 <script lang='ts' setup>
 import { onMounted, reactive, ref } from 'vue';
 import { parseTime } from '@/utils/common'
-import { DICT_TYPE, getDictOptions } from '@/utils/common/dict'
+import { DICT_TYPE, getDictOptions, getIntDictOptions } from '@/utils/common/dict'
 import { confirms, messages, notify } from '@/utils/message/MessageUtils';
-import { pageOperation, basePeri } from '@/api/system/log/operation';
-import type {  SysOperatorLog } from '@/api/system/type';
+import { pageOperation, basePeri, removeOperation, getOperation, clearOperation } from '@/api/system/log/operation';
+import type { SysOperatorLog } from '@/api/system/type';
 //------------------------基础模板-------------------------------------------------
 const state = reactive({
 
@@ -15,6 +15,8 @@ const state = reactive({
     multiple: true,
 
     total: 0,
+
+    open: false,
 
     ids: [],
 
@@ -33,6 +35,9 @@ const state = reactive({
     list: []
 
 })
+
+const from = reactive<SysOperatorLog>({})
+
 const paramRef = ref()
 
 const resetParam = () => {
@@ -67,28 +72,52 @@ const loadList = async () => {
     }
 
 }
-const handleSelectionChange =(rows?: SysOperatorLog[]) => {
+const handleSelectionChange = (rows?: SysOperatorLog[]) => {
     // @ts-ignore
     state.ids = rows?.map(item => item.id)
     state.single = state.ids.length != 1
     state.multiple = !state.ids.length
 }
 
-const handleDelete = async (row:SysOperatorLog) => {
+const handleDelete = async (row: SysOperatorLog) => {
     try {
-        
-        
-        if(row){
-
-        }
-
+        await confirms.confirm(`您是否删除操作日志:(${row.operateTitle || state.ids})`)
+        const { msg } = await removeOperation(row.id || state.ids)
+        await loadList();
     } catch (error: any) {
         if (error.msg) {
             messages.error(error.msg)
         }
     }
+}
 
+const openOnceLog = async (row: SysOperatorLog) => {
+    state.open = true;
+    try {
+        const { data } = await getOperation(row.id)
+        Object.assign(from, data)
+    } catch (error: any) {
+        if (error.msg) {
+            state.open = false;
+            messages.error(error.msg)
+        }
+    }
+}
 
+const clearLog = async () => {
+    try {
+        const { value } = await confirms.prompt(`请您确定清空操作日志信息`, '请您输入Y/y确定清空日志信息!!!')
+        if (value !== '' && value === 'Y' || value === "y") {
+            await clearOperation()
+            messages.success('清除成功')
+            await loadList()
+        }
+    } catch (error) {
+        if (error.msg) {
+            messages.error(error.msg)
+            await loadList()
+        }
+    }
 }
 
 onMounted(async () => {
@@ -120,12 +149,27 @@ onMounted(async () => {
                             <i-ep-search />
                         </template>
                         查询</el-button>
+
                     <el-button @click="resetParam">
                         <template #icon>
                             <i-ep-Refresh />
                         </template>
                         重置</el-button>
 
+                    <el-button type="danger" v-peri="[`${basePeri}remove`]" :disabled="state.multiple" @click="handleDelete"
+                        plain>
+                        <template #icon>
+                            <i-ep-delete />
+                        </template>
+                        删除
+                    </el-button>
+
+                    <el-button type="warning" v-peri="[`${basePeri}remove`]" @click="clearLog" plain>
+                        <template #icon>
+                            <svg-icon icon="ep:delete-filled"></svg-icon>
+                        </template>
+                        清除
+                    </el-button>
                 </el-form-item>
             </el-form>
         </el-card>
@@ -138,11 +182,15 @@ onMounted(async () => {
                 <el-table-column label="所属地址" show-overflow-tooltip prop="operateAddress" align="center" />
                 <el-table-column label="Method" prop="operateMethod" show-overflow-tooltip align="center" />
                 <el-table-column label="请求地址" prop="requestUrl" show-overflow-tooltip align="center" />
-                <el-table-column label="状态" align="center" prop="status" />   
-                
+                <el-table-column label="状态" align="center" prop="status" />
+                <el-table-column label="操作类型" align="center" prop="status">
+                    <template #default="scope">
+                        <dictTag :type="DICT_TYPE.SYSTEM_OPERATION_TYPE" :value="scope.row.operatorType"></dictTag>
+                    </template>
+                </el-table-column>
                 <el-table-column label="接口时长" align="center" prop="status">
                     <template #default="scope">
-                        {{scope.row.timeSteamp}}ms
+                        {{ scope.row.timeStamp }} ms
                     </template>
                 </el-table-column>
                 <el-table-column label="创建时间" align="center">
@@ -152,18 +200,14 @@ onMounted(async () => {
                 </el-table-column>
                 <el-table-column label="操作" align="center" width="200px">
                     <template #default="scope">
-                        <el-button link v-peri="[`${basePeri}update`]" type="primary">
+                        <el-button link v-peri="[`${basePeri}getOne`]" @click="openOnceLog(scope.row)" type="primary">
                             <template #icon>
                                 <el-icon>
                                     <i-ep-Edit />
                                 </el-icon>
                             </template>
-                            更新
+                            查看
                         </el-button>
-
-                        <router-link :to="'/system/dict/value/' + scope.row.id">
-                            <el-button link type="primary">数据</el-button>
-                        </router-link>
 
                         <el-button link type="danger" v-peri="[`${basePeri}:remove`]" @click="handleDelete(scope.row)">
                             <template #icon>
@@ -181,6 +225,123 @@ onMounted(async () => {
         </el-card>
 
     </div>
+
+    <el-dialog v-model="state.open" title="日志详情" :close-on-click-modal="false" :draggable="true" :align-center="true" width="50%">
+        <el-descriptions class="margin-top" :column="1" border>
+
+            <el-descriptions-item>
+                <template #label>
+                    <div class="cell-item">
+                        操作用户
+                    </div>
+                </template>
+                {{ from.operateUserName }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+                <template #label>
+                    <div class="cell-item">
+                        请求接口
+                    </div>
+                </template>
+                {{ from.requestUrl }}
+            </el-descriptions-item>
+
+            <el-descriptions-item>
+                <template #label>
+                    <div class="cell-item">
+                        请求标题
+                    </div>
+                </template>
+                {{ from.operateTitle }}
+            </el-descriptions-item>
+
+            <el-descriptions-item>
+                <template #label>
+                    <div class="cell-item">
+                        请求类型
+                    </div>
+                </template>
+                {{ from.requestMethod }}
+            </el-descriptions-item>
+
+            <el-descriptions-item>
+                <template #label>
+                    <div class="cell-item">
+                        操作类型
+                    </div>
+                </template>
+                <dictTag :type="DICT_TYPE.SYSTEM_OPERATION_TYPE" :value="from.operatorType"></dictTag>
+            </el-descriptions-item>
+
+
+            <el-descriptions-item>
+                <template #label>
+                    <div class="cell-item">
+                        所属Ip
+                    </div>
+                </template>
+
+                {{ from.operateIp }}
+            </el-descriptions-item>
+
+            <el-descriptions-item>
+                <template #label>
+                    <div class="cell-item">
+                        所属地区
+                    </div>
+                </template>
+                {{ from.operateAddress }}
+            </el-descriptions-item>
+
+            <el-descriptions-item>
+                <template #label>
+                    <div class="cell-item">
+                        请求时间
+                    </div>
+                </template>
+                {{ from.operateTime }}
+            </el-descriptions-item>
+
+
+            <el-descriptions-item>
+                <template #label>
+                    <div class="cell-item">
+                        调用方法
+                    </div>
+                </template>
+                {{ from.operateMethod }}
+            </el-descriptions-item> 
+            
+            <el-descriptions-item >
+                <template #label>
+                    <div class="cell-item">
+                        响应时间
+                    </div>
+                </template>
+                {{ from.timeStamp }} ms
+            </el-descriptions-item>
+
+
+            <el-descriptions-item>
+                <template #label>
+                    <div class="cell-item">
+                        请求参数
+                    </div>
+                </template>
+                {{ from.requestParams }}
+            </el-descriptions-item>
+            <el-descriptions-item :span="2">
+                <template #label>
+                    <div class="cell-item">
+                        响应数据
+                    </div>
+                </template>
+                {{ from.responseParams }}
+            </el-descriptions-item>
+
+
+        </el-descriptions>
+    </el-dialog>
 </template>
 
 <style lang='scss' scoped></style>

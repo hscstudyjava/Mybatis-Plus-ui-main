@@ -104,5 +104,7 @@ export enum DICT_TYPE {
 
     SYSTEM_NOTICE_TEMPLATE="system_notice_template",
 
-    SYSTEM_MODULE="system_module"
+    SYSTEM_MODULE="system_module",
+    
+    SYSTEM_OPERATION_TYPE="system_operation_type"
 }

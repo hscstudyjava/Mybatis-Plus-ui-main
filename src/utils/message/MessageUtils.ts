@@ -121,14 +121,16 @@ export const confirms = {
             }
         )
     },
-    prompt(content: string, title?: string, type?: string)
+    prompt(content: string, placeholder?:string, title?: string, type?: string)
         : Promise<MessageBoxData> {
         // @ts-ignore
-        return ElMessageBox.prompt(content,
+        return ElMessageBox.prompt(
+            content,
             title || "系统提示", {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: type || "warning",
+            inputPlaceholder: placeholder|| "请填写"+content
         })
 
     }

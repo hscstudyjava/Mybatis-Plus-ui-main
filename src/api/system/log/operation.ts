@@ -37,3 +37,9 @@ export function getOperation(id: string | number): Promise<AjaxResult<SysOperato
         }
     )
 }
+
+export function clearOperation():Promise<AjaxResult<void>>{
+    return request.delete(
+        baseUrl+'clear'
+    )
+}
