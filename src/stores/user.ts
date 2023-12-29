@@ -22,17 +22,17 @@ export const useUserStore = defineStore('userStore', () => {
         }
     )
 
+
     var isUserSet = ref(false);// 用户是否设置成功
 
-
-
-    /**
-     * 缓存数据
-     */
-    const cacheToken = () => {
-        setAccessToken(oauth2.accessToken)//设置进去参数
-        seteRefreshToken(oauth2.refreshToken)//存储进去
-    }
+    var currentUser = reactive<CurrentUser>({
+        userId: 0,
+        permissions: [],
+        roleList: [],
+        userName: "",
+        userImg: "",
+        isSupuerAdmin: false
+    })
 
 
 
@@ -54,18 +54,13 @@ export const useUserStore = defineStore('userStore', () => {
      */
     const setOuath2 = (targetOauth2: Oauth2Resp) => {
         Object.assign(oauth2, targetOauth2)
+        setAccessToken(oauth2.accessToken)//设置进去参数
+        seteRefreshToken(oauth2.refreshToken)//存储进去
     }
 
 
 
-    var currentUser = reactive<CurrentUser>({
-        userId: 0,
-        permissions: [],
-        roleList: [],
-        userName: "",
-        userImg: "",
-        isSupuerAdmin: false
-    })
+
 
     const setCurrentUser = (tagetUser: CurrentUser) => {
         Object.assign(currentUser, tagetUser)//设置数据
@@ -82,7 +77,7 @@ export const useUserStore = defineStore('userStore', () => {
     */
     async function login(loginParams: LoginReq) {
         oauth2 = (await authLogin(loginParams)).data
-        cacheToken();
+        setOuath2(oauth2)
     }
 
     /**
@@ -95,11 +90,9 @@ export const useUserStore = defineStore('userStore', () => {
           cacheToken();
       }
    */
-
     async function refresh(refreshToeknParams: string): Promise<AjaxResult<Oauth2Resp>> {
         let resultOauth2 = (await refreshToken(refreshToeknParams))
         setOuath2(resultOauth2.data)
-        cacheToken();
         return resultOauth2;
     }
 
@@ -131,13 +124,11 @@ export const useUserStore = defineStore('userStore', () => {
       * 重置数据
       */
     const $resetOauth2 = () => {
-        oauth2 = reactive<Oauth2Resp>(
-            {
-                accessToken: "",
-                refreshToken: "",
-                expiredTime: 0
-            }
-        )
+        Object.assign(oauth2, {
+            accessToken: "",
+            refreshToken: "",
+            expiredTime: 0
+        })
     }
     /**
      * 清楚local&&cookie
@@ -150,7 +141,7 @@ export const useUserStore = defineStore('userStore', () => {
         isUserSet.value = false
     }
     const $resetCurrentUser = () => {
-        currentUser = reactive<CurrentUser>({
+        Object.assign(currentUser, {
             userId: 0,
             permissions: [],
             userName: "",

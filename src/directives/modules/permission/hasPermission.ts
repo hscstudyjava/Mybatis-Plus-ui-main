@@ -35,6 +35,8 @@ const permissionDirective: DirectiveOptions<'vPeri'> = {
             const currentUserPerssion = currentUser.value.permissions
             //获得传递给指令的值。例如在 v-my-directive="1 + 1" 中，值是 2。
             const { value } = binding
+         
+            
             
             if (value && value instanceof Array && value.length > 0) {
 
