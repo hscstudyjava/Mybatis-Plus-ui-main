@@ -1,13 +1,20 @@
 <template>
     <div class="app-context">
-        <el-alert title="动态路由介绍" type="success"
-            description="            
- 动态数据路由(/xx/xx/{id})这个模式,建议操作人员使用的时候使用嵌套进行新增比如(/system/dict)类型与数据,我们想类型去查询匹配的数据页面这样我们应该这样字典类型(/system/dict/type)跳转(/system/dict/value/{typeId}),注意{typeId}是动态的需要判断用户是否有么有这个权限才可以跳转 "
-            show-icon />
+
+
+        <notifyBar mode="closeable" color="var(--el-color-success)" background="var(--el-color-success-light-9)"
+            text="对于父路由的路径需要有 /，子路由的路径可以不填写 /。例如，父路由可以是 /system，子路由可以是 user，不需要写成 /system/user。" rightIcon="ep:close"
+            leftIcon="ep:bell" />
+
         <br />
-        <el-alert title="侧边路由介绍" type="success"
-            description="对于父路由的路径需要有 /，子路由的路径可以不填写 /。例如，父路由可以是 /system，子路由可以是 user，不需要写成 /system/user。" show-icon />
+
+        <notifyBar mode="closeable" color="var(--el-color-success)" background="var(--el-color-success-light-9)"
+            text=" 动态数据路由(/xx/xx/{id})这个模式,建议操作人员使用的时候使用嵌套进行新增比如(/system/dict)类型与数据,我们想类型去查询匹配的数据页面这样我们应该这样字典类型(/system/dict/type)跳转(/system/dict/value/{typeId}),注意{typeId}是动态的需要判断用户是否有么有这个权限才可以跳转"
+            rightIcon="ep:close" leftIcon="ep:bell" />
         <el-row>
+
+            <br />
+
 
             <el-col :span="24">
                 <!-- 真的建议各位使用unocss真的很好用!!!! -->
@@ -52,7 +59,7 @@
                         </el-col>
 
                         <rightQuery :query="state.showQuery" @toggleQuery="toggleQuery" @refresh="loadList" />
-                       
+
                     </el-row>
                 </el-card>
 

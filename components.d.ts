@@ -63,6 +63,7 @@ declare module 'vue' {
     IEpSearch: typeof import('~icons/ep/search')['default']
     IEpSwitch: typeof import('~icons/ep/switch')['default']
     ImgShow: typeof import('./src/components/imgShow/index.vue')['default']
+    NotifyBar: typeof import('./src/components/notifyBar/index.vue')['default']
     Paginations: typeof import('./src/components/paginations/index.vue')['default']
     ParentView: typeof import('./src/components/ParentView/index.vue')['default']
     RightQuery: typeof import('./src/components/rightQuery/index.vue')['default']
