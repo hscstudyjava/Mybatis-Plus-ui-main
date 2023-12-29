@@ -83,22 +83,49 @@
                 <el-table-column prop="status" label="角色状态" align="center" />
                 <el-table-column label="操作" align="center">
                     <template #default="scope">
-                        <el-button link v-peri="['system:role:update']" type="primary"
-                            @click="hadnleUpdate(scope.row.roleId)">
-                            <template #icon>
-                                <el-icon>
-                                    <i-ep-Edit />
-                                </el-icon>
-                            </template>
-                            更新
-                        </el-button>
+                        <div class="flex items-center justify-center">
+                            <el-button link v-peri="['system:role:update']" type="primary"
+                                @click="hadnleUpdate(scope.row.roleId)">
+                                <template #icon>
+                                    <el-icon>
+                                        <i-ep-Edit />
+                                    </el-icon>
+                                </template>
+                                更新
+                            </el-button>
 
-                        <el-button link type="danger" v-peri="['system:role:remove']" @click="removeRole(scope.row)">
-                            <template #icon>
-                                <i-ep-delete />
-                            </template>
-                            删除
-                        </el-button>
+                            <el-button link type="danger" v-peri="['system:role:remove']" @click="removeRole(scope.row)">
+                                <template #icon>
+                                    <i-ep-delete />
+                                </template>
+                                删除
+                            </el-button>
+
+
+                            <el-dropdown @command="handleCommand($event, scope.row)" teleported>
+                                <el-button link type="primary">
+                                    <el-icon class="el-icon--right">
+                                        <svg-icon icon="ep:arrow-down-bold"></svg-icon>
+                                    </el-icon>
+                                    更多
+                                </el-button>
+                                <template #dropdown>
+                                    <el-dropdown-menu>
+
+                                        <el-dropdown-item command="auth-peri"
+                                            v-if="auth().hasPermiOr([`system:role:role-assign-permission`])">权限授权</el-dropdown-item>
+
+
+                                        <el-dropdown-item command="auth-dept"
+                                            v-if="auth().hasPermiOr([`system:role:role-assign-dept`])">数据授权</el-dropdown-item>
+
+
+                                    </el-dropdown-menu>
+                                </template>
+                            </el-dropdown>
+
+                        </div>
+
                     </template>
                 </el-table-column>
             </el-table>
@@ -177,19 +204,27 @@
         </el-dialog>
 
     </div>
+
+    <AuthPeriFrom ref="authPeri" :permission-list="simplePer"></AuthPeriFrom>
+
+    <AuthDeptFrom></AuthDeptFrom>
 </template>
     
 <script setup lang="ts">
 // @ts-ignore
 import { useUserStore } from '@/stores/user';
 import { reactive, onMounted, ref, toRefs } from 'vue';
-import type { SysRole, Page } from '@/api/system/type';
+import type { SysRole, Page, SimpleTree, SysPermisson, SysDept } from '@/api/system/type';
 // @ts-ignore
 import { insertRole, queryRoleById, queryRolePage, removeRoleByIds, updateRole } from '@/api/system/role';
 const userStore = useUserStore()
 import { messages, confirms } from "@/utils/message/MessageUtils"
 import type { FormInstance, FormRules } from 'element-plus';
-
+import { auth } from '@/hooks/web/auth';
+import { selectSysDeptSimpleList } from '@/api/system/dept';
+import { queryPermissionSimple } from '@/api/system/permission';
+import AuthPeriFrom from './authPeriFrom.vue';
+import AuthDeptFrom from './authDeptFrom.vue';
 const objList: Page<SysRole> = reactive<Page<SysRole>>({
     totalRow: 0,
     records: [] as Array<SysRole>,
@@ -197,6 +232,13 @@ const objList: Page<SysRole> = reactive<Page<SysRole>>({
     pageSize: 0,
     totalPage: 0
 })
+
+const simplePer = ref<SimpleTree<SysPermisson>[]>([])
+const simpleDept = ref<SimpleTree<SysDept>[]>([])
+
+const authPeri = ref()
+
+
 const openDialog = ref<Boolean>(false);
 const loading = ref<Boolean>(false);
 const title = ref<String>('')
@@ -237,6 +279,45 @@ const rules = reactive<FormRules<typeof form>>({
     ],
 
 })
+
+
+
+const handleCommand = (type: string, row: SysRole) => {
+
+    switch (type) {
+
+        case 'auth-peri':
+            openAuthPeri(row.roleId!!)
+            break
+        case 'auth-dept':
+
+            break
+
+    }
+}
+const openAuthPeri = async (roleId: number) => {
+    try {
+        await loadingAuthList();
+        authPeri.value.open(roleId)
+    } catch (error) {
+
+    }
+}
+
+const loadingAuthList = async () => {
+    try {
+        const requests = [
+            selectSysDeptSimpleList({}),
+            queryPermissionSimple({} as SysPermisson)
+        ];
+        const [deptResponse, periResponse] = await Promise.all(requests);
+        simpleDept.value = deptResponse.data as SimpleTree<SysDept>[];
+        simplePer.value = periResponse.data as SimpleTree<SysPermisson>[];
+    } catch (error: any) {
+
+    }
+}
+
 var selectObj = reactive({
     /** 
      * 编号数组

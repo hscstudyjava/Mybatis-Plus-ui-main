@@ -77,8 +77,33 @@ export function queryRoleById(roleId: number): Promise<AjaxResult<SysRole>> {
  * @param roleIds 角色编号数组
  * @returns  返回结果
  */
-export function removeRoleByIds(roleIds:number[]|number):Promise<AjaxResult<void>>{
+export function removeRoleByIds(roleIds: number[] | number): Promise<AjaxResult<void>> {
     return request.delete(
-        baseUrl+`${roleIds}`
+        baseUrl + `${roleIds}`
+    )
+}
+
+export interface SysRoleAuthVO extends SysRole {
+    deptIdList: string[],
+    permissionIdList: string[]
+}
+
+export function authRolePeri(roleId: number, Ids: string[]): Promise<AjaxResult<void>> {
+    return request.post(
+        baseUrl + `role-assign-permission`,
+        {
+            roleId,
+            permissionIdList:Ids
+        }
+    )
+}
+
+export function authRoleDept(roleId: number, Ids: string[]): Promise<AjaxResult<void>> {
+    return request.post(
+        baseUrl + `role-assign-dept`,
+        {
+            roleId,
+            deptIdList:Ids
+        }
     )
 }

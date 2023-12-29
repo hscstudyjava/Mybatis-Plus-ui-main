@@ -175,7 +175,7 @@ const getCaptcha = async () => {
     captcha.value = data;
     submitForm.uuid = data.uuid
     // 我自己不想一直写code
-    if (data.activeProfile === 'pro') {
+    if (data.activeProfile !== 'pro') {
       submitForm.code = data.result
     }
   } finally {

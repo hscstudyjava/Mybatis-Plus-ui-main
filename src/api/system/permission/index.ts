@@ -36,7 +36,7 @@ export function queryPermissionAllTree(params: SysPermisson): Promise<AjaxResult
     )
 }
 
-export function queryPermissionSimple(params?: SysPermisson): Promise<AjaxResult<Array<SimpleTree<SysPermisson>>>> {
+export function queryPermissionSimple(params?: SysPermisson): Promise<AjaxResult<SimpleTree<SysPermisson>[]>> {
     return request.get(
         baseUrl + 'tree-pre-simple',
         {
