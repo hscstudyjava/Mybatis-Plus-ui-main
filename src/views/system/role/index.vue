@@ -205,9 +205,9 @@
 
     </div>
 
-    <AuthPeriFrom ref="authPeri" :permission-list="simplePer"></AuthPeriFrom>
+    <AuthPeriFrom ref="authPeri" @success="queryPage" :permission-list="simplePer"></AuthPeriFrom>
 
-    <AuthDeptFrom></AuthDeptFrom>
+    <AuthDeptFrom ref="authDept" @success="queryPage" :dept-list="simpleDept"></AuthDeptFrom>
 </template>
     
 <script setup lang="ts">
@@ -237,6 +237,7 @@ const simplePer = ref<SimpleTree<SysPermisson>[]>([])
 const simpleDept = ref<SimpleTree<SysDept>[]>([])
 
 const authPeri = ref()
+const authDept = ref()
 
 
 const openDialog = ref<Boolean>(false);
@@ -290,7 +291,7 @@ const handleCommand = (type: string, row: SysRole) => {
             openAuthPeri(row.roleId!!)
             break
         case 'auth-dept':
-
+            openAuthDept(row.roleId!!)
             break
 
     }
@@ -299,6 +300,15 @@ const openAuthPeri = async (roleId: number) => {
     try {
         await loadingAuthList();
         authPeri.value.open(roleId)
+    } catch (error) {
+
+    }
+}
+
+const openAuthDept = async (roleId: number) => {
+    try {
+        await loadingAuthList();
+        authDept.value.open(roleId)
     } catch (error) {
 
     }

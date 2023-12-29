@@ -13,14 +13,14 @@
                 <div class="message-container right-menu-item hover-effect">
                     <el-tooltip class="box-item" effect="dark" content="我的消息" placement="bottom">
                         <!-- 后期优化一下 打开是翻开状态 -->
-                        <el-icon class="messsage-wrapper" >
+                        <el-icon class="messsage-wrapper">
                             <Message />
                         </el-icon>
                     </el-tooltip>
                 </div>
                 <!-- screenFull|| 全屏设置 -->
                 <div class="right-menu-item hover-effect ">
-                    <FullScreen/>
+                    <FullScreen />
                 </div>
 
                 <!--  -->
@@ -84,21 +84,23 @@ const avatar = currentUser.value.userImg
 const topNav = computed(() => { return setting.topNav })
 const moddileDevice = DeviceEnum.MOBILE;//手机模式
 
+import { useWsStore } from '@/utils/cache/CacheUtils';
+const ws = useWsStore('sessionStorage') //存储到Session中避免数据,个人设置60秒拉取数据
 
 
-const logout = () => {
-    userSotre.userLogout()
-        .then(res => {
-            // messages.success(res.msg)
-            router.push("/login")
-            notify.success("系统提示",res.msg)
-        }).catch(error => {
-            // 捕捉异常
-            userSotre.$resetOauth2();// 重置Oauth2
-            // messages.success("退出成功")
-            router.push("/login")
-            new Error(error)
-        })
+
+const logout = async () => {
+    try {
+        const { msg } = await userSotre.userLogout()
+        notify.success("系统提示", msg)
+    } catch (error: any) {
+        // 无论如何都跳转登录页面
+        console.log(error);
+    } finally {
+        ws.clear();// 清除sessionStroe的缓存数据
+        userSotre.$clearCache();//清除访问Token以及刷新Token
+        router.push({path: '/login'})
+    }
 }
 
 const toggleSideBar = () => {

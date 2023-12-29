@@ -49,6 +49,7 @@ export const useDictStore = defineStore('dict', () => {
         if (cacheMap) {
             dictMap = new Map(Object.entries(cacheMap));
             isSetDict.value = true//标识赋值完成
+            return;
         }
 
         // 否则异步记载数据库数据

@@ -74,11 +74,9 @@ router.beforeEach(async (to, from, next) => {
                 if (!userStore.getIsUserSet) {
                     await userStore.getCurrentUser(); // 拉取用户数据
                     await usePri.loadingRouter(); // 拉取后端数据
-
                     usePri.routes.forEach(menu => {
                         router.addRoute(menu as unknown as RouteRecordRaw);
                     });
-
                     const redirectPath = from.query.redirect || to.path;
                     const redirect = decodeURIComponent(redirectPath as string);
                     const nextData = to.path === redirect ? { ...to, replace: true } : { path: redirect };

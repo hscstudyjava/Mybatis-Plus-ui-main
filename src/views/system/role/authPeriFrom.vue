@@ -1,5 +1,5 @@
 <script lang='ts' setup>
-import { reactive, ref } from 'vue';
+import { nextTick, reactive, ref } from 'vue';
 import { parseTime } from '@/utils/common'
 import { DICT_TYPE, getDictOptions } from '@/utils/common/dict'
 import { confirms, messages, notify } from '@/utils/message/MessageUtils';
@@ -23,6 +23,7 @@ const menuExpand = ref(false) // 展开/折叠
 const treeRef = ref() // 菜单树组件 Ref
 const treeNodeAll = ref(false) // 全选/全不选
 const checkStrictly = ref(false) // 父子联动
+const fromRef = ref()
 const from = reactive<SysRoleAuthVO>({
     roleName: '',
     roleKey: '',
@@ -36,16 +37,20 @@ const from = reactive<SysRoleAuthVO>({
     permissionIdList: []
 })
 
-const open = (userId: number) => {
+const open = async (roleId: number) => {
     loading.value = true
-    queryRoleById(userId).then(res => [
-        diologTitle.value = "权限授权",
-        Object.assign(from, res.data),
-        diologOpen.value = true,
-        loading.value = false
-    ]).catch((error) => {
-        loading.value = false
-    })
+    diologOpen.value = true
+    try {
+        const { data } = await queryRoleById(roleId)
+        Object.assign(from, data)
+        nextTick(() => {
+            treeRef.value.setCheckedKeys(from.permissionIdList)
+            loading.value = false
+        })
+    } catch (error: any) {
+        messages.error(error?.msg)
+        diologOpen.value = false
+    }
 }
 const emit = defineEmits(['success'])
 defineExpose({ open })
@@ -55,8 +60,10 @@ const submit = async () => {
             ...(treeRef.value.getCheckedKeys(false) as unknown as Array<string>), // 获得当前选中节点
             ...(treeRef.value.getHalfCheckedKeys() as unknown as Array<string>) // 获得半选中的父节点
         ])
-        diologOpen.value = false,
-            emit('success')
+        resetFrom()
+        messages.success("授权成功")
+        diologOpen.value = false
+        emit('success')
     } catch (error: any) {
         messages.error(error?.msg)
     }
@@ -76,6 +83,26 @@ const handleCheckedTreeExpand = () => {
         nodes[node].expanded = menuExpand.value
     }
 }
+
+// 重置表单
+const resetFrom = () => {
+    Object.assign(from, {
+        roleName: '',
+        roleKey: '',
+        isDeleted: 0,
+        status: '',
+        createBy: '',
+        updateBy: '',
+        remark: '',
+        sortValue: 0,
+        deptIdList: [],
+        permissionIdList: []
+    })
+    checkStrictly.value = false
+    treeNodeAll.value = false
+    menuExpand.value = false
+    fromRef.value?.resetFields()
+}
 </script>
 <template>
     <div class='app-context'>
@@ -87,7 +114,7 @@ const handleCheckedTreeExpand = () => {
                 </div>
             </template>
 
-            <el-form :model="from" status-icon label-width="80px">
+            <el-form :model="from" v-loading="loading" ref="fromRef" status-icon label-width="80px">
                 <el-form-item label="角色名称" prop="roleName">
                     <el-input v-model="from.roleName" disabled placeholder="请填写用户账号" clearable></el-input>
                 </el-form-item>
@@ -110,8 +137,8 @@ const handleCheckedTreeExpand = () => {
                             <el-switch v-model="checkStrictly" active-text="是" inactive-text="否" inline-prompt />
 
                         </template>
-                        <el-tree ref="treeRef" default-expand-all empty-text="加载中，请稍后" :check-strictly="!checkStrictly"
-                            show-checkbox node-key="id" :data="permissionList" />
+                        <el-tree ref="treeRef" empty-text="加载中，请稍后" :check-strictly="!checkStrictly" show-checkbox
+                            highlight-current node-key="id" :data="permissionList" />
                     </el-card>
                 </el-form-item>
 

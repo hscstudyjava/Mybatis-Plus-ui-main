@@ -14,7 +14,6 @@ const ws = useWsStore('sessionStorage') //存储到Session中避免数据,个人
 
 import router, { defaultRouter, dynamicRoutes } from '@/router';
 import { CacheConstants } from '@/utils/cache/CacheConstatns';
-import { el } from 'element-plus/es/locales.mjs';
 import type { RouteRecordRaw } from 'vue-router';
 // 获得目录下方所有的Vue组件
 const modules = import.meta.glob('@/views/**/**.vue')
@@ -161,7 +160,7 @@ export const usePeriStroe = defineStore('permisionStore', () => {
     return new Promise((resolve, reject) => {
       try {
         let data = [];
-        const cacheRouter = ws.get(CacheConstants.ROUTER_KEY);
+        const cacheRouter = ws.get(CacheConstants.ROUTER_KEY);        
         if (cacheRouter) {
           data = cacheRouter;
           processRoutes(data, resolve);
@@ -205,6 +204,7 @@ export const usePeriStroe = defineStore('permisionStore', () => {
     setTopRouters(sidebarRoutes);
     resolve(rewriteRoutes);
   };
+
 
   return {
     loadingRouter,

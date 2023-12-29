@@ -3,7 +3,6 @@ import { defineStore } from 'pinia'
 import { DeviceEnum, ElmentSizeEnum } from '@/utils/constants/SystemConstants'
 import CacheUtils from '@/utils/cache/CacheUtils'
 import { CacheConstants } from '@/utils/cache/CacheConstatns'
-
 /** 
  * 侧边栏对象
  */
