@@ -64,7 +64,7 @@ const localCache = {
         }
         return localStorage.getItem(key)
     },
-    setJSON(key: any, jsonValue: string) {
+    setJSON(key: any, jsonValue: any) {
         if (jsonValue != null) {
             this.set(key, JSON.stringify(jsonValue))
         }

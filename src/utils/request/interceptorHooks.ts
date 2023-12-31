@@ -150,7 +150,7 @@ export function handleResponseError(error: AxiosError) {
 const handleLogin = () => {
   if (!isLogin.show) {
     // 如果已经到重新登录页面则不进行弹窗提示
-    if (window.location.href.includes('login?redirect=')) {
+    if (window.location.href.includes('/login?redirect=')) {
       return
     }
     isLogin.show = true

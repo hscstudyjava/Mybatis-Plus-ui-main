@@ -23,6 +23,10 @@
                     <FullScreen />
                 </div>
 
+                <div class="right-menu-item hover-effect">
+                   <settingView/>
+                </div>
+
                 <!--  -->
 
             </template>
@@ -62,6 +66,7 @@ import { ArrowDown, Pointer, Message } from '@element-plus/icons-vue'
 import FullScreen from './FullScreen.vue';
 import Hamburger from './Hamburger.vue';
 import Breadcrumb from './breadcrumb.vue';
+import settingView from './setting/index.vue'
 
 import { DeviceEnum } from '@/utils/constants/SystemConstants';
 import { messages, notify } from '@/utils/message/MessageUtils';

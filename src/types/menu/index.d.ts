@@ -19,6 +19,9 @@ export interface Meta extends Record<string | number | symbol, unknown> {
 
     /************激活那个菜单***** */
     activeMenu?:string,
+
+    affix?:boolean
+
 }
 
 type Component<T = any> =
@@ -44,6 +47,7 @@ interface AppRouteRecordRaw extends Omit<RouteRecordRaw, 'meta'> {
     keepAlive?: boolean,
 
     hidden?: boolean
+
 }
 
 export interface Menu extends Omit<RouteRecordRaw, 'meta'> {

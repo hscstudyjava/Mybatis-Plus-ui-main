@@ -9,7 +9,7 @@ import AppMain from './componets/AppMain.vue'
 // @ts-ignore
 import Sidebar from './componets/sidebar/index.vue'
 // @ts-ignore
-import navbar from './componets/naber/index.vue'
+import navbar from './componets/header/index.vue'
 // @ts-ignore
 import sytleConstant from '@/assets/style/sytleConstant.module.scss'
 const variable = sytleConstant;

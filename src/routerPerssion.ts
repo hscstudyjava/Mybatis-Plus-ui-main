@@ -1,3 +1,4 @@
+import { dynamicTitle } from './hooks/web/dynamicTitle/index';
 // 路由权限
 // @ts-ignore
 import NProgress from 'nprogress' // progress bar
@@ -5,21 +6,12 @@ import 'nprogress/nprogress.css' // progress bar style
 import router from './router'
 import { getAccessToken, removeAccessToken, getRefreshToken } from './utils/cache/auth'
 import { useUserStore } from '@/stores/user'
-import { useSettingStore } from '@/stores/setting'
 import { useDictStore } from '@/stores/dict'
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
-import { useTitle } from '@vueuse/core'
 import { usePeriStroe } from '@/stores/permission';
 import type { RouteRecordRaw } from 'vue-router'
 
-// 前提叙述:未避免1-2次接口无法拉取到跳转到error页面
 
-// 1. 设置一个到setting中一个maxRetryCount次数
-// 2. 当到相关接口因为网络无法拉取到数据RetryCount次数进行自增
-// 3. 使用Computer函数计算是否超出最大次数 如果超出最大次数跳转到响应error页面让用户进行自测
-
-
-const title = useTitle()
 
 // 未登录
 let whiteList = [
@@ -36,11 +28,11 @@ router.beforeEach(async (to, from, next) => {
     NProgress.start();// 开始
 
     /*************常用store************** */
-    title.value = dynamicTitle(to.meta.title as string)
+    dynamicTitle(to.meta.title as string)
     const accessToken = getAccessToken();
     const refreshToken = getRefreshToken();
 
-       // 如果访问 Token 已经无效使用刷新 Token 拉取一下访问 Token
+    // 如果访问 Token 已经无效使用刷新 Token 拉取一下访问 Token
     if (accessToken || refreshToken) {
         const userDict = useDictStore();
         const usePri = usePeriStroe();
@@ -104,19 +96,6 @@ router.beforeEach(async (to, from, next) => {
 
 
 
-
-/**
- * 
- * @param routerTitle 路由标题
- * @param systemTitle 系统标题
- */
-const dynamicTitle = (routerTitle?: any): string => {
-    const useSetting = useSettingStore()
-    if (useSetting.dynamicTitle && routerTitle) return `${useSetting.title}-${routerTitle}`
-    return useSetting.title
-}
-
-// 
 router.afterEach(() => {
     // finish progress bar
     NProgress.done()
