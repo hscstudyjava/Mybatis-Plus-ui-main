@@ -172,7 +172,7 @@
     </div>
 </template>
 
-<script  setup lang="ts" >
+<script  setup lang="ts" name="SystemDept">
 import { selectSysDeptList, selectSysDeptSimpleList, insertSysDept, updateSysDept, getSysDeptById, removeSysDept, basePeri } from '@/api/system/dept';
 import { parseTime } from '@/utils/common'
 

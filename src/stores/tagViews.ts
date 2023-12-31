@@ -1,6 +1,6 @@
 import type { Menu } from "@/types/menu";
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { ref, unref } from "vue";
 
 
 export const useViewsStore = defineStore('tagViewsStore', () => {
@@ -12,38 +12,53 @@ export const useViewsStore = defineStore('tagViewsStore', () => {
 
     // 新增访问Tags
     const addVisitedView = (view: Menu) => {
-        if (visitedViews.value.some(v => v.path === view.path)) return
-        visitedViews.value.push(
-            Object.assign({}, view, {
-                title: view.meta?.title || 'no-name'
-            })
-        )
+        if (visitedViews.value.some(v => v.path === unref(view).path)) return
+        // 如果Title登录空不保存
+        if (unref(view).meta?.title) {
+            visitedViews.value.push(
+                Object.assign({}, view, {
+                    title: view.meta?.title || 'no-name'
+                })
+            )                                                                                                 
+        }
+
     }
     // 添加缓存Tags
     const addCacheView = (view: Menu) => {
-        // 已存在缓存就不缓存了
-        if (cachedViews.value.includes(view.name)) return
-        if (view.meta && !view.meta.noCache) {
-            cachedViews.value.push(view.name)
+        // @ts-ignore
+        if (cachedViews.value.includes(unref(view).name)) return
+        if (view.meta && view.meta.keepAlive) {
+            // @ts-ignore
+            cachedViews.value.push(unref(view).name)
         }
     }
-    // 删除选择的标签
-    const deleVisitedView = (view: Menu) => {
-        const index = cachedViews.value.indexOf(view.name)
-        if (index > -1) {
-            cachedViews.value = cachedViews.value.slice(index, index + 1)
-        } else {
-            cachedViews.value = []
+
+    const delVisitedViews = (view: Menu) => {
+        for (const [i, v] of unref(visitedViews).entries()) {
+            if (v.path === view.path) {
+                visitedViews.value.splice(i, 1)
+                break
+            }
         }
+    }
+
+
+    // 删除其他访问Tags
+    const delOtherVisitedView = (view: Menu) => {
+        // 
+        visitedViews.value = unref(visitedViews).filter((v: Menu) => {
+            return v?.meta?.affix || v.path === unref(view).path
+        })
+        /* / */
     }
     // 删除缓存标签
     const delCacheView = (view: Menu) => {
-        const index = cachedViews.value.indexOf(view.name)
+        const index = cachedViews.value.indexOf(unref(view).name)
         index > -1 && cachedViews.value.splice(index, 1)
     }
     // 删除其它缓存标签
     const delOtherCacheView = (view: Menu) => {
-        const index = cachedViews.value.indexOf(view.name)
+        const index = cachedViews.value.indexOf(unref(view).name)
         if (index > -1) {
             cachedViews.value = cachedViews.value.slice(index, index + 1)
         } else {
@@ -70,11 +85,11 @@ export const useViewsStore = defineStore('tagViewsStore', () => {
                 break
             }
         }
-    },
+    }
 
     // 删除右侧标签
     const delRightTag = (view: Menu) => {
-        const index = visitedViews.value.findIndex(v => v.path === view.path)
+        const index = visitedViews.value.findIndex(v => v.path === unref(view).path)
         if (index === -1) {
             return
         }
@@ -88,14 +103,16 @@ export const useViewsStore = defineStore('tagViewsStore', () => {
             }
             return false
         })
-    },
+    }
     // 删除左侧标签
     const delLeftTags = (view: Menu) => {
-        const index = visitedViews.value.findIndex(v => v.path === view.path)
+
+        const index = visitedViews.value.findIndex(v => v.path === unref(view).path)
+
         if (index === -1) {
             return
         }
-        visitedViews.value. = visitedViews.value.filter((item, idx) => {
+        visitedViews.value = visitedViews.value.filter((item, idx) => {
             if (idx >= index || (item.meta && item.meta.affix)) {
                 return true
             }
@@ -109,145 +126,139 @@ export const useViewsStore = defineStore('tagViewsStore', () => {
 
 
     const addView = (view: Menu) => {
+
         addCacheView(view)
         addVisitedView(view)
-    },
+    }
+
+    const delView = async (view: Menu) => {
+        return new Promise(resolve => {
+            delVisitedViews(view)
+            delCacheView(view)
+            resolve({
+                visitedViews: [...visitedViews.value],
+                cachedViews: [...cachedViews.value]
+            })
+
+        })
+    }
+
+    const delVisiteView = async (view: Menu) => {
+        return new Promise(resolve => {
+            delVisitedViews(view)
+            resolve({
+                visitedViews: [...visitedViews.value],
+            })
+        })
+    }
 
 
-// 新增当前路由标签
-onst addVisitedView = (view: Menu) =>
+    const delCachedView = async (view: Menu) => {
+        return new Promise(resolve => {
+            delCacheView(view)
+            resolve({
+                cachedViews: [...cachedViews.value]
+            })
+        })
+    }
 
-addVisitedView(view)
-  },
-  // 新增当前路由标签缓存
-  addCachedView({ commit }, view) {
-    commit('ADD_CACHED_VIEW', view)
-  },    
+    const delOthersViews = async (view: Menu) => {
+        return new Promise(resolve => {
+            delOtherCacheView(view)
+            delOtherVisitedView(view)
+            resolve({
+                visitedViews: [...visitedViews.value],
+                cachedViews: [...cachedViews.value]
+            })
+        })
+    }
+
+    const delOthersVisitedViews = async (view: Menu) => {
+        return new Promise(resolve => {
+            delOtherVisitedView(view)
+            resolve({
+                visitedViews: [...visitedViews.value],
+            })
+        })
+    }
+
+    const delOthersCachedViews = async (view: Menu) => {
+        return new Promise(resolve => {
+            delOtherCacheView(view)
+            resolve({
+                cachedViews: [...cachedViews.value]
+            })
+        })
+    }
+
+    const delAllViews = async (view: Menu) => {
+        return new Promise(resolve => {
+            delAllVisitedViews(view)
+            delAllCahce()
+            resolve({
+                visitedViews: [...visitedViews.value],
+                cachedViews: [...cachedViews.value]
+            })
+        })
+    }
+
+    const delAllVisited = async (view: Menu) => {
+        return new Promise(resolve => {
+            delAllVisitedViews(view)
+            resolve({
+                visitedViews: [...visitedViews.value],
+            })
+        })
+    }
+
+    const delAllCahced = async (view: Menu) => {
+        return new Promise(resolve => {
+            delAllCahce()
+            resolve({
+                cachedViews: [...cachedViews.value]
+            })
+        })
+    }
+
+    const updateVisited = async (view: Menu) => {
+        updateVisitedView(view)
+    }
+
+    // 删除右侧路由标签缓存
+    const delRight = async (view: Menu) => {
+        return new Promise(resolve => {
+            delRightTag(view)
+            resolve([...visitedViews.value])
+        })
+    }
+
+    const delLeft = async (view: Menu) => {
+        return new Promise(resolve => {
+            delLeftTags(view)
+            resolve([...visitedViews.value])
+        })
+    }
 
 
 
+    // 暴漏方法
+    return {
+        addVisitedView,
+        addView,
+        delView,
+        delVisiteView,
+        delCachedView,
+        delOthersViews,
+        delOthersVisitedViews,
+        delOthersCachedViews,
+        delAllViews,
+        delAllVisited,
+        delAllCahced,
+        updateVisited,
+        delRight,
+        delLeft,
 
-
+        visitedViews,
+        cachedViews
+    }
 })
-
-/** 
-
-const actions = {
-  // 新增当前路由标签和标签缓存
-  addView({ dispatch }, view) {
-    dispatch('addVisitedView', view)
-    dispatch('addCachedView', view)
-  },
-  // 新增当前路由标签
-  addVisitedView({ commit }, view) {
-    commit('ADD_VISITED_VIEW', view)
-  },
-  // 新增当前路由标签缓存
-  addCachedView({ commit }, view) {
-    commit('ADD_CACHED_VIEW', view)
-  },
-  // 删除当前路由标签和标签缓存
-  delView({ dispatch, state }, view) {
-    return new Promise(resolve => {
-      dispatch('delVisitedView', view)
-      dispatch('delCachedView', view)
-      resolve({
-        visitedViews: [...state.visitedViews],
-        cachedViews: [...state.cachedViews]
-      })
-    })
-  },
-  // 删除当前路由标签
-  delVisitedView({ commit, state }, view) {
-    return new Promise(resolve => {
-      commit('DEL_VISITED_VIEW', view)
-      resolve([...state.visitedViews])
-    })
-  },
-  // 删除当前路由标签缓存
-  delCachedView({ commit, state }, view) {
-    return new Promise(resolve => {
-      commit('DEL_CACHED_VIEW', view)
-      resolve([...state.cachedViews])
-    })
-  },
-  // 删除其他路由标签和标签缓存
-  delOthersViews({ dispatch, state }, view) {
-    return new Promise(resolve => {
-      dispatch('delOthersVisitedViews', view)
-      dispatch('delOthersCachedViews', view)
-      resolve({
-        visitedViews: [...state.visitedViews],
-        cachedViews: [...state.cachedViews]
-      })
-    })
-  },
-  // 删除其他路由标签
-  delOthersVisitedViews({ commit, state }, view) {
-    return new Promise(resolve => {
-      commit('DEL_OTHERS_VISITED_VIEWS', view)
-      resolve([...state.visitedViews])
-    })
-  },
-  // 删除其他路由标签缓存
-  delOthersCachedViews({ commit, state }, view) {
-    return new Promise(resolve => {
-      commit('DEL_OTHERS_CACHED_VIEWS', view)
-      resolve([...state.cachedViews])
-    })
-  },
-  // 删除所有路由标签和标签缓存
-  delAllViews({ dispatch, state }, view) {
-    return new Promise(resolve => {
-      dispatch('delAllVisitedViews', view)
-      dispatch('delAllCachedViews', view)
-      resolve({
-        visitedViews: [...state.visitedViews],
-        cachedViews: [...state.cachedViews]
-      })
-    })
-  },
-  // 删除所有路由标签
-  delAllVisitedViews({ commit, state }) {
-    return new Promise(resolve => {
-      commit('DEL_ALL_VISITED_VIEWS')
-      resolve([...state.visitedViews])
-    })
-  },
-  // 删除所有路由标签缓存
-  delAllCachedViews({ commit, state }) {
-    return new Promise(resolve => {
-      commit('DEL_ALL_CACHED_VIEWS')
-      resolve([...state.cachedViews])
-    })
-  },
-
-  updateVisitedView({ commit }, view) {
-    commit('UPDATE_VISITED_VIEW', view)
-  },
-  // 删除右侧路由标签缓存
-  delRightTags({ commit }, view) {
-    return new Promise(resolve => {
-      commit('DEL_RIGHT_VIEWS', view)
-      resolve([...state.visitedViews])
-    })
-  },
-  // 删除左侧路由标签缓存
-  delLeftTags({ commit }, view) {
-    return new Promise(resolve => {
-      commit('DEL_LEFT_VIEWS', view)
-      resolve([...state.visitedViews])
-    })
-  },
-}
-
-export default {
-  namespaced: true,
-  state,
-  mutations,
-  actions
-}
-
-
-
- */

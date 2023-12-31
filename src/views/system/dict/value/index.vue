@@ -138,7 +138,7 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="SystemDictValue">
 import { DICT_TYPE, getIntDictOptions } from '@/utils/common/dict'
 import { selectSysDictValueList, basePeri, removeSysDictValue } from '@/api/system/dict/value';
 import type { SysDictValue, SysDictType } from '@/api/system/type';

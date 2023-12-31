@@ -210,7 +210,7 @@
     <AuthDeptFrom ref="authDept" @success="queryPage" :dept-list="simpleDept"></AuthDeptFrom>
 </template>
     
-<script setup lang="ts">
+<script setup lang="ts" name="SystemRole">
 // @ts-ignore
 import { useUserStore } from '@/stores/user';
 import { reactive, onMounted, ref, toRefs } from 'vue';

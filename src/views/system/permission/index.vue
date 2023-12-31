@@ -393,7 +393,7 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="SystemPermission">
 import { onMounted, reactive, ref } from 'vue';
 import { queryPermissionAllTree, basePeri, permissionType, queryPermissionSimple, insertPermission, updatePermission, getPermissionInfoById, removePermission, generationPermission } from '@/api/system/permission'
 import type { SysPermisson, SimpleTree } from '@/api/system/type';

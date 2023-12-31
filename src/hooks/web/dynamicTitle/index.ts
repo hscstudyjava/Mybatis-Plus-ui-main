@@ -12,7 +12,7 @@ export const dynamicTitle = (routerTitle?: string) => {
     if (dynamicTitle.value) {
         // 如果说routerTitle为空去除-
         if (routerTitle) {
-            titleUtil.value = `${title.value}-${routerTitle}`
+            titleUtil.value = `${routerTitle}-${title.value}`
             return
         } else {
             titleUtil.value = title.value;

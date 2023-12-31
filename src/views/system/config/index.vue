@@ -182,7 +182,7 @@
     </div>
 </template>
 
-<script  setup lang="ts" >
+<script  setup lang="ts" name="SystemConfig">
 import { DICT_TYPE, getDictOptions } from '@/utils/common/dict'
 import { selectSysConfigList, selectSysConfigSimpleList, insertSysConfig, updateSysConfig, getSysConfigById, removeSysConfig, basePeri } from '@/api/system/config';
 import type { SimpleTree, SysConfig } from '@/api/system/type';

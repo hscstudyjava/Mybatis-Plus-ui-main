@@ -15,10 +15,6 @@ const useStting = useSettingStore()
 const { isDark } = storeToRefs(useStting)
 
 const setDefaultTheme = () => {
-  console.log(CacheUtils.local.getJSON(
-    CacheConstants.LOCAL_LAYOUT_CONFIIG_KEY
-  ));
-
   useStting.setDark(isDark.value)
 }
 setDefaultTheme()

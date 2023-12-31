@@ -1,18 +1,26 @@
 <template>
     <section class="app-main">
-        <transition name="fade-transform" mode="out-in">
-            <keep-alive>
+
+        <router-view>
+            <template #default="{ Component, route }">
+                <keep-alive :include="getCache">
+                    <component :is="Component" :key="route.name"/>
+                </keep-alive>
+            </template>
+        </router-view>
+        <!-- 
+            <keep-alive :include="cachedViews">
                 <div v-if="config.hidden">
                     <el-watermark class="watermark" :content="config.content" :font="config.font" :z-index="config.zIndex"
                         :rotate="config.rotate" :gap="config.gap" :offset="config.offset">
-                        <router-view v-if="!route.meta.link" :key="route.path" />
+                        <router-view v-if="!route.meta.link" :key="route.fullPath" />
                     </el-watermark>
                 </div>
                 <div v-else>
-                    <router-view v-if="!route.meta.link" :key="route.path" />
+                    <router-view v-if="!route.meta.link" :key="route.fullPath" />
                 </div>
-            </keep-alive>
-        </transition>
+            </keep-alive> -->
+
 
         <!-- <iframe-toggle /> -->
     </section>
@@ -20,11 +28,18 @@
 
 <script setup lang="ts">
 import router from '@/router';
-import { onMounted, computed, reactive } from 'vue';
+import { onMounted, computed, reactive, unref } from 'vue';
+import { useViewsStore } from '@/stores/tagViews'
+
+const { cachedViews } = storeToRefs(useViewsStore())
+const getCache = computed((): string[] => {
+    return Array.from(cachedViews.value)
+})
 
 
 const route = router.currentRoute.value;
 import { useSettingStore } from '@/stores/setting';
+import { storeToRefs } from 'pinia';
 const setting = useSettingStore()
 
 const config = reactive({
@@ -40,10 +55,10 @@ const config = reactive({
     offset: [] as unknown as [number, number],
 })
 
-const getKey =
-    () => computed<string>((router) => {
-        return router.currentRoute.value.path
-    })
+const getKey = computed(():string => {
+    return unref(route).name as string
+})
+
 
 </script>
 
@@ -53,8 +68,6 @@ const getKey =
     // display: flex;
     // flex: auto;
 }
-
-
 
 .app-main {
     /* 50= navbar  50  */
