@@ -366,13 +366,15 @@ export interface SysPost {
 
     id?: number
 
-    postName?: string
+    postName: string
 
-    postCode?: string
+    postCode: string
 
-    status?: string
+    status: string
 
-    sortValue?: number
+    sortValue: number
+    
+    remark: string
 
 }
 
@@ -416,7 +418,7 @@ export interface SysOperatorLog {
 export interface SysLoginLog {
     id?: number
 
-    userName: string 
+    userName: string
 
     ipAddr: string
 
@@ -426,7 +428,7 @@ export interface SysLoginLog {
 
     msg: string
 
-    browser: string 
+    browser: string
 
     os: string
 

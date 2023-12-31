@@ -22,8 +22,8 @@ export function selectSimplePost(params:any):Promise<AjaxResult<Array<SysPost>>>
     )
 }
 
-export function selectPostPage(params:SysPost):Promise<AjaxResult<Page<SysPost>>> {
-    return request.get(
+export function selectPostPage(params:any):Promise<AjaxResult<Page<SysPost>>> {
+    return request.post(
         baseUrl+'page',
         {
             params
