@@ -5,7 +5,16 @@ import { DICT_TYPE, getDictOptions } from '@/utils/common/dict'
 import { confirms, messages, notify } from '@/utils/message/MessageUtils';
 import type { TrainMachine } from "@/api/train/type";
 import { MachineApi } from '@/api/train/machine';
+import type { SimpleTree, SysDept } from '@/api/system/type';
 
+const props = withDefaults(
+   defineProps<{
+      deptList: SimpleTree<SysDept>[],
+   }
+   >(),
+   {
+   }
+)
 //------------------------基础模板-------------------------------------------------
 const diologOpen = ref(false)
 const diologTitle = ref('')
@@ -18,6 +27,9 @@ const rules = reactive({
 
    code: [
       { message: '机器编码必须填写', trigger: 'blur', required: true }
+   ],
+   createDept: [
+      { message: '请给机器选择部门', trigger: 'change', required: true }
    ],
 
 
@@ -32,7 +44,9 @@ const form = reactive<TrainMachine>({
    ipV4: '',
    ipV6: '',
    status: '',
-   optionsParams: {}
+   optionsParams: {},
+   createDept: '',
+   updateDept: ''
 })
 
 const open = async (type: string, id: number) => {
@@ -110,7 +124,10 @@ const resetFrom = () => {
       </template>
 
       <el-form ref="fromRef" :model="form" :rules="rules" status-icon label-width="80px">
-
+         <el-form-item label="所属部门" prop="createDept">
+            <el-tree-select placeholder="请选择所属部门" style="width:100%" v-model="form.createDept" node-key="id"
+               :data="deptList" check-strictly :render-after-expand="false" />
+         </el-form-item>
          <el-form-item label="机器标题" prop="title">
             <el-input v-model="form.title" placeholder="请填写机器标题" clearable></el-input>
          </el-form-item>
@@ -118,11 +135,11 @@ const resetFrom = () => {
          <el-form-item label="机器编码" prop="code">
             <el-input v-model="form.code" placeholder="请填写机器编码" clearable></el-input>
          </el-form-item>
-         
+
          <el-form-item label="负责人" prop="leader">
             <el-input v-model="form.leader" placeholder="请填写负责人" clearable></el-input>
          </el-form-item>
-         
+
          <el-form-item label="联系方式" prop="telNumber">
             <el-input v-model="form.telNumber" placeholder="请填写联系方式" clearable></el-input>
          </el-form-item>
@@ -136,7 +153,7 @@ const resetFrom = () => {
             <el-input v-model="form.remark" placeholder="请输入备注" :autosize="{ minRows: 2, maxRows: 4 }" type="textarea"
                clearable></el-input>
          </el-form-item>
-         
+
       </el-form>
 
       <template #footer>

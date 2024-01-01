@@ -10,6 +10,9 @@ import { useDictStore } from '@/stores/dict'
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 import { usePeriStroe } from '@/stores/permission';
 import type { RouteRecordRaw } from 'vue-router'
+import { storeToRefs } from 'pinia';
+import { unref } from 'vue';
+import type { Menu } from './types/menu';
 
 
 
@@ -65,13 +68,15 @@ router.beforeEach(async (to, from, next) => {
 
                 if (!userStore.getIsUserSet) {
                     await userStore.getCurrentUser(); // 拉取用户数据
-                    await usePri.loadingRouter(); // 拉取后端数据
+                    await usePri.loadingRouter(); // 拉取后端数据  
+                                      
                     usePri.routes.forEach(menu => {
-                        router.addRoute(menu as unknown as RouteRecordRaw);
+                        router.addRoute(menu as unknown as Menu as RouteRecordRaw);
                     });
                     const redirectPath = from.query.redirect || to.path;
                     const redirect = decodeURIComponent(redirectPath as string);
                     const nextData = to.path === redirect ? { ...to, replace: true } : { path: redirect };
+                    
                     next(nextData);
                 } else {
                     next();

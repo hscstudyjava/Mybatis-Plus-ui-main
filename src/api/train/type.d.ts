@@ -22,7 +22,11 @@ export interface TrainMachine extends BaseEnity{
 
     status:string,
 
-    optionsParams:{}
+    optionsParams:{},
+
+    createDept:string,
+
+    updateDept:string
 
 }
 

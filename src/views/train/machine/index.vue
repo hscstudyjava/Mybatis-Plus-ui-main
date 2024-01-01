@@ -11,7 +11,7 @@ import { selectSysDeptSimpleList } from '@/api/system/dept';
 import type { TreeNode } from 'element-plus';
 
 //------------------------基础模板-------------------------------------------------
-const simpleDept = ref<SimpleTree<SysDept>[]>()
+const simpleDept = ref<SimpleTree<SysDept>[]>([])
 
 const total = ref(0)
 const list = ref<TrainMachine[]>([])
@@ -244,7 +244,9 @@ onMounted(async () => {
         </el-row>
 
     </div>
-    <MachineFrom ref="openMachineRef" @success="loadList" />
+    <MachineFrom 
+    :deptList="simpleDept"
+    ref="openMachineRef" @success="loadList" />
 </template>
 
 <style lang='scss' scoped></style>
