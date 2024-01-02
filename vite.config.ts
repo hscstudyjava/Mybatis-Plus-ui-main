@@ -15,10 +15,14 @@ import IconsResolver from 'unplugin-icons/resolver'
 import Icons from 'unplugin-icons/vite'
 import UnoCSS from 'unocss/vite'
 import viteCompression from 'vite-plugin-compression'
+
+// 自动配置Name
+import vueSetupExtend from 'vite-plugin-vue-setup-extend'
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [
         vue(),
+        vueSetupExtend(),
         UnoCSS(),
         createSvgIconsPlugin({
             iconDirs: [path.resolve(process.cwd(), 'src/assets/icons/svg')],

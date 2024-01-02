@@ -1,4 +1,4 @@
-<script lang='ts' setup>
+<script lang='ts' setup name="SystemLogLogin">
 import { onMounted, reactive, ref } from 'vue';
 import { parseTime } from '@/utils/common'
 import { DICT_TYPE, getDictOptions, getIntDictOptions } from '@/utils/common/dict'

@@ -9,7 +9,6 @@ declare module 'vue' {
   export interface GlobalComponents {
     Dialog: typeof import('./src/components/Dialog/src/Dialog.vue')['default']
     DictTag: typeof import('./src/components/DictTag/index.vue')['default']
-    ElAlert: typeof import('element-plus/es')['ElAlert']
     ElBreadcrumb: typeof import('element-plus/es')['ElBreadcrumb']
     ElBreadcrumbItem: typeof import('element-plus/es')['ElBreadcrumbItem']
     ElButton: typeof import('element-plus/es')['ElButton']
@@ -24,6 +23,7 @@ declare module 'vue' {
     ElDescriptionsItem: typeof import('element-plus/es')['ElDescriptionsItem']
     ElDialog: typeof import('element-plus/es')['ElDialog']
     ElDivider: typeof import('element-plus/es')['ElDivider']
+    ElDrawer: typeof import('element-plus/es')['ElDrawer']
     ElDropdown: typeof import('element-plus/es')['ElDropdown']
     ElDropdownItem: typeof import('element-plus/es')['ElDropdownItem']
     ElDropdownMenu: typeof import('element-plus/es')['ElDropdownMenu']
@@ -54,6 +54,7 @@ declare module 'vue' {
     ElTreeV2: typeof import('element-plus/es')['ElTreeV2']
     ElWatermark: typeof import('element-plus/es')['ElWatermark']
     IconSelect: typeof import('./src/components/iconSelect/index.vue')['default']
+    IEpBack: typeof import('~icons/ep/back')['default']
     IEpDelete: typeof import('~icons/ep/delete')['default']
     IEpDownload: typeof import('~icons/ep/download')['default']
     IEpEdit: typeof import('~icons/ep/edit')['default']
@@ -71,6 +72,7 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     SvgIcon: typeof import('./src/components/svgIcon/index.vue')['default']
     Switch: typeof import('./src/components/switch/index.vue')['default']
+    ThemeSwitch: typeof import('./src/components/ThemeSwitch/index.vue')['default']
     UploadFiles: typeof import('./src/components/uploads/uploadFiles/index.vue')['default']
     UploadImages: typeof import('./src/components/uploads/uploadImages/index.vue')['default']
   }

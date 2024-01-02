@@ -191,7 +191,7 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="SystemNoticeTemplate">
 import { DICT_TYPE, getDictOptions, getIntDictOptions } from '@/utils/common/dict'
 import {
     selectSysNoticeTemplateList,

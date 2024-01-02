@@ -15,6 +15,19 @@ import { shallowRef } from 'vue';
 // 默认路由,静态路由
 export const defaultRouter: AppRouteRecordRaw[] = [
   {
+    path: '/redirect',
+    component: shallowRef(Layout),
+    name:'redirect',
+    hidden: true,
+    children: [
+      {
+        path: '/redirect/:path(.*)',
+        name:'redirect/path',
+        component: () => import('@/views/redirect/index.vue')
+      }
+    ]
+  },
+  {
     path: '/login',
     name: 'login',
     component: login
@@ -57,7 +70,7 @@ export const defaultRouter: AppRouteRecordRaw[] = [
         name: 'Dashboard',
         // @ts-ignore
         component: () => import('@/views/dashboard/index.vue'),
-        meta: { title: '首页', icon: 'dashboard' }
+        meta: { title: '首页', icon: 'dashboard', affix: true }
       }
     ]
   }
@@ -71,16 +84,16 @@ export const dynamicRoutes: AppRouteRecordRaw[] = [
     path: '/system/dict/value',
     name: 'dict-Layout',
     component: Layout,
-    meta:{premissions:['system:dict-value:page']},
-    hidden:true,
-    children:[
+    meta: { premissions: ['system:dict-value:page'] },
+    hidden: true,
+    children: [
       {
-        path:':typeId(\\d+)',
-        name:'dict-value',
+        path: ':typeId(\\d+)',
+        name: 'dict-value',
         // @ts-ignore
-        component:()=>import('@/views/system/dict/value/index.vue'),
+        component: () => import('@/views/system/dict/value/index.vue'),
         // component: () => import('@/views/dashboard/index.vue'),
-        meta:{title:'系统菜单',activeMenu:'/system/dict/type'}
+        meta: { title: '系统菜单', activeMenu: '/system/dict/type' }
       }
     ]
   },

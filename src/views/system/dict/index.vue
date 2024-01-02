@@ -186,7 +186,7 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="SystemDictType">
 import {
     selectSysDictTypeList,
     insertSysDictType,

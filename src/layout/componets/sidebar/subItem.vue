@@ -48,7 +48,7 @@ const subItemProp = defineProps({
     /**
      * 当前Item
      */
-    item: Object,
+    item: Object as PropType<Menu>,
 
     /**
      * 基础路径

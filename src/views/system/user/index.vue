@@ -185,7 +185,7 @@
         <authRole :role-list="simpleRole" ref="authFromRef" @success="loadList" />
     </div>
 </template>
-<script setup lang="ts">
+<script setup lang="ts" name="SystemUser">
 import { DICT_TYPE, getStrDictOptions } from '@/utils/common/dict'
 import userFrom from './userFrom.vue';
 import { onMounted, reactive, ref } from 'vue';

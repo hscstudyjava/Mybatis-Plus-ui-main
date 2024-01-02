@@ -9,9 +9,13 @@ import AppMain from './componets/AppMain.vue'
 // @ts-ignore
 import Sidebar from './componets/sidebar/index.vue'
 // @ts-ignore
-import navbar from './componets/naber/index.vue'
+import navbar from './componets/header/index.vue'
+// @ts-ignore
+import tagView from './componets/tagViews/index.vue'
 // @ts-ignore
 import sytleConstant from '@/assets/style/sytleConstant.module.scss'
+
+
 const variable = sytleConstant;
 
 // 设置名称
@@ -60,7 +64,8 @@ const handlerOutSidear = () => {
 
                 <div :class="{ 'fixed-header': fixedHeader }">
                     <navbar />
-                    <!-- <tags-view v-if="needTagsView" /> -->
+                    <!-- v-if="needTagsView" -->
+                    <tagView  />
                 </div>
 
                 <app-main />
