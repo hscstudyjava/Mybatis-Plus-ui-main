@@ -25,17 +25,9 @@ export interface SysRole {
 
     roleKey: string,
 
-    isDeleted: number,
+    dataScope:string,
 
     status: string,
-
-    createTime?: Date | null;
-
-    updateTime?: Date | null;
-
-    createBy: string,
-
-    updateBy: string,
 
     remark: string,
 

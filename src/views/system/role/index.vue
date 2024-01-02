@@ -141,53 +141,49 @@
 
         <!-- 弹窗 -->
         <el-dialog v-model="openDialog" :title="title" :close-on-click-modal="false" :draggable="true" :align-center="true"
-            width="50%">
+            width="30%">
             <el-form ref="ruleFormRef" :model="form" :rules="rules" status-icon label-width="100px">
-                <el-row>
-                    <el-col :span=12>
-                        <el-form-item label="角色名称" prop="roleName">
-                            <el-input v-model="form.roleName" placeholder="请填写角色名称" />
-                        </el-form-item>
-                    </el-col>
+                <el-form-item label="角色名称" prop="roleName">
+                    <el-input v-model="form.roleName" placeholder="请填写角色名称" />
+                </el-form-item>
 
-                    <el-col :span=12>
-                        <el-form-item prop="roleKey">
-                            <template #label>
-                                <span>角色字符
-                                    <el-tooltip placement="top">
-                                        <template #content>角色字符用于权限管理 请您必须填写</template>
-                                        <svg-icon iconClass="question"></svg-icon>
-                                    </el-tooltip>
-                                </span>
-                            </template>
-                            <el-input v-model="form.roleKey" placeholder="请填写角色字符" />
-                        </el-form-item>
-                    </el-col>
+                <el-form-item label="数据权限" prop="dataScope">
+                    <!-- <el-input v-model="form.roleName" placeholder="请填写角色名称" /> -->
+                    <el-select v-model="form.dataScope" placeholder="请选择数据权限" class="w-full">
+                        <el-option v-for="item in getDictOptions(DICT_TYPE.SYSTEM_DATA_PERMISSION)" :key="item.value"
+                            :label="item.label" :value="item.value" />
+                    </el-select>
+                </el-form-item>
 
-                    <el-col :span=12>
-                        <el-form-item label="角色状态">
-                            <el-switch v-model="form.status" />
-                        </el-form-item>
-                    </el-col>
+                <el-form-item prop="roleKey">
+                    <template #label>
+                        <span>角色字符
+                            <el-tooltip placement="top">
+                                <template #content>角色字符用于权限管理 请您必须填写</template>
+                                <svg-icon iconClass="question"></svg-icon>
+                            </el-tooltip>
+                        </span>
+                    </template>
+                    <el-input v-model="form.roleKey" placeholder="请填写角色字符" />
+                </el-form-item>
 
-                    <el-col :span=12>
-                        <el-form-item label="排序值">
-                            <el-input-number v-model="form.sortValue" :min="0" :max="100" controls-position="right"
-                                style="width: 100%;" />
-                        </el-form-item>
-                    </el-col>
+                <el-form-item label="角色状态">
+                    <el-switch v-model="form.status" />
+                </el-form-item>
 
+                <el-form-item label="排序值">
+                    <el-input-number v-model="form.sortValue" :min="0" :max="100" controls-position="right"
+                        style="width: 100%;" />
+                </el-form-item>
 
 
-                    <el-col :span="24">
-                        <el-form-item label="备注">
-                            <el-input v-model="form.remark" autosize type="textarea" placeholder="请输入备注" />
-                        </el-form-item>
 
-                    </el-col>
+                <el-form-item label="备注">
+                    <el-input v-model="form.remark" autosize type="textarea" placeholder="请输入备注" />
+                </el-form-item>
 
 
-                </el-row>
+
 
             </el-form>
 
@@ -211,18 +207,19 @@
 </template>
     
 <script setup lang="ts" name="SystemRole">
+import { DICT_TYPE, getStrDictOptions, getDictOptions } from '@/utils/common/dict'
 // @ts-ignore
-import { useUserStore } from '@/stores/user';
 import { reactive, onMounted, ref, toRefs } from 'vue';
 import type { SysRole, Page, SimpleTree, SysPermisson, SysDept } from '@/api/system/type';
 // @ts-ignore
 import { insertRole, queryRoleById, queryRolePage, removeRoleByIds, updateRole } from '@/api/system/role';
-const userStore = useUserStore()
 import { messages, confirms } from "@/utils/message/MessageUtils"
 import type { FormInstance, FormRules } from 'element-plus';
 import { auth } from '@/hooks/web/auth';
+
 import { selectSysDeptSimpleList } from '@/api/system/dept';
 import { queryPermissionSimple } from '@/api/system/permission';
+
 import AuthPeriFrom from './authPeriFrom.vue';
 import AuthDeptFrom from './authDeptFrom.vue';
 const objList: Page<SysRole> = reactive<Page<SysRole>>({
@@ -258,14 +255,13 @@ const params = reactive({
     pageSize: 10
 })
 var form: SysRole = reactive<SysRole>({
+    roleId:undefined,
     roleName: '',
     roleKey: '',
-    isDeleted: 0,
     status: '',
-    createBy: '',
-    updateBy: '',
     remark: '',
-    sortValue: 0
+    sortValue: 0,
+    dataScope: ''
 })
 const ruleFormRef = ref<FormInstance>()
 const rules = reactive<FormRules<typeof form>>({
@@ -423,15 +419,18 @@ const submit = (formEl: FormInstance | undefined) => {
                 messages.error(error.msg || '系统接口异常 请联系管理员')
             })
             return
+        } else {
+            // 新增
+            insertRole(form).then(response => {
+                queryPage();
+                openDialog.value = false;
+            }).catch(error => {
+                openDialog.value = false;
+                messages.error(error.msg || '系统接口异常 请联系管理员')
+            })
+
         }
-        // 新增
-        insertRole(form).then(response => {
-            queryPage();
-            openDialog.value = false;
-        }).catch(error => {
-            openDialog.value = false;
-            messages.error(error.msg || '系统接口异常 请联系管理员')
-        })
+
     })
 
 
@@ -441,14 +440,13 @@ const submit = (formEl: FormInstance | undefined) => {
 const resetFormRule = (formEl?: FormInstance | undefined) => {
     // 重新赋值
     Object.assign(form, {
+        id: undefined,
         roleName: '',
         roleKey: '',
-        isDeleted: false,
         status: '',
-        createBy: '',
-        updateBy: '',
         remark: '',
-        sortValue: 0
+        sortValue: 0,
+        dataScope: ''
     })
     if (!formEl) return
     formEl.resetFields()

@@ -48,7 +48,7 @@ export function insertRole(form: SysRole): Promise<AjaxResult<void>> {
  * @returns 返回结果值
  */
 export function updateRole(form: SysRole): Promise<AjaxResult<void>> {
-    return request.post(
+    return request.put(
         baseUrl,
         form,
         {
