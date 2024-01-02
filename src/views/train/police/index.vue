@@ -1,20 +1,26 @@
-<script lang='ts' setup name="TrainMachine">
+<script setup lang="ts" name="TrainPolice">
 import { onMounted, reactive, ref, unref } from 'vue';
 import { parseTime } from '@/utils/common'
 import { DICT_TYPE, getDictOptions } from '@/utils/common/dict'
 import { confirms, messages, notify } from '@/utils/message/MessageUtils';
-import { MachineApi, basePeri } from '@/api/train/machine'
-import type { TrainMachine } from "@/api/train/type";
-import MachineFrom from './machineFrom.vue';
-import type { SimpleTree, SysDept } from '@/api/system/type';
+import { selectPolicePage, basePeri, PoliceApi } from '@/api/train/police';
 import { selectSysDeptSimpleList } from '@/api/system/dept';
-import type { TreeNode } from 'element-plus';
+import type { SimpleTree, SysDept } from '@/api/system/type';
 
-//------------------------基础模板-------------------------------------------------
 const simpleDept = ref<SimpleTree<SysDept>[]>([])
-
 const total = ref(0)
-const list = ref<TrainMachine[]>([])
+const list = ref<PoliceInfo[]>([])
+const loading = ref(false)
+const query = ref({
+    pageSize: 10,
+    pageNumber: 1,
+    code: '',
+    createDept: '',
+    name: '',
+    status: '',
+    idNo: ''
+
+})
 const state = reactive({
     loading: false,
     single: true,
@@ -22,28 +28,24 @@ const state = reactive({
     ids: [],
 })
 const queryFromRef = ref()
-const openMachineRef = ref()
-const treeRef = ref()
-const loading = ref(false)
-const query = ref({
-    pageSize: 10,
-    createDept: '',
-    pageNumber: 1,
-    code: '',
-    title: '',
-    leader: '',
-    telNumber: '',
-    status: ''
-})
-
-const deptFilter = ref('')// 观察deptFilter是否发生变化|变化后watch触发函数
-
-
+const resetFrom = () => {
+    query.value = {
+        pageSize: 10,
+        pageNumber: 1,
+        code: '',
+        createDept: '',
+        name: '',
+        status: '',
+        idNo: ''
+    }
+    queryFromRef.value?.resetFields()
+    loadList()
+}
 // 加载数据
 const loadList = async () => {
     loading.value = true
     try {
-        const { data } = await MachineApi.pageMachine(unref(query))
+        const { data } = await selectPolicePage(unref(query))
         simpleDept.value = (await selectSysDeptSimpleList({})).data
         list.value = data.records
         total.value = data.totalRow
@@ -51,6 +53,34 @@ const loadList = async () => {
         loading.value = false
     }
 }
+const handleSelectionChange = (rows?: PoliceInfo[]) => {
+    // @ts-ignore
+    state.ids = rows?.map(item => item.id)
+    state.single = state.ids.length != 1
+    state.multiple = !state.ids.length
+}
+
+
+const handleDelete = async (row: PoliceInfo) => {
+    try {
+        await confirms.confirm(`您确定删除当前(${row.title || state.ids})数据吗`)
+        // 确定执行
+        const { msg } = await PoliceApi.removePoliceInfo(row.id || state.ids as [])
+        messages.success(msg)
+    } catch (error: any) {
+        if (error.msg) messages.error(error.msg)
+    } finally {
+        // 最后执行一下查询数据
+        loadList();
+    }
+}
+
+const openFrom = async (type: string, row?: PoliceInfo) => {
+    const currentId = row?.id || state.ids[0]
+    // openMachineRef.value.open(type, currentId)
+}
+const treeRef = ref()
+const deptFilter = ref('')// 观察deptFilter是否发生变化|变化后watch触发函数
 //	(data: TreeNodeData, node: TreeNode, e: MouseEvent)
 const onDeptClick = async (data: SimpleTree<SysDept>, node: TreeNode) => {
     query.value.createDept = data.id as string,
@@ -63,59 +93,20 @@ const onDeptInput = (query: string) => {
     treeRef.value!.filter(query)
 }
 
-const resetFrom = () => {
-    query.value = {
-        createDept: '',
-        pageSize: 10,
-        pageNumber: 1,
-        code: '',
-        title: '',
-        leader: '',
-        telNumber: '',
-        status: ''
-    }
-    queryFromRef.value?.resetFields()
-    loadList()
-}
-
-const handleSelectionChange = (rows?: TrainMachine[]) => {
-    // @ts-ignore
-    state.ids = rows?.map(item => item.id)
-    state.single = state.ids.length != 1
-    state.multiple = !state.ids.length
-}
-
-
-const handleDelete = async (row: TrainMachine) => {
-    try {
-        await confirms.confirm(`您确定删除当前(${row.title || state.ids})数据吗`)
-        // 确定执行
-        const { msg } = await MachineApi.removeMachine(row.id || state.ids as [])
-        messages.success(msg)
-    } catch (error: any) {
-        if (error.msg) messages.error(error.msg)
-    } finally {
-        // 最后执行一下查询数据
-        loadList();
-    }
-}
-
-const openFrom = async (type: string, row?: TrainMachine) => {
-    const currentId = row?.id || state.ids[0]
-    openMachineRef.value.open(type, currentId)
-}
 const filterMethod = (query: string, node: TreeNode) => {
     // @ts-ignore
     return node.label!.includes(query)
 }
 
+
+
 onMounted(async () => {
     await loadList()
 })
-
 </script>
+
 <template>
-    <div class='app-context'>
+    <div class="app-context">
         <el-row :gutter="20">
             <el-col :span="4" :xs="24">
                 <el-card>
@@ -131,13 +122,16 @@ onMounted(async () => {
                     <!-- 表单 -->
                     <el-form :inline="true" :model="query" ref="queryFromRef" class="demo-form-inline"
                         @submit.native.prevent>
-                        <el-form-item label="机器标题" prop="title">
-                            <el-input v-model="query.title" placeholder="请输入机器标题" @keyup.enter.native="loadList"
-                                clearable />
+                        <el-form-item label="警员警号" prop="code">
+                            <el-input v-model="query.code" placeholder="请输入警员警号" @keyup.enter.native="loadList" clearable />
                         </el-form-item>
 
-                        <el-form-item label="机器编码" prop="code">
-                            <el-input v-model="query.code" placeholder="请输入机器编码" @keyup.enter.native="loadList" clearable />
+                        <el-form-item label="警员姓名" prop="name">
+                            <el-input v-model="query.name" placeholder="请输入警员姓名" @keyup.enter.native="loadList" clearable />
+                        </el-form-item>
+
+                        <el-form-item label="身份号码" prop="idNo">
+                            <el-input v-model="query.idNo" placeholder="请输入身份号码" @keyup.enter.native="loadList" clearable />
                         </el-form-item>
 
                         <el-form-item>
@@ -190,18 +184,15 @@ onMounted(async () => {
                         style="width: 100%">
                         <el-table-column type="selection" width="55" align="center" />
                         <el-table-column label="ID" prop="id" align="center" />
-                        <el-table-column label="机器标题" show-overflow-tooltip prop="title" align="center" />
-                        <el-table-column label="机器编码" show-overflow-tooltip prop="code" align="center" />
-                        <el-table-column label="负责人" show-overflow-tooltip prop="leader" align="center" />
-                        <el-table-column label="联系方式" show-overflow-tooltip prop="telNumber" align="center" />
-                        <el-table-column label="ipv4" show-overflow-tooltip prop="ipV4" align="center" />
-                        <el-table-column label="ipv6" show-overflow-tooltip prop="ipV6" align="center" />
+                        <el-table-column label="姓名" show-overflow-tooltip prop="name" align="center" />
+                        <el-table-column label="警员警号" show-overflow-tooltip prop="code" align="center" />
+                        <el-table-column label="身份号码" show-overflow-tooltip prop="idNo" align="center" />
                         <el-table-column label="状态" align="center">
                             <template #default="scope">
                                 <DictTag :type="DICT_TYPE.COMMON_DATA_STATUS" :value="scope.row.status"></DictTag>
                             </template>
                         </el-table-column>
-                        <el-table-column label="创建时间" show-overflow-tooltip  align="center">
+                        <el-table-column label="创建时间" show-overflow-tooltip align="center">
                             <template #default="scope">
                                 {{ parseTime(scope.row.createTime) }}
                             </template>
@@ -242,11 +233,7 @@ onMounted(async () => {
 
             </el-col>
         </el-row>
-
     </div>
-    <MachineFrom 
-    :deptList="simpleDept"
-    ref="openMachineRef" @success="loadList" />
 </template>
 
-<style lang='scss' scoped></style>
+<style scoped lang="scss"></style>

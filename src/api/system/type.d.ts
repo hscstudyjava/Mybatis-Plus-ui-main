@@ -142,6 +142,7 @@ export interface BaseEnity {
 }
 
 
+
 export interface SysPermisson extends SimpleTree<SysPermisson> {
 
     permissionName: String,

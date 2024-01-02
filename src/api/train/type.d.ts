@@ -1,47 +1,65 @@
-import type { BaseEnity } from "../system/type";
+import type { BaseDeptEntity } from "@/types/base";
 
 
 
-export interface TrainMachine extends BaseEnity{
+/*****************biz_样机****************** */
+export interface TrainMachine extends BaseDeptEntity {
 
-    id?:number,
+    id?: number,
 
-    deptId:string,
+    deptId: string,
 
-    code:string,
+    code: string,
 
-    title:string,
+    title: string,
 
-    leader:string,
+    leader: string,
 
-    telNumber:string,
+    telNumber: string,
 
-    ipV4:string,
+    ipV4: string,
 
-    ipV6:string,
+    ipV6: string,
 
-    status:string,
+    status: string,
 
-    optionsParams:{},
-
-    createDept:string,
-
-    updateDept:string
+    optionsParams: {},
 
 }
 
-export interface TrainMachineHealth{
+export interface TrainMachineHealth {
 
-    id:number,
+    id: number,
 
-    macCode:string,
-    
-    runStatus:string,
+    macCode: string,
 
-    openTime:Date,
+    runStatus: string,
 
-    closeTime:Date,
+    openTime: Date,
 
-    optionsParam:{}
-    
+    closeTime: Date,
+
+    optionsParam: {}
+
+}
+
+/*****************biz_警员**** */
+export interface PoliceInfo extends BaseDeptEntity {
+    id?: number,
+
+    code: string,
+
+    title: string,
+
+    idNo: string,
+
+    category: string,
+
+    position: string,
+
+    remark: string,
+
+    optionsParams: object,
+
+    status: string
 }

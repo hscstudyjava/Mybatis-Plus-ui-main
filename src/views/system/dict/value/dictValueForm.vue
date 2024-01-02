@@ -1,6 +1,6 @@
 <template>
     <!-- 弹窗 -->
-    <el-dialog v-model="open" :close-on-click-modal="false" :draggable="true" :align-center="true" width="50%">
+    <el-dialog v-model="open" :close-on-click-modal="false" :draggable="true" :align-center="true" width="30%">
         <template #header="{ close, titleId, titleClass }">
             <div class="my-header">
                 <h6 :id="titleId">{{ title }}</h6>
@@ -10,7 +10,7 @@
         <el-form ref="ruleFormRef" :model="form" :rules="rules" status-icon label-width="100px">
 
             <el-form-item label="字典名称" prop="typeId">
-                <el-select v-model="form.typeId" class="!w-240px" style="width: 100%;">
+                <el-select v-model="form.typeId" class="w-full">
                     <el-option v-for="item in typeList" :key="item.id" :label="item.title" :value="item.id + ''" />
                 </el-select>
             </el-form-item>
