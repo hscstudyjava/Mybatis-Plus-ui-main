@@ -53,7 +53,6 @@ declare module 'vue' {
     ElTreeSelect: typeof import('element-plus/es')['ElTreeSelect']
     ElTreeV2: typeof import('element-plus/es')['ElTreeV2']
     IconSelect: typeof import('./src/components/iconSelect/index.vue')['default']
-    IEpBack: typeof import('~icons/ep/back')['default']
     IEpDelete: typeof import('~icons/ep/delete')['default']
     IEpDownload: typeof import('~icons/ep/download')['default']
     IEpEdit: typeof import('~icons/ep/edit')['default']
