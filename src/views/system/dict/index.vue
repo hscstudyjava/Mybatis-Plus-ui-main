@@ -3,19 +3,21 @@
         <el-card class="box-card">
             <el-form :inline="true" v-show="state.showQuery" :model="state.params" @submit.native.prevent>
 
-                <el-form-item label="标题">
+                <el-form-item label="标题" prop="key">
                     <el-input v-model="state.params.title" placeholder="请输入字典标题" @keyup.enter.native="loadList"
                         clearable></el-input>
                 </el-form-item>
 
-                <el-form-item label="字符">
+                <el-form-item label="字符" prop="key">
                     <el-input v-model="state.params.key" placeholder="请输入字典字符" @keyup.enter.native="loadList"
                         clearable></el-input>
                 </el-form-item>
 
-                <el-form-item label="类型">
-                    <el-input v-model="state.params.type" placeholder="请输入字典字符" @keyup.enter.native="loadList"
-                        clearable></el-input>
+                <el-form-item label="类型" prop="type">
+                    <el-select v-model="state.params.type" placeholder="请选择模块类型" class="w-full">
+                        <el-option v-for="item in getDictOptions(DICT_TYPE.SYSTEM_MODULE)" :key="item.value"
+                            :label="item.label" :value="item.value" />
+                    </el-select>
                 </el-form-item>
 
                 <el-form-item>
@@ -364,7 +366,7 @@ const handleSelectionChange = (rows?: SysDictType[]) => {
 }
 
 const resetForm = () => {
-    Object.assign(state.form,
+    Object.assign(state.params,
         {
             title: undefined,
             key: undefined,
