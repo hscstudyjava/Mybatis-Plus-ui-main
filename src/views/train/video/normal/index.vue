@@ -11,6 +11,7 @@ import type { SimpleTree, SysDept } from '@/api/system/type';
 import type { TrainVideo } from '@/api/train/type';
 import type { TreeNode } from 'element-plus';
 import VideoFrom from './videoFrom.vue';
+import TrainVideoChildFrom from './assignChild.vue';
 
 const simpleDept = ref<SimpleTree<SysDept>[]>([])
 const total = ref(0)
@@ -31,8 +32,10 @@ const state = reactive({
     multiple: true,
     ids: [],
 })
+
 const queryFromRef = ref()
 const videoFromRef = ref()
+const trainVideoChildFrom = ref()
 
 const resetFrom = () => {
     query.value = {
@@ -85,6 +88,12 @@ const openFrom = async (type: string, row?: TrainVideo) => {
     const currentId = row?.id || state.ids[0]
     await videoFromRef.value.open(type, currentId)
 }
+
+const openAssignFrom = async (row: TrainVideo) => {
+    await trainVideoChildFrom.value.open(row.id)
+}
+
+
 const treeRef = ref()
 const deptFilter = ref('')// 观察deptFilter是否发生变化|变化后watch触发函数
 const onDeptClick = async (data: SimpleTree<SysDept>, node: TreeNode) => {
@@ -192,13 +201,13 @@ onMounted(async () => {
                         <el-table-column label="警情名称" show-overflow-tooltip prop="name" align="center" />
                         <el-table-column label="警情编码" show-overflow-tooltip prop="code" align="center" />
 
-                        <el-table-column label="警情类型" show-overflow-tooltip align="center" >
+                        <el-table-column label="警情类型" show-overflow-tooltip align="center">
                             <template #default="scope">
                                 <DictTag :type="DICT_TYPE.BIZ_TRAIN_VIDEO_TYPE" :value="scope.row.trainType"></DictTag>
                             </template>
-                        </el-table-column>   
-                        
-                        <el-table-column label="警情级别" show-overflow-tooltip align="center" >
+                        </el-table-column>
+
+                        <el-table-column label="警情级别" show-overflow-tooltip align="center">
                             <template #default="scope">
                                 <DictTag :type="DICT_TYPE.BIZ_TRIAN_VIDEO_LEVEL" :value="scope.row.trainLevel"></DictTag>
                             </template>
@@ -214,9 +223,10 @@ onMounted(async () => {
                                 {{ parseTime(scope.row.createTime) }}
                             </template>
                         </el-table-column>
-                        <el-table-column label="备注" show-overflow-tooltip prop="remark" align="center" />
 
-                        <el-table-column label="操作" align="center">
+                        <el-table-column label="操作"
+                        width="200px"
+                        align="center">
                             <template #default="scope">
                                 <div class="flex items-center justify-center">
 
@@ -228,6 +238,16 @@ onMounted(async () => {
                                         </template>
                                         更新
                                     </el-button>
+
+                                    <el-button link type="info" v-peri="[`${basePeri}getOne`]"
+                                        @click="openAssignFrom(scope.row)">
+                                        <template #icon>
+                                            <!-- <i-ep-delete /> -->
+                                            <svg-icon icon="ep:edit"></svg-icon>
+                                        </template>
+                                        视频
+                                    </el-button>
+
 
                                     <el-button link type="danger" v-peri="[`${basePeri}remove`]"
                                         @click="handleDelete(scope.row)">
@@ -253,7 +273,10 @@ onMounted(async () => {
     </div>
 
 
-    <VideoFrom @success="loadList" ref="videoFromRef"/>
+    <VideoFrom @success="loadList" ref="videoFromRef" />
+
+    <!-- 警情视频赋值 -->
+    <TrainVideoChildFrom ref="trainVideoChildFrom" />
 </template>
 
 <style scoped lang="scss"></style>

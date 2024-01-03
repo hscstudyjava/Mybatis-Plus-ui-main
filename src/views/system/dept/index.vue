@@ -14,11 +14,6 @@
                         @keyup.enter.native="loadList" clearable />
                 </el-form-item>
 
-                <!--  <el-form-item label="删除状态">
-                <el-switch v-model="params.isDeleted" active-value="1" inactive-value="0" class="ml-2" @change="queryPage"
-                    style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949" />
-            </el-form-item> -->
-
                 <el-form-item>
                     <el-button type="primary" @click="loadList">查询</el-button>
                     <el-button @click="resetQuery">重置</el-button>
