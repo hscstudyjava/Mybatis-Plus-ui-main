@@ -1,20 +1,20 @@
 export interface BaseEnity {
 
-    createTime: Date,
+    createTime?: Date,
 
-    updateTime: Date,
-
-    /**
-     * 默认设置ID
-     */
-    createBy: String,
+    updateTime?: Date,
 
     /**
      * 默认设置ID
      */
-    updateBy: String,
+    createBy?: string,
 
-    isDeleted: Number
+    /**
+     * 默认设置ID
+     */
+    updateBy?: string,
+
+    isDeleted?: number
 
 }
 
@@ -23,12 +23,22 @@ export interface BaseDeptEntity extends BaseEnity {
     /**
      * 创建部门
      */
-    createDept: string,
+    createDept?: string,
 
     /**
      * 更新部门
      */
-    updateDept: string
+    updateDept?: string
+
+    /**
+     * 扩展参数
+     */
+    optionsParams?: object
+
+    /**
+     * 备注
+     */
+    remark?:string
 
 }
 

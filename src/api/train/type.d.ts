@@ -49,7 +49,7 @@ export interface PoliceInfo extends BaseDeptEntity {
 
     code: string,
 
-    title: string,
+    name: string,
 
     idNo: string,
 
@@ -62,4 +62,54 @@ export interface PoliceInfo extends BaseDeptEntity {
     optionsParams: object,
 
     status: string
+}
+
+/****************biz_警情 */
+export interface TrainVideo extends Omit<BaseDeptEntity, "optionsParams"> {
+    id?: number,
+
+    code: string,
+
+    name: string,
+
+    thumb: string,
+
+    trainType: string,
+
+    trainLevel: string,
+
+    status: string,
+
+    sortValue: number
+
+    optionsParams: TrainVideoParams
+}
+
+
+export interface TrainVideoParams {
+    gunLocalUrl: string,
+    /**
+ * 开始帧率
+ */
+    fpsStartTime: string,
+    /**
+ * 结束帧率
+ */
+    fpsEndTime: string,
+    /**
+ * 默认使用毫秒 1000
+ */
+    videoTime: number,
+    /**
+ * 动作开始毫秒
+ */
+    playTime: number,
+    /**
+ * 开始执法记录仪
+ */
+    closeCamera: number
+    /**
+ * 开启警官证
+ */
+    openPoliceCard: number,
 }

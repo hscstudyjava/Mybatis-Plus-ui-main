@@ -114,5 +114,11 @@ export enum DICT_TYPE {
      * 数据权限
      */
     SYSTEM_DATA_PERMISSION="system_data_permission",
+
+
+
+    /***************Train***************** */
+    BIZ_TRAIN_VIDEO_TYPE = "biz_train_video_type",
+    BIZ_TRIAN_VIDEO_LEVEL="biz_train_video_leave"
     
 }
