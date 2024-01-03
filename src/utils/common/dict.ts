@@ -108,5 +108,17 @@ export enum DICT_TYPE {
     
     SYSTEM_OPERATION_TYPE="system_operation_type",
 
-    SYSTEM_LOGIN_STATUS="system_login_status"
+    SYSTEM_LOGIN_STATUS="system_login_status",
+
+    /**
+     * 数据权限
+     */
+    SYSTEM_DATA_PERMISSION="system_data_permission",
+
+
+
+    /***************Train***************** */
+    BIZ_TRAIN_VIDEO_TYPE = "biz_train_video_type",
+    BIZ_TRIAN_VIDEO_LEVEL="biz_train_video_leave"
+    
 }

@@ -25,16 +25,14 @@ const treeNodeAll = ref(false) // 全选/全不选
 const checkStrictly = ref(false) // 父子联动
 const fromRef = ref()
 const from = reactive<SysRoleAuthVO>({
+    deptIdList: [],
+    permissionIdList: [],
     roleName: '',
     roleKey: '',
-    isDeleted: 0,
+    dataScope: '',
     status: '',
-    createBy: '',
-    updateBy: '',
     remark: '',
-    sortValue: 0,
-    deptIdList: [],
-    permissionIdList: []
+    sortValue: 0
 })
 
 const open = async (roleId: number) => {
@@ -46,7 +44,7 @@ const open = async (roleId: number) => {
         nextTick(() => {
             treeRef.value.setCheckedKeys(from.deptIdList)
             loading.value = false
-        }) 
+        })
     } catch (error: any) {
         messages.error(error?.msg)
         diologOpen.value = false
@@ -87,16 +85,14 @@ const handleCheckedTreeExpand = () => {
 // 重置表单
 const resetFrom = () => {
     Object.assign(from, {
+        deptIdList: [],
+        permissionIdList: [],
         roleName: '',
         roleKey: '',
-        isDeleted: 0,
+        dataScope: '',
         status: '',
-        createBy: '',
-        updateBy: '',
         remark: '',
-        sortValue: 0,
-        deptIdList: [],
-        permissionIdList: []
+        sortValue: 0
     })
     checkStrictly.value = false
     treeNodeAll.value = false

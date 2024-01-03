@@ -1,18 +1,20 @@
-<script setup lang="ts" name="TrainPolice">
+<script setup lang="ts" name="TrainVideoNormal">
 import { onMounted, reactive, ref, unref } from 'vue';
 import { parseTime } from '@/utils/common'
+
 import { DICT_TYPE, getDictOptions } from '@/utils/common/dict'
 import { confirms, messages, notify } from '@/utils/message/MessageUtils';
-import { selectPolicePage, basePeri, PoliceApi } from '@/api/train/police';
+
+import { pageTrainVideo, basePeri, TrainVideoApi } from '@/api/train/video';
 import { selectSysDeptSimpleList } from '@/api/system/dept';
 import type { SimpleTree, SysDept } from '@/api/system/type';
-import type { PoliceInfo } from '@/api/train/type';
-import policeFrom from './policeFrom.vue';
+import type { TrainVideo } from '@/api/train/type';
 import type { TreeNode } from 'element-plus';
+import VideoFrom from './videoFrom.vue';
 
 const simpleDept = ref<SimpleTree<SysDept>[]>([])
 const total = ref(0)
-const list = ref<PoliceInfo[]>([])
+const list = ref<TrainVideo[]>([])
 const loading = ref(false)
 const query = ref({
     pageSize: 10,
@@ -22,7 +24,6 @@ const query = ref({
     name: '',
     status: '',
     idNo: ''
-
 })
 const state = reactive({
     loading: false,
@@ -31,7 +32,7 @@ const state = reactive({
     ids: [],
 })
 const queryFromRef = ref()
-const policeFromRef = ref()
+const videoFromRef = ref()
 
 const resetFrom = () => {
     query.value = {
@@ -50,7 +51,7 @@ const resetFrom = () => {
 const loadList = async () => {
     loading.value = true
     try {
-        const { data } = await selectPolicePage(unref(query))
+        const { data } = await pageTrainVideo(unref(query))
         simpleDept.value = (await selectSysDeptSimpleList({})).data
         list.value = data.records
         total.value = data.totalRow
@@ -58,7 +59,7 @@ const loadList = async () => {
         loading.value = false
     }
 }
-const handleSelectionChange = (rows?: PoliceInfo[]) => {
+const handleSelectionChange = (rows?: TrainVideo[]) => {
     // @ts-ignore
     state.ids = rows?.map(item => item.id)
     state.single = state.ids.length != 1
@@ -66,11 +67,11 @@ const handleSelectionChange = (rows?: PoliceInfo[]) => {
 }
 
 
-const handleDelete = async (row: PoliceInfo) => {
+const handleDelete = async (row: TrainVideo) => {
     try {
         await confirms.confirm(`您确定删除当前(${row.name || state.ids})数据吗`)
         // 确定执行
-        const { msg } = await PoliceApi.removePoliceInfo(row.id || state.ids as [])
+        const { msg } = await TrainVideoApi.remove(row.id || state.ids as [])
         messages.success(msg)
     } catch (error: any) {
         if (error.msg) messages.error(error.msg)
@@ -80,11 +81,9 @@ const handleDelete = async (row: PoliceInfo) => {
     }
 }
 
-const openFrom = async (type: string, row?: PoliceInfo) => {
+const openFrom = async (type: string, row?: TrainVideo) => {
     const currentId = row?.id || state.ids[0]
-    console.log(policeFromRef.value);
-
-    await policeFromRef.value.open(type, currentId)
+    await videoFromRef.value.open(type, currentId)
 }
 const treeRef = ref()
 const deptFilter = ref('')// 观察deptFilter是否发生变化|变化后watch触发函数
@@ -190,9 +189,21 @@ onMounted(async () => {
                         style="width: 100%">
                         <el-table-column type="selection" width="55" align="center" />
                         <el-table-column label="ID" prop="id" align="center" />
-                        <el-table-column label="姓名" show-overflow-tooltip prop="name" align="center" />
-                        <el-table-column label="警员警号" show-overflow-tooltip prop="code" align="center" />
-                        <el-table-column label="身份号码" show-overflow-tooltip prop="idNo" align="center" />
+                        <el-table-column label="警情名称" show-overflow-tooltip prop="name" align="center" />
+                        <el-table-column label="警情编码" show-overflow-tooltip prop="code" align="center" />
+
+                        <el-table-column label="警情类型" show-overflow-tooltip align="center" >
+                            <template #default="scope">
+                                <DictTag :type="DICT_TYPE.BIZ_TRAIN_VIDEO_TYPE" :value="scope.row.trainType"></DictTag>
+                            </template>
+                        </el-table-column>   
+                        
+                        <el-table-column label="警情级别" show-overflow-tooltip align="center" >
+                            <template #default="scope">
+                                <DictTag :type="DICT_TYPE.BIZ_TRIAN_VIDEO_LEVEL" :value="scope.row.trainLevel"></DictTag>
+                            </template>
+                        </el-table-column>
+
                         <el-table-column label="状态" align="center">
                             <template #default="scope">
                                 <DictTag :type="DICT_TYPE.COMMON_DATA_STATUS" :value="scope.row.status"></DictTag>
@@ -242,7 +253,7 @@ onMounted(async () => {
     </div>
 
 
-    <policeFrom @success="loadList" ref="policeFromRef" :deptList="simpleDept" />
+    <VideoFrom @success="loadList" ref="videoFromRef"/>
 </template>
 
 <style scoped lang="scss"></style>
