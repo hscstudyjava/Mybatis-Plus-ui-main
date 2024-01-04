@@ -115,3 +115,34 @@ export const enum SystemConfigEnum {
     // 登录限制策略
     SYSTEM_LOGIN_LIMIT = "system.login.limit"
 }
+
+/**
+ *    COUNTRY("0","国家"),
+
+    PROVINCE("1","省份"),
+
+    CITY("2","城市"),
+
+    COUNTY("3","区县")
+ */
+export const enum CityLevelType{
+
+    /**
+     * 国家
+     */
+    COUNTRY="0",
+
+    /**
+     * 省份
+     */
+    PROVINCE="1",
+
+    /**
+     * 城市
+     */
+    CITY="2",
+    /**
+     * 区县
+     */
+    COUNTY="3"
+}
