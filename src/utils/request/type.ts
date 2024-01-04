@@ -15,7 +15,9 @@ import type {
     // 是否全局展示请求 错误信息
     globalErrorMessage?: boolean
     // 是否全局展示请求 成功信息
-    globalSuccessMessage?: boolean
+    globalSuccessMessage?: boolean,
+    // 是否接口加密 
+    isEncrypt?:boolean,
   }
   
   // 拓展自定义请求配置

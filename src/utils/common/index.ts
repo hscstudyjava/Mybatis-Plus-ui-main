@@ -2,7 +2,7 @@
  * 参数处理
  * @param {*} params  参数
  */
-export function tansParams(params: any) {
+export const tansParams = (params: any) => {
     let result = ''
     for (const propName of Object.keys(params)) {
         const value = params[propName];
@@ -23,8 +23,10 @@ export function tansParams(params: any) {
     }
     return result
 }
-// 验证是否为blob格式
-export async function blobValidate(data: any) {
+/**
+ * 判断是否为Blob
+ */
+export const validateBlob = async (data: any) => {
     try {
         const text = await data.text();
         JSON.parse(text);
@@ -78,3 +80,69 @@ export function parseTime(time: number | string | Date | object, pattern?: numbe
     return time_str
 }
 
+
+
+/**
+ * 随机工具类
+ */
+export const randomUtil = {
+
+    // 生成随机数
+    randomNum(min: number, max: number) { return Math.floor(Math.random() * (max - min + 1)) + min },
+
+    // 随机字符串
+    randomStr(len: number): string {
+        const chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz123456789';
+        const strLen = chars.length;
+        let randomStr = '';
+        for (let i = 0; i < len; i++) {
+            randomStr += chars.charAt(Math.floor(Math.random() * strLen));
+        }
+        return randomStr;
+    }
+
+}
+
+/**
+ * 格式化工具类
+ */
+export const formatUtil = {
+
+    /**
+     * 
+     * 18312343721
+     * 183****3721
+     * @param tel 手机号
+     * @returns 格式化后数据 
+     */
+    telFormat(tel: string): string {
+        return tel.substring(0, 3) + "****" + tel.substring(7);
+    },
+
+
+    /**
+     * 驼峰命名转换成短横线命名
+     * 
+     * trainId
+     * train_id
+     * 
+     * @param str  trianId 驼峰
+     * @returns  短横线
+     */
+    getKebabCase(str: string): string {
+        return str.replace(/[A-Z]/g, (item) => '-' + item.toLowerCase())
+    },
+
+    /**
+     * 短横线命名转换成驼峰命名
+     * train_id 
+     * trianId
+     * 
+     * @param str train_id
+     * @returns  trainId
+     */
+    getCamelCase(str: string): string {
+        return str.replace(/-([a-z])/g, (i, item) => item.toUpperCase())
+    }
+
+}

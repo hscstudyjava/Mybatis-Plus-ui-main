@@ -185,7 +185,14 @@ export const isEmptyVal = (val: any): boolean => {
 
 
 
-export function toByte(value: number, type: FileTypeEnum): number {
+/**
+ * 
+ * @param value 数据长度
+ * @param type  类型
+ * @returns 转换后长度
+ */
+export const toByte = (value: number, type: FileTypeEnum): number => {
+
     switch (type) {
         case FileTypeEnum.BYTE:
             return value;
@@ -200,7 +207,7 @@ export function toByte(value: number, type: FileTypeEnum): number {
     }
 }
 
-export function fromByte(value: number, type: FileTypeEnum): number {
+export const fromByte = (value: number, type: FileTypeEnum): number => {
     switch (type) {
         case FileTypeEnum.BYTE:
             return value;
@@ -214,3 +221,7 @@ export function fromByte(value: number, type: FileTypeEnum): number {
             throw new Error('Invalid file type');
     }
 }
+
+
+
+
