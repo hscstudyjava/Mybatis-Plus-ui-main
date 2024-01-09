@@ -1,5 +1,6 @@
 <script setup lang="ts" name="DynamicFrom">
-import { PropType, computed, ref, shallowRef } from 'vue';
+import type { DynamicFromFild } from '@/types';
+import {type PropType, computed, ref, shallowRef } from 'vue';
 // https://blog.csdn.net/qq_43546721/article/details/134838808
 const props = defineProps({
     formFields: {

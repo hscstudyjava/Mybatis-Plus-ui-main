@@ -1,4 +1,4 @@
-interface BaseEnity{
+interface BaseEnity {
 
     id: string | number | any
 
@@ -89,46 +89,48 @@ export interface BaseEnity {
 /**
  * 动态表达配置
  */
-export interface DynamicFromFild{
+export interface DynamicFromFild {
 
     /**
      * 表单标题
      */
-    label:string,
+    label: string,
 
-    /**
-     * 表单Icon
-     */
-    icon:string,
 
-    /**
-     * 表单介绍
-     */
-    remark:string,
-
-    /**
-     * 绑定属性
-     */
-    prop:string,
-
-    /**
-     * 是否必填
-     */
-    required:boolean,
 
     /**
      * 表单类型
      */
-    type:string,
+    type: string,
+
+    /**
+     * 绑定属性
+     */
+    prop: string,
+
+    /**
+     * 是否必填
+     */
+    required?: boolean,
+
+    /**
+     * 表单Icon
+     */
+    icon?: string,
 
     /**
      * order
      */
-    order:number,
+    order?: number,
 
     /**
      * 扩展属性
      */
-    options:[]
+    options?: [],
+
+    /**
+ * 表单介绍
+ */
+    remark?: string,
 
 }
