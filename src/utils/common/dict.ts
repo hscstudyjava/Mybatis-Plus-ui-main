@@ -121,4 +121,10 @@ export enum DICT_TYPE {
      */
     SYSTEM_CITY_LEVEL_TYPE = "system_city_level_type"
 
+    SYSTEM_DATA_PERMISSION="system_data_permission",
+    
+    /**
+     * 文件存储类型
+     */
+    SYSTEM_FILE_TYPE="system_file_type",
 }
