@@ -115,4 +115,8 @@ export enum DICT_TYPE {
      */
     SYSTEM_DATA_PERMISSION="system_data_permission",
     
+    /**
+     * 文件存储类型
+     */
+    SYSTEM_FILE_TYPE="system_file_type",
 }
