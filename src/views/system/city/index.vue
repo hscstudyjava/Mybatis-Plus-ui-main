@@ -73,7 +73,9 @@ onMounted(async () => {
    <div class='app-context'>
 
       <el-card>
-         <el-table ref="treeTableRef" stripe border :data="list" style="width: 100%" row-key="id" lazy :load="loadTree"
+         <el-table ref="treeTableRef" stripe border :data="list"
+         v-loading="loading"
+         style="width: 100%" row-key="id" lazy :load="loadTree"
             :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
             <el-table-column prop="id" show-overflow-tooltip align="center" label="ID" />
             <el-table-column prop="name" show-overflow-tooltip align="center" label="名称" />
