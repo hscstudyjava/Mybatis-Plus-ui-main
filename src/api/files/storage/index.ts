@@ -1,12 +1,21 @@
 import { request } from "@/utils/request";
 import type { AjaxResult } from "@/utils/request/type";
-import type { SysStorage } from "../type";
-import type { Page } from "@/types";
+import type { SysStorage, SysStorageValue } from "../type";
+import type { DynamicFromFild, Page } from "@/types";
 
 /**
  * 基础Url
  */
 const baseUrl = "/admin-api/file/storage/"
+
+
+export interface SysStorageValueVo {
+
+    storageId: number,
+
+    list: SysStorageValue[]
+
+}
 
 /**
  * 基础权限
@@ -16,6 +25,30 @@ export const basePeri = "file:storage:"
 export const getPageFileStorage = async (params: any): Promise<AjaxResult<Page<SysStorage>>> => request.get(baseUrl + 'page', { params })
 
 export const getlistFileStorage = async (params: any): Promise<AjaxResult<Array<SysStorage>>> => request.get(baseUrl + 'simple-list', { params })
+
+export const getFileStorageSupport = async (storageType: string): Promise<AjaxResult<Array<DynamicFromFild>>> => request.get(baseUrl + `support-params/${storageType}`)
+
+export const getFileStorageValue = async (storageId: string | number): Promise<AjaxResult<Array<SysStorageValue>>> => request.get(baseUrl + `value/${storageId}`)
+
+
+
+export const SysStorageValueApi = {
+    async insert(data: SysStorageValueVo): Promise<AjaxResult<void>> {
+        return request.post(
+            baseUrl + 'value',
+            data
+        )
+    },
+
+    async update(data: SysStorageValueVo): Promise<AjaxResult<void>> {
+        return request.put(
+            baseUrl + 'value',
+            data
+        )
+    },
+
+}
+
 
 export const SysStorageApi = {
 

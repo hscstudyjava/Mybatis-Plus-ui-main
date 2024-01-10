@@ -5,7 +5,8 @@ import { type SysStorage } from '@/api/files/type';
 import { confirms, messages, notify } from '@/utils/message/MessageUtils';
 import { parseTime } from '@/utils/common'
 import { DICT_TYPE, getDictOptions } from '@/utils/common/dict'
-import   storageFrom from './storageFrom.vue';
+import storageFrom from './storageFrom.vue';
+import assginValueVue from './assginValue.vue';
 
 const query = reactive({
     pageNumber: 1,

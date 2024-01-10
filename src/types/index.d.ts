@@ -1,4 +1,6 @@
-interface BaseEnity {
+import type { SysDictSimpleResult } from '@/api/system/type'
+
+export interface BaseEnity {
 
     id: string | number | any
 
@@ -96,8 +98,6 @@ export interface DynamicFromFild {
      */
     label: string,
 
-
-
     /**
      * 表单类型
      */
@@ -107,6 +107,11 @@ export interface DynamicFromFild {
      * 绑定属性
      */
     prop: string,
+
+    /**
+     * 
+     */
+    value: string | boolean | number | Date | object,
 
     /**
      * 是否必填
@@ -126,11 +131,15 @@ export interface DynamicFromFild {
     /**
      * 扩展属性
      */
-    options?: [],
+    options?: [] | SysDictSimpleResult[],
 
     /**
  * 表单介绍
  */
     remark?: string,
 
+}
+
+export interface DynamicObj {
+    [key: string]: string
 }

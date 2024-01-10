@@ -19,3 +19,18 @@ export interface SysStorage extends BaseEnity {
 
     sortValue: number
 }
+
+export interface SysStorageValue extends BaseEnity{
+
+    id?:number,
+
+    storageId?:number,
+
+    storageName:string,
+
+    storageType:string,
+
+    storageTitle:string,
+    
+    storageValue:string,
+}
