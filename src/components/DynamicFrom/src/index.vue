@@ -4,7 +4,7 @@ import { type PropType, computed, ref, shallowRef } from 'vue';
 // https://blog.csdn.net/qq_43546721/article/details/134838808
 const props = defineProps({
     modelValue: {
-        type: [] as PropType<DynamicFromFild[]>,
+        type: Array as PropType<DynamicFromFild[]>,
         required: true
     }
 })
@@ -18,7 +18,7 @@ defineExpose({
 </script>
 
 <template>
-    <el-form ref="dynamicForm" label-width="120px">
+    <el-form ref="dynamicForm" label-width="100px">
         <el-form-item v-for="(field, index) in modelValue" :key="index" :label="field.label" :prop="field.prop">
             <el-input v-if="field.type === 'input'" v-model="field.value">
             </el-input>

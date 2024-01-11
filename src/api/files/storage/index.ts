@@ -33,16 +33,9 @@ export const getFileStorageValue = async (storageId: string | number): Promise<A
 
 
 export const SysStorageValueApi = {
-    async insert(data: SysStorageValueVo): Promise<AjaxResult<void>> {
+    async setting(data: SysStorageValueVo): Promise<AjaxResult<void>> {
         return request.post(
-            baseUrl + 'value',
-            data
-        )
-    },
-
-    async update(data: SysStorageValueVo): Promise<AjaxResult<void>> {
-        return request.put(
-            baseUrl + 'value',
+            baseUrl + 'setting-value',
             data
         )
     },

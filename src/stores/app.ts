@@ -1,8 +1,11 @@
-import { ref, computed, reactive, toRef, toRefs } from 'vue'
-import { defineStore } from 'pinia'
-import { DeviceEnum, ElmentSizeEnum } from '@/utils/constants/SystemConstants'
-import CacheUtils from '@/utils/cache/CacheUtils'
+import { getAdminServerConfig } from '@/api/system/config'
 import { CacheConstants } from '@/utils/cache/CacheConstatns'
+import CacheUtils, { useWsStore } from '@/utils/cache/CacheUtils'
+import { DeviceEnum, ElmentSizeEnum } from '@/utils/constants/SystemConstants'
+import { asyncComputed } from '@vueuse/core'
+import { defineStore } from 'pinia'
+import { reactive, ref } from 'vue'
+
 /** 
  * 侧边栏对象
  */
@@ -20,6 +23,17 @@ interface Sidebar {
      */
     hide: boolean
 }
+
+
+// 服务器配置
+interface FileConfig {
+
+    fileInitKey: string
+
+}
+
+const ws = useWsStore('localStorage') //存储到Session中避免数据,个人设置60秒拉取数据
+
 
 
 /**
@@ -47,7 +61,7 @@ export const useAppStore = defineStore('appStore', () => {
     const TOGGLE_SIBEBAR = (): void => {
         sibebar.open = !sibebar.open
         sibebar.withoutAnimation = false
-        
+
         if (sibebar.open) {
             CacheUtils.cookieCache.set('sibebar_open', 1)
         } else {
@@ -76,8 +90,8 @@ export const useAppStore = defineStore('appStore', () => {
      * 设置隐藏状态
      * @param status 隐藏状态
      */
-    const setSibebarHide=(status:boolean):void=>{
-        sibebar.hide=status
+    const setSibebarHide = (status: boolean): void => {
+        sibebar.hide = status
     }
 
     /**
@@ -99,6 +113,44 @@ export const useAppStore = defineStore('appStore', () => {
             )
     }
 
+
+    /******************Server服务器拉取配置****************************** */
+    const file = reactive<FileConfig>({
+        fileInitKey: ''
+    })
+
+    const setFileConfig = (target: FileConfig) => {
+        Object.assign(file, target);
+        ws.set(CacheConstants.SERVER_SETTING_FILE, target, {
+            exp: 3600
+        })
+    }
+
+
+    const getFileConfig = asyncComputed(async ():Promise<FileConfig> => {
+        const cacheObj = ws.get(CacheConstants.SERVER_SETTING_FILE)
+        if (cacheObj) return cacheObj
+        // pull 
+        const data = await getServerInitConfig()
+        var fileConfig = data.get('file') as FileConfig
+        setFileConfig(fileConfig)
+        return fileConfig
+    })
+
+    const clearFileConfig = () => {
+        Object.assign(file, {
+            fileInitKey: ''
+        });
+        ws.delete(CacheConstants.SERVER_SETTING_FILE)
+    }
+
+    // 拉取到数据是个Object但是后端map接收的所以使用Map转换一下即可
+    async function getServerInitConfig(): Promise<Map<string, object>> {
+        const { data } = await getAdminServerConfig()
+        return new Map(Object.entries(data));
+    }
+
+
     return {
         device,
         sibebar,
@@ -107,7 +159,11 @@ export const useAppStore = defineStore('appStore', () => {
         TOGGLE_SIBEBAR,
         CLOSE_SIDEBAR,
         TOGGLE_DEVICE,
-        setElmemntSize
+        setElmemntSize,
+
+        // file
+        getFileConfig,
+        clearFileConfig
     }
 })
 

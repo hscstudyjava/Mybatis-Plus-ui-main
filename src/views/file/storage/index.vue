@@ -6,7 +6,9 @@ import { confirms, messages, notify } from '@/utils/message/MessageUtils';
 import { parseTime } from '@/utils/common'
 import { DICT_TYPE, getDictOptions } from '@/utils/common/dict'
 import storageFrom from './storageFrom.vue';
-import assginValueVue from './assginValue.vue';
+import assginValue from './assginValue.vue';
+import { useAppStore } from '@/stores/app';
+
 
 const query = reactive({
     pageNumber: 1,
@@ -28,7 +30,7 @@ const state = reactive({
 })
 const queryRef = shallowRef()
 const openFormRef = shallowRef()
-
+const assginFromRef = shallowRef()
 const list = ref()
 const total = ref(0)
 const loading = ref(false)
@@ -80,6 +82,24 @@ const openFrom = async (type: string, row?: SysStorage) => {
     const currentId = row?.id || state.ids[0]
     openFormRef.value.open(type, currentId)
 }
+
+const openAssgin = async (row: SysStorage) => {
+    assginFromRef.value.open(row.id, row.storageType)
+}
+
+const handleCommand = (type: string, row: SysStorage) => {
+    switch (type) {
+        // 配置数据
+        case 'setting-value':
+            openAssgin(row)
+            break
+        // 设置系统配置
+        case 'setting-config':
+            break
+
+    }
+}
+
 onMounted(async () => {
     await loadList()
 })
@@ -192,15 +212,6 @@ onMounted(async () => {
                                 更新
                             </el-button>
 
-                            <el-button link type="primary" v-peri="[`${basePeri}update`]">
-                                <template #icon>
-                                    <!-- <i-ep-delete /> -->
-                                    <svg-icon icon="ep:setting"></svg-icon>
-                                </template>
-                                配置
-                            </el-button>
-
-
                             <el-button link type="danger" v-peri="[`${basePeri}remove`]" @click="handleDelete(scope.row)">
                                 <template #icon>
                                     <!-- <i-ep-delete /> -->
@@ -208,6 +219,28 @@ onMounted(async () => {
                                 </template>
                                 删除
                             </el-button>
+
+                            <el-dropdown @command="handleCommand($event, scope.row)" teleported>
+                                <el-button link type="primary">
+                                    <el-icon class="el-icon--right">
+                                        <svg-icon icon="ep:arrow-down-bold"></svg-icon>
+                                    </el-icon>
+                                    更多
+                                </el-button>
+                                <template #dropdown>
+                                    <el-dropdown-menu>
+
+                                        <el-dropdown-item command="setting-value">
+                                            存储配置
+                                        </el-dropdown-item>
+
+                                        <el-dropdown-item command="setting-config">
+                                            默认存储
+                                        </el-dropdown-item>
+
+                                    </el-dropdown-menu>
+                                </template>
+                            </el-dropdown>
                         </div>
 
                     </template>
@@ -221,4 +254,5 @@ onMounted(async () => {
 
     </div>
     <storageFrom @success="loadList" ref="openFormRef" />
+    <assginValue @success="loadList" ref="assginFromRef" />
 </template>

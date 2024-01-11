@@ -28,7 +28,7 @@ export interface SysStorageValue extends BaseEnity{
 
     storageName:string,
 
-    storageType:string,
+    // storageType:string,
 
     storageTitle:string,
     

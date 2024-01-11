@@ -1,9 +1,9 @@
 
 <template>
-    {{ fileTypes.join(default_split) }}
-    <el-upload class="upload-demo" action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15" multiple
-        :accept="fileTypes.join(default_split)" :on-preview="handlePreview" :on-remove="handleRemove"
-        :before-remove="beforeRemove" :limit="prop.limit" :on-exceed="handleExceed">
+    <el-upload class="upload-demo" action="http://localhost:1010/file/pd/upload/local" multiple
+        :accept="fileTypes.join(default_split)" :on-preview="handlePreview" :before-upload="handlebeforeUpload"
+        :on-remove="handleRemove" :headers="header" :before-remove="beforeRemove" :limit="prop.limit"
+        :on-exceed="handleExceed">
         <el-button type="primary">上传文件</el-button>
         <template #tip v-if="prop.showTip">
             <div class="el-upload__tip">
@@ -28,6 +28,7 @@ import { computed, reactive, ref } from 'vue'
 import { SystemEnum, FileTypeEnum } from '@/utils/constants/SystemConstants'
 import type { UploadProps, UploadUserFile } from 'element-plus'
 import { confirms, messages } from "@/utils/message/MessageUtils";
+import { getAccessToken } from "@/utils/cache/auth"
 const default_split = SystemEnum.DEFAULT_SPLIT_SYMBOL
 const prop = defineProps({
     /** 
@@ -88,6 +89,10 @@ const state = reactive({
 
 })
 
+const header = reactive({
+    Authorization: getAccessToken()
+})
+
 const fileTypes = computed(() => {
     // 解构
     let fileType = prop.fileType
@@ -108,6 +113,7 @@ const handleRemove: UploadProps['onRemove'] = (file, uploadFiles) => {
  * 上传前操作
  */
 const handlePreview: UploadProps['onPreview'] = (uploadFile) => {
+    console.log("1");
 
 
 }
@@ -117,7 +123,13 @@ const beforeRemove: UploadProps['beforeRemove'] = (uploadFile, uploadFiles) => {
         return true
     }).catch(error => false)
 }
+const handlebeforeUpload: UploadProps['beforeUpload'] = (rowFile) => {
+    // console.log(rowFile);
 
+    // 判断玩获得上传路径
+
+
+}
 /** 
  * 当超出限制时，执行的钩子函数
  */
