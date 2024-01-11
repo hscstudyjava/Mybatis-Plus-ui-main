@@ -34,3 +34,36 @@ export interface SysStorageValue extends BaseEnity{
     
     storageValue:string,
 }
+
+
+export interface uploadModel{
+
+    /**
+     * 上传Key
+     */
+    storeKey:string,
+
+    /**
+     * 可以指定上传路径
+     */
+    path:string,
+
+    /** 
+     * 是否保存源文件
+     */
+    hasSource:boolean,
+
+    /** 
+     * 是否使用时间戳
+     */
+    hasTimeFile:boolean,
+
+    /**
+     * txt,xls,go,java
+     */
+    fileTypeList:string|string[],
+    /**
+     * md5计算
+     */
+    md5:string,
+}

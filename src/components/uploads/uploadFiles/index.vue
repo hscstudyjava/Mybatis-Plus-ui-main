@@ -1,9 +1,8 @@
 
 <template>
-    <el-upload class="upload-demo" action="http://localhost:1010/file/pd/upload/local" multiple
-        :accept="fileTypes.join(default_split)" :on-preview="handlePreview" :before-upload="handlebeforeUpload"
-        :on-remove="handleRemove" :headers="header" :before-remove="beforeRemove" :limit="prop.limit"
-        :on-exceed="handleExceed">
+    <el-upload class="upload-demo" :action="uploadUrl" :accept="fileTypes.join(default_split)" :on-preview="handlePreview"
+        :before-upload="handlebeforeUpload" :on-remove="handleRemove" :data="uploadData" :headers="headers"
+        :before-remove="beforeRemove" :limit="prop.limit" :on-exceed="handleExceed">
         <el-button type="primary">上传文件</el-button>
         <template #tip v-if="prop.showTip">
             <div class="el-upload__tip">
@@ -29,6 +28,7 @@ import { SystemEnum, FileTypeEnum } from '@/utils/constants/SystemConstants'
 import type { UploadProps, UploadUserFile } from 'element-plus'
 import { confirms, messages } from "@/utils/message/MessageUtils";
 import { getAccessToken } from "@/utils/cache/auth"
+import { getUploadFileUrl } from "@/api/files/operation"
 const default_split = SystemEnum.DEFAULT_SPLIT_SYMBOL
 const prop = defineProps({
     /** 
@@ -52,7 +52,7 @@ const prop = defineProps({
     headers: {
         type: Object,
         default: {
-            // Authorization: getAccessToken()
+            Authorization: getAccessToken()
         }
     },
 
@@ -89,9 +89,12 @@ const state = reactive({
 
 })
 
-const header = reactive({
-    Authorization: getAccessToken()
+const uploadData = reactive({
+    fileTypeList: "",
+    hasSource: false,
+    hasTimeFile: false
 })
+
 
 const fileTypes = computed(() => {
     // 解构
@@ -102,6 +105,20 @@ const fileTypes = computed(() => {
     }
     return fileType.map(item => '.' + item)
 })
+
+const convertFileType = (): string => {
+    // 解构
+    let fileType = prop.fileType
+    if (typeof fileType == 'string') {
+        if (!fileType.includes(default_split)) return fileType
+        return fileType.split(default_split).join(default_split)
+    }
+    return fileType.map(item => '.' + item).join(default_split)
+}
+
+
+const uploadUrl = ref()
+
 /** 
  * 删除
  */
@@ -123,10 +140,20 @@ const beforeRemove: UploadProps['beforeRemove'] = (uploadFile, uploadFiles) => {
         return true
     }).catch(error => false)
 }
-const handlebeforeUpload: UploadProps['beforeUpload'] = (rowFile) => {
+const handlebeforeUpload: UploadProps['beforeUpload'] = async (rowFile) => {
     // console.log(rowFile);
-
+    uploadData.fileTypeList = convertFileType()
     // 判断玩获得上传路径
+    const { data } = await getUploadFileUrl({
+        storeKey: "local",
+        path: "path",
+        hasSource: true,
+        hasTimeFile: true,
+        fileTypeList: prop.fileType,
+        md5: ""
+    })
+    uploadUrl.value=data;
+
 
 
 }
