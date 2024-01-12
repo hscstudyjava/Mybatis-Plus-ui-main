@@ -10,6 +10,7 @@ import { useDictStore } from '@/stores/dict'
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 import { usePeriStroe } from '@/stores/permission';
 import type { RouteRecordRaw } from 'vue-router'
+import { useAppStore } from './stores/app';
 
 
 
@@ -31,6 +32,9 @@ router.beforeEach(async (to, from, next) => {
     dynamicTitle(to.meta.title as string)
     const accessToken = getAccessToken();
     const refreshToken = getRefreshToken();
+    const appStore = useAppStore()
+    // 无论如何都拉取的配置
+    await appStore.getServerInitConfig()
 
     // 如果访问 Token 已经无效使用刷新 Token 拉取一下访问 Token
     if (accessToken || refreshToken) {

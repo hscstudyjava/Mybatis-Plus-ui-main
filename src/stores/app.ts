@@ -2,9 +2,9 @@ import { getAdminServerConfig } from '@/api/system/config'
 import { CacheConstants } from '@/utils/cache/CacheConstatns'
 import CacheUtils, { useWsStore } from '@/utils/cache/CacheUtils'
 import { DeviceEnum, ElmentSizeEnum } from '@/utils/constants/SystemConstants'
-import { asyncComputed } from '@vueuse/core'
+import { asyncComputed, computedAsync } from '@vueuse/core'
 import { defineStore } from 'pinia'
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 
 /** 
  * 侧边栏对象
@@ -119,35 +119,42 @@ export const useAppStore = defineStore('appStore', () => {
         fileInitKey: ''
     })
 
-    const setFileConfig = (target: FileConfig) => {
-        Object.assign(file, target);
-        ws.set(CacheConstants.SERVER_SETTING_FILE, target, {
-            exp: 3600
-        })
+    const serverMap = ref<Map<string, any>>(new Map<string, any>)
+
+    const getServerMapByCache = computed((): Map<string, any> => {
+        const cacheMap = ws.get(CacheConstants.SERVER_SETTING)
+        serverMap.value = new Map(Object.entries(cacheMap))
+        // Object.assign(serverMap, new Map(Object.entries(cacheMap)))
+        return serverMap.value;
+    })
+
+    const setFileConfig = () => {
+        Object.assign(file, serverMap.value.get(CacheConstants.SERVER_SETTING_FILE));
     }
 
-
-    const getFileConfig = asyncComputed(async ():Promise<FileConfig> => {
-        const cacheObj = ws.get(CacheConstants.SERVER_SETTING_FILE)
-        if (cacheObj) return cacheObj
-        // pull 
-        const data = await getServerInitConfig()
-        var fileConfig = data.get('file') as FileConfig
-        setFileConfig(fileConfig)
-        return fileConfig
+    const getFileConfig = computed(() => {
+        return getServerMapByCache.value.get(CacheConstants.SERVER_SETTING_FILE)
     })
 
     const clearFileConfig = () => {
         Object.assign(file, {
             fileInitKey: ''
         });
-        ws.delete(CacheConstants.SERVER_SETTING_FILE)
     }
 
     // 拉取到数据是个Object但是后端map接收的所以使用Map转换一下即可
     async function getServerInitConfig(): Promise<Map<string, object>> {
+        const cacheMap = ws.get(CacheConstants.SERVER_SETTING)
+        if (cacheMap) {
+            Object.assign(serverMap, new Map(Object.entries(cacheMap)))
+            return cacheMap;
+        }
         const { data } = await getAdminServerConfig()
-        return new Map(Object.entries(data));
+        const maps = new Map(Object.entries(data))
+        Object.assign(serverMap, maps)
+        ws.set(CacheConstants.SERVER_SETTING, Object.fromEntries(maps), { exp: 3600 })
+        setFileConfig()
+        return maps;
     }
 
 
@@ -163,7 +170,8 @@ export const useAppStore = defineStore('appStore', () => {
 
         // file
         getFileConfig,
-        clearFileConfig
+        clearFileConfig,
+        getServerInitConfig
     }
 })
 

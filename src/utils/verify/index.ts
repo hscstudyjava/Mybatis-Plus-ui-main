@@ -1,4 +1,4 @@
-import { FileTypeEnum } from "../constants/SystemConstants"
+import { FileSizeTypeEnum } from "../constants/SystemConstants"
 
 /**
  * @param {string} path
@@ -184,43 +184,6 @@ export const isEmptyVal = (val: any): boolean => {
 
 
 
-
-/**
- * 
- * @param value 数据长度
- * @param type  类型
- * @returns 转换后长度
- */
-export const toByte = (value: number, type: FileTypeEnum): number => {
-
-    switch (type) {
-        case FileTypeEnum.BYTE:
-            return value;
-        case FileTypeEnum.KB:
-            return value * 1024;
-        case FileTypeEnum.MB:
-            return value * 1024 * 1024;
-        case FileTypeEnum.GB:
-            return value * 1024 * 1024 * 1024;
-        default:
-            throw new Error('Invalid file type');
-    }
-}
-
-export const fromByte = (value: number, type: FileTypeEnum): number => {
-    switch (type) {
-        case FileTypeEnum.BYTE:
-            return value;
-        case FileTypeEnum.KB:
-            return value / 1024;
-        case FileTypeEnum.MB:
-            return value / 1024 / 1024;
-        case FileTypeEnum.GB:
-            return value / 1024 / 1024 / 1024;
-        default:
-            throw new Error('Invalid file type');
-    }
-}
 
 
 

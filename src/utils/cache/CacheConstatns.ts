@@ -45,8 +45,12 @@ export const enum CacheConstants {
    /**
     * 从服务器拉取的配置
     */
-   SERVER_SETTING_FILE= "server_setting_file"
+   SERVER_SETTING_FILE= "file",
    
+   /**
+    * 服务器配置
+    */
+   SERVER_SETTING="server_setting"
    
 
    

@@ -76,7 +76,7 @@ export const enum SystemEnum {
 /**
  * 字节、KB、MB、GB
  */
-export const enum FileTypeEnum {
+export const enum FileSizeTypeEnum {
 
     /** 
      * 现在
@@ -116,15 +116,7 @@ export const enum SystemConfigEnum {
     SYSTEM_LOGIN_LIMIT = "system.login.limit"
 }
 
-/**
- *    COUNTRY("0","国家"),
 
-    PROVINCE("1","省份"),
-
-    CITY("2","城市"),
-
-    COUNTY("3","区县")
- */
 export const enum CityLevelType{
 
     /**

@@ -21,10 +21,10 @@
 </template>
 
 <script setup lang="ts">
-import { isExternal, isArray, toByte, fromByte } from "@/utils/verify"
+import { isExternal, isArray } from "@/utils/verify"
 import type { PropType } from 'vue'
 import { computed, reactive, ref } from 'vue'
-import { SystemEnum, FileTypeEnum } from '@/utils/constants/SystemConstants'
+import { SystemEnum } from '@/utils/constants/SystemConstants'
 import type { UploadProps, UploadUserFile } from 'element-plus'
 import { confirms, messages } from "@/utils/message/MessageUtils";
 import { getAccessToken } from "@/utils/cache/auth"
@@ -152,7 +152,7 @@ const handlebeforeUpload: UploadProps['beforeUpload'] = async (rowFile) => {
         fileTypeList: prop.fileType,
         md5: ""
     })
-    uploadUrl.value=data;
+    uploadUrl.value = data;
 
 
 
@@ -161,7 +161,7 @@ const handlebeforeUpload: UploadProps['beforeUpload'] = async (rowFile) => {
  * 当超出限制时，执行的钩子函数
  */
 const handleExceed: UploadProps['onExceed'] = (files, uploadFiles) => {
-    messages.warn(`文件数量是:${prop.limit},当前你上传的文件已经超出`)
+    messages.warn(`上传文件不允许超过${prop.limit}个`)
 }
 
 
