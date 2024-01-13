@@ -43,7 +43,7 @@ export const userFile = () => {
             // 判断是否有,
             if (!files.includes(default_split)) {
                 if (!isHttp(files)) {
-                    return [PD_BASE_URL + fileConfig.fileInitKey + files];
+                    return [PD_BASE_URL + files];
                 } else {
                     return [files]
                 }
@@ -51,7 +51,7 @@ export const userFile = () => {
                 return files.split(default_split)
                     .map(item => {
                         if (!isHttp(item)) {
-                            return [PD_BASE_URL + fileConfig.fileInitKey + item];
+                            return [PD_BASE_URL + item];
                         } else {
                             return [item]
                         }
@@ -60,14 +60,14 @@ export const userFile = () => {
         } else {
             return files.map(item => {
                 if (!isHttp(item)) {
-                    return [PD_BASE_URL + fileConfig.fileInitKey + item];
+                    return [PD_BASE_URL + item];
                 } else {
                     return [item]
                 }
             }).flat()
         }
     }
-  
+
 
 
 
