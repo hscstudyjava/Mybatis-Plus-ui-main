@@ -12,7 +12,7 @@ import type { DynamicFromFild } from '@/types';
 import { onMounted, ref, shallowRef, unref } from 'vue';
 import { userFile } from '@/hooks/web/file'
 import { fileUtil } from '@/utils/common';
-const { getFileExtendName, getFileType,ignoreFileName,byteUpShift } = fileUtil()
+const { removeDuplicateSlashes, concatTrimStartSlashes,trimStartSlashes } = fileUtil()
 const { convertFileList } = userFile()
 
 

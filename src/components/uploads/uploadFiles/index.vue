@@ -131,8 +131,6 @@ const handleRemove: UploadProps['onRemove'] = (file, uploadFiles) => {
  */
 const handlePreview: UploadProps['onPreview'] = (uploadFile) => {
     console.log("1");
-
-
 }
 const beforeRemove: UploadProps['beforeRemove'] = (uploadFile, uploadFiles) => {
     //   return 
@@ -153,9 +151,6 @@ const handlebeforeUpload: UploadProps['beforeUpload'] = async (rowFile) => {
         md5: ""
     })
     uploadUrl.value = data;
-
-
-
 }
 /** 
  * 当超出限制时，执行的钩子函数

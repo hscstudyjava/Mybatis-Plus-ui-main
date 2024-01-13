@@ -156,13 +156,18 @@ export const formatUtil = () => {
 
 
 
-
 /**
  * 2024年1月12日15:58:44
  * @author hsc
  */
 export const fileUtil = () => {
+
     const FILE_TYPE = '.'
+    const DELIMITER = '/'
+    const DELIMITER_STR = '/'
+    const HTTP = 'http'
+    const HTTP_PROTOCOL = 'http://'
+    const HTTPS_PROTOCOL = 'https://'
 
     /**
      * 获取文件类型
@@ -317,8 +322,189 @@ export const fileUtil = () => {
         }
     }
 
+    /**
+       * 移除 URL 中的前后的所有 '/'
+       *
+       * @param path 路径
+       * @return 如 path = '/folder1/file1/', 返回 'folder1/file1'
+       * 如 path = '///folder1/file1//', 返回 'folder1/file1'
+       */
+    const trimSlashes = (path: string): string => {
+        let trimmedPath = path;
+        trimmedPath = trimStartSlashes(trimmedPath);
+        trimmedPath = trimEndSlashes(trimmedPath);
+        return trimmedPath;
+    }
+
+    /** 
+     *  移除 URL 中的第一个 '/'
+     *  
+     * @param path 路径
+     * @return 如 path = '/folder1/file1', 返回 'folder1/file1'
+     * 如 path = '/folder1/file1', 返回 'folder1/file1'
+     */
+    const trimStartSlashes = (path: string): string => {
+        let trimmedPath = path;
+        if (!trimmedPath) {
+            return trimmedPath;
+        }
+        while (trimmedPath.startsWith(DELIMITER_STR)) {
+            trimmedPath = trimmedPath.substring(1);
+        }
+        return trimmedPath;
+    }
+
+    /**
+       * 移除 URL 中的最后一个 '/'
+       *
+       * @param path 路径
+       * @return 如 path = '/folder1/file1/', 返回 '/folder1/file1'
+       * 如 path = '/folder1/file1///', 返回 '/folder1/file1'
+       */
+    const trimEndSlashes = (path: string): string => {
+        let trimmedPath = path;
+        if (!trimmedPath) {
+            return trimmedPath;
+        }
+        while (trimmedPath.endsWith(DELIMITER_STR)) {
+            trimmedPath = trimmedPath.substring(0, trimmedPath.length - 1);
+        }
+        return trimmedPath;
+    }
+
+    /**
+      * 去除路径中所有重复的 '/'
+      *
+      * @param path 路径
+      * @return 如 path = '/folder1//file1/', 返回 '/folder1/file1/'
+      * 如 path = '/folder1////file1///', 返回 '/folder1/file1/'
+      */
+    const removeDuplicateSlashes = (path: string): string => {
+        let trimmedPath = path;
+        if (!trimmedPath) {
+            return trimmedPath;
+        }
+
+        let sb = '';
+
+        // 是否包含 http 或 https 协议信息
+        const containProtocol = trimmedPath.includes(HTTP_PROTOCOL) || trimmedPath.includes(HTTPS_PROTOCOL);
+
+        if (containProtocol) {
+            trimmedPath = trimStartSlashes(trimmedPath);
+        }
+
+        // 是否包含 http 协议信息
+        const startWithHttpProtocol = trimmedPath.toLowerCase().startsWith(HTTP_PROTOCOL);
+        // 是否包含 https 协议信息
+        const startWithHttpsProtocol = trimmedPath.toLowerCase().startsWith(HTTPS_PROTOCOL);
+
+        if (startWithHttpProtocol) {
+            sb += HTTP_PROTOCOL;
+        } else if (startWithHttpsProtocol) {
+            sb += HTTPS_PROTOCOL;
+        }
+
+
+        for (let i = sb.length; i < trimmedPath.length - 1; i++) {
+            const current = trimmedPath[i];
+            const next = trimmedPath[i + 1];
+
+            if (!(current === DELIMITER && next === DELIMITER)) {
+                sb += current;
+            }
+        }
+
+        sb += trimmedPath[trimmedPath.length - 1];
+
+        return sb;
+    }
+
+
+    /**
+   * 去除路径中所有重复的 '/', 并且去除开头的 '/'
+   *
+   * @param path 路径
+   * @return 如 path = '/folder1//file1/', 返回 'folder1/file1/'
+   * 如 path = '///folder1////file1///', 返回 'folder1/file1/'
+   */
+    const removeDuplicateSlashesAndTrimStart = (path: string): string => {
+        let trimmedPath = path;
+        trimmedPath = removeDuplicateSlashes(trimmedPath);
+        trimmedPath = trimStartSlashes(trimmedPath);
+        return trimmedPath;
+    }
+
+    /**
+     * 去除路径中所有重复的 '/', 并且去除结尾的 '/'
+     *
+     * @param path 路径
+     * @return 如 path = '/folder1//file1/', 返回 '/folder1/file1'
+     * 如 path = '///folder1////file1///', 返回 '/folder1/file1'
+     */
+    const removeDuplicateSlashesAndTrimEnd = (path: string): string => {
+        let trimmedPath = path;
+        trimmedPath = removeDuplicateSlashes(trimmedPath);
+        trimmedPath = trimEndSlashes(trimmedPath);
+        return trimmedPath;
+    }
+
+    /**
+     * 拼接 URL，并去除重复的分隔符 '/'，并去除开头的 '/', 但不会影响 http:// 和 https:// 这种头部.
+     *
+     * @param strs 拼接的字符数组
+     * @return 拼接结果
+     */
+    const concatTrimStartSlashes = (...strs: (string | undefined)[]): string => {
+        return trimStartSlashes(concat(...strs));
+    }
+
+    /**
+     * 拼接 URL，并去除重复的分隔符 '/'，并去除结尾的 '/', 但不会影响 http:// 和 https:// 这种头部.
+     *
+     * @param strs 拼接的字符数组
+     * @return 拼接结果
+     */
+    const concatTrimEndSlashes = (...strs: (string | undefined)[]): string => {
+        return trimEndSlashes(concat(...strs));
+    }
+
+    /**
+     * 拼接 URL，并去除重复的分隔符 '/'，并去除开头和结尾的 '/', 但不会影响 http:// 和 https:// 这种头部.
+     *
+     * @param strs 拼接的字符数组
+     * @return 拼接结果
+     */
+    const concatTrimSlashes = (...strs: (string | undefined)[]): string => {
+        return trimSlashes(concat(...strs));
+    }
+
+    /**
+     * 拼接 URL，并去除重复的分隔符 '/'，但不会影响 http:// 和 https:// 这种头部.
+     *
+     * @param strs 拼接的字符数组
+     * @return 拼接结果
+     */
+    const concat = (...strs: (string | undefined)[]): string => {
+        let sb = DELIMITER_STR
+        for (let i = 0; i < strs.length; i++) {
+            const str = strs[i];
+            if (!str) {
+                continue;
+            }
+            sb += str
+            if (i !== strs.length - 1) {
+                sb += DELIMITER
+            }
+        }
+        return removeDuplicateSlashes(sb);
+    }
+
+
+
+
+
     return {
-        ChannelMergerNode,
         getFileType,
         getFileExtendName,
         ignoreFileType,
@@ -327,6 +513,18 @@ export const fileUtil = () => {
         byteUpShift,
         byteType,
         fromByte,
-        toByte
+        toByte,
+
+        // 处理字符工具类函数
+        trimSlashes,
+        trimStartSlashes,
+        trimEndSlashes,
+        removeDuplicateSlashes,
+        removeDuplicateSlashesAndTrimStart,
+        removeDuplicateSlashesAndTrimEnd,
+        concatTrimStartSlashes,
+        concatTrimEndSlashes,
+        concatTrimSlashes,
+        concat
     }
 }
