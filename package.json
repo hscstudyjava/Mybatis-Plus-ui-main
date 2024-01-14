@@ -33,6 +33,7 @@
     "vite-plugin-compression": "^0.5.1",
     "vite-plugin-vue-setup-extend": "^0.4.0",
     "vue": "3.4",
+    "vue-cropper": "^1.1.1",
     "vue-router": "^4.2.5",
     "vue-types": "^5.1.1",
     "vuedraggable": "^2.24.3",

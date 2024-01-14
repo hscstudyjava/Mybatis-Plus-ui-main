@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     CitySelect: typeof import('./src/components/city/citySelect.vue')['default']
     CityTree: typeof import('./src/components/city/cityTree.vue')['default']
+    CropperAvatar: typeof import('./src/components/Cropper/src/CropperAvatar.vue')['default']
     Dialog: typeof import('./src/components/Dialog/src/Dialog.vue')['default']
     DictTag: typeof import('./src/components/DictTag/index.vue')['default']
     Editor: typeof import('./src/components/editor/index.vue')['default']
