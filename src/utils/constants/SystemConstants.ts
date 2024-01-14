@@ -79,14 +79,25 @@ export const enum SystemEnum {
 export const enum FileSizeTypeEnum {
 
     /** 
-     * 现在
+     * byte
      */
     BYTE = "byte",
 
+    /**
+     * kb
+     * 
+     */
     KB = "Kb",
 
+    /**
+     * mb
+     * 
+     */
     MB = "Mb",
 
+    /**
+     * GB
+     */
     GB = "Gb"
 
 }

@@ -1,6 +1,6 @@
 import { request } from "@/utils/request";
 import type { AjaxResult } from "@/utils/request/type";
-import type { SysStorage, SysStorageValue, uploadModel } from "../type";
+import type { SysStorage, SysStorageValue, UploadFileResult, UploadModel } from "../type";
 
 
 /**
@@ -12,4 +12,4 @@ const baseUrl = "/admin-api/file/operation/"
 /** 
  * 拉取上传路径
  */
-export const getUploadFileUrl = async (data: uploadModel): Promise<AjaxResult<string>> => request.post(baseUrl + 'upload/file', data)
+export const getUploadFileUrl = async (data: UploadModel): Promise<AjaxResult<UploadFileResult>> => request.post(baseUrl + 'upload/file', data)

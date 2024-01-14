@@ -249,7 +249,8 @@ export const fileUtil = () => {
      */
     const ignoreFileName = (fileName: string, ignoreList: string[]): boolean => {
         const fileType = getFileType(fileName);
-        return ignoreFileType(fileType, ignoreList);
+        // 如果[]是个空数组直接判断成立
+        return ignoreList.length === 0 ? true : ignoreFileType(fileType, ignoreList);
     }
 
     const checkContains = (str: string, target: string): boolean => {
@@ -269,7 +270,9 @@ export const fileUtil = () => {
             type = byteType(bytes)
             data = fromByte(bytes, type)
         }
-        return data + type
+
+        // 判断是否是小数 如果是小数自动向
+        return data.toFixed(2) + type
     }
 
 
@@ -526,5 +529,100 @@ export const fileUtil = () => {
         concatTrimEndSlashes,
         concatTrimSlashes,
         concat
+    }
+}
+
+/** 
+ * 文件类型
+ */
+export const MimeFileType = {
+    IMAGE_PNG: "image/png",
+    IMAGE_JPG: "image/jpg",
+    IMAGE_JPEG: "image/jpeg",
+    IMAGE_BMP: "image/bmp",
+    IMAGE_GIF: "image/gif",
+    AUDIO_MP3: "audio/mp3",
+    AUDIO_WAV: "audio/wav",
+    AUDIO_WMA: "audio/wma",
+    AUDIO_AAC: "audio/aac",
+    AUDIO_OGG: "audio/ogg",
+    DOCUMENT_DOC: "application/msword",
+    DOCUMENT_DOCX: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    DOCUMENT_XLS: "application/vnd.ms-excel",
+    DOCUMENT_XLSX: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    DOCUMENT_PPT: "application/vnd.ms-powerpoint",
+    DOCUMENT_PPTX: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    DOCUMENT_PDF: "application/pdf",
+    ARCHIVE_ZIP: "application/zip",
+    ARCHIVE_RAR: "application/x-rar-compressed",
+    ARCHIVE_7Z: "application/x-7z-compressed",
+    ARCHIVE_GZ: "application/gzip",
+    ARCHIVE_BZ2: "application/x-bzip2",
+
+    IMAGE_EXTENSION: ["bmp", "gif", "jpg", "jpeg", "png"],
+    FLASH_EXTENSION: ["swf", "flv"],
+    MEDIA_EXTENSION: [
+        "swf", "flv", "mp3", "wav", "wma", "wmv", "mid", "avi", "mpg",
+        "asf", "rm", "rmvb"
+    ],
+    VIDEO_EXTENSION: ["mp4", "avi", "rmvb"],
+    
+    DEFAULT_ALLOWED_EXTENSION: [
+        // 图片
+        "bmp", "gif", "jpg", "jpeg", "png",
+        // word excel powerpoint
+        "doc", "docx", "xls", "xlsx", "ppt", "pptx", "html", "htm", "txt",
+        // 压缩文件
+        "rar", "zip", "gz", "bz2",
+        // 视频格式
+        "mp4", "avi", "rmvb",
+        // pdf
+        "pdf"
+    ],
+    getExtension(prefix: string) {
+        switch (prefix) {
+            case this.IMAGE_PNG:
+                return "png";
+            case this.IMAGE_JPG:
+            case this.IMAGE_JPEG:
+                return "jpg";
+            case this.IMAGE_BMP:
+                return "bmp";
+            case this.IMAGE_GIF:
+                return "gif";
+            case this.AUDIO_MP3:
+                return "mp3";
+            case this.AUDIO_WAV:
+                return "wav";
+            case this.AUDIO_WMA:
+                return "wma";
+            case this.AUDIO_AAC:
+                return "aac";
+            case this.AUDIO_OGG:
+                return "ogg";
+            case this.DOCUMENT_DOC:
+            case this.DOCUMENT_DOCX:
+                return "doc";
+            case this.DOCUMENT_XLS:
+            case this.DOCUMENT_XLSX:
+                return "xls";
+            case this.DOCUMENT_PPT:
+            case this.DOCUMENT_PPTX:
+                return "ppt";
+            case this.DOCUMENT_PDF:
+                return "pdf";
+            case this.ARCHIVE_ZIP:
+                return "zip";
+            case this.ARCHIVE_RAR:
+                return "rar";
+            case this.ARCHIVE_7Z:
+                return "7z";
+            case this.ARCHIVE_GZ:
+                return "gz";
+            case this.ARCHIVE_BZ2:
+                return "bz2";
+            default:
+                return "";
+        }
     }
 }
