@@ -1,9 +1,8 @@
 
 <template>
-    <el-upload class="upload-demo" :action="uploadUrl" :accept="fileTypeList.join(default_split)"
-        :on-preview="handlePreview" :on-success="handleUploadSuccess" :on-error="handleUploadError" :show-file-list="false"
-        :file-list="uploadList" v-bind="$attrs" :before-upload="handlebeforeUpload" :headers="headers"
-        :before-remove="beforeRemove" :limit="uploadConfig.limit" :on-exceed="handleExceed">
+    <el-upload class="upload-demo" :action="uploadUrl" :accept="fileTypes.join(default_split)" :on-preview="handlePreview"
+        :before-upload="handlebeforeUpload" :on-remove="handleRemove" :data="uploadData" :headers="headers"
+        :before-remove="beforeRemove" :limit="prop.limit" :on-exceed="handleExceed">
         <el-button type="primary">上传文件</el-button>
         <template #tip v-if="prop.showTip">
             <div class="el-upload__tip">
@@ -19,35 +18,14 @@
             </div>
         </template>
     </el-upload>
-    <!-- 文件列表 -->
-    <transition-group class="upload-file-list el-upload-list el-upload-list--text" name="el-fade-in-linear" tag="ul">
-        <li :key="index" class="el-upload-list__item ele-upload-list__item-content" v-for="(file, index) in list">
-            <el-link :href="`${convertFileList(file.url)}`" :underline="false" target="_blank">
-                <svg-icon icon="ep:document" />
-                {{ file.name }}
-
-            </el-link>
-            <div class="ele-upload-list__item-content-action">
-                <!-- 下载 -->
-                <el-link :href="`${convertFileList(file.url)}`" :underline="false" type="primary" target="_blank">
-                    <svg-icon icon="ep:download" />
-                </el-link>
-
-                <!-- 删除 -->
-                <el-link :underline="false" @click="handleListRemove(index)" type="danger">
-                    <svg-icon icon='ep:delete'></svg-icon>
-                </el-link>
-            </div>
-        </li>
-    </transition-group>
 </template>
 
 <script setup lang="ts">
 import type { PropType } from 'vue'
-import { computed, reactive, ref, unref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { SystemEnum } from '@/utils/constants/SystemConstants'
-import type { UploadFile, UploadFiles, UploadProps } from 'element-plus'
-import { confirms, loading, messages } from "@/utils/message/MessageUtils";
+import type { UploadProps, UploadUserFile } from 'element-plus'
+import { confirms, messages } from "@/utils/message/MessageUtils";
 import { getAccessToken } from "@/utils/cache/auth"
 import { getUploadFileUrl } from "@/api/files/operation"
 import { fileUtil } from "@/utils/common"
