@@ -92,6 +92,8 @@ export const randomUtil = () => {
         // 生成随机数
         randomNum(min: number, max: number) { return Math.floor(Math.random() * (max - min + 1)) + min },
 
+        _randomNum() { return this.randomNum(10000000, 999999999999) },
+
         // 随机字符串
         randomStr(len: number): string {
             const chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz123456789';
@@ -558,6 +560,9 @@ export const MimeFileType = {
     ARCHIVE_7Z: "application/x-7z-compressed",
     ARCHIVE_GZ: "application/gzip",
     ARCHIVE_BZ2: "application/x-bzip2",
+    TEXT_HTML: "text/html",
+    TEXT_MARKDOWN: "text/markdown",
+
 
     IMAGE_EXTENSION: ["bmp", "gif", "jpg", "jpeg", "png"],
     FLASH_EXTENSION: ["swf", "flv"],
@@ -566,7 +571,7 @@ export const MimeFileType = {
         "asf", "rm", "rmvb"
     ],
     VIDEO_EXTENSION: ["mp4", "avi", "rmvb"],
-    
+
     DEFAULT_ALLOWED_EXTENSION: [
         // 图片
         "bmp", "gif", "jpg", "jpeg", "png",
@@ -625,4 +630,44 @@ export const MimeFileType = {
                 return "";
         }
     }
+}
+
+export const downloadUtil = {
+    download(data: Blob, fileName: string, mineType: string) {
+        // 创建 blob
+        const blob = new Blob([data], { type: mineType })
+        // 创建 href 超链接，点击进行下载
+        window.URL = window.URL || window.webkitURL
+        const href = URL.createObjectURL(blob)
+        const downA = document.createElement('a')
+        downA.href = href
+        downA.download = fileName
+        downA.click()
+        // 销毁超连接
+        window.URL.revokeObjectURL(href)
+    },
+    // 下载 Excel 方法
+    excel(data: Blob, fileName: string) {
+        this.download(data, fileName, MimeFileType.DOCUMENT_XLS)
+    },
+    // 下载 Word 方法
+    word(data: Blob, fileName: string) {
+        this.download(data, fileName, MimeFileType.DOCUMENT_DOC)
+    },
+    // 下载 Zip 方法
+    zip(data: Blob, fileName: string) {
+        this.download(data, fileName, MimeFileType.ARCHIVE_ZIP)
+    },
+    // 下载 Html 方法
+    html(data: Blob, fileName: string) {
+        this.download(data, fileName, MimeFileType.TEXT_HTML)
+    },
+    // 下载 Markdown 方法
+    markdown(data: Blob, fileName: string) {
+        this.download(data, fileName, MimeFileType.TEXT_MARKDOWN)
+    },
+    _doload(data: Blob, fileName: string, type: string) {
+        this
+    }
+
 }

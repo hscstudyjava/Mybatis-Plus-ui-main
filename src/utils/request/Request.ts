@@ -1,6 +1,6 @@
 import axios from 'axios'
 import type { AxiosInstance, AxiosResponse } from 'axios'
-import type{ InterceptorHooks, ExpandAxiosRequestConfig, AjaxResult } from './type'
+import type { InterceptorHooks, ExpandAxiosRequestConfig, AjaxResult } from './type'
 
 
 // 导出Request类，可以用来自定义传递配置来创建实例
@@ -14,7 +14,7 @@ export default class Request {
     requestOptions: {
       globalErrorMessage: true,
       globalSuccessMessage: false,
-      isEncrypt:false
+      isEncrypt: false
     }
   }
   private _interceptorHooks?: InterceptorHooks
@@ -39,7 +39,7 @@ export default class Request {
     return this._instance.request(config)
   }
 
-  public get<T = any>(url: string, 
+  public get<T = any>(url: string,
     config?: ExpandAxiosRequestConfig): Promise<T> {
     return this._instance.get(url, config)
   }
@@ -55,4 +55,13 @@ export default class Request {
   public delete<T = any>(url: string, config?: ExpandAxiosRequestConfig): Promise<T> {
     return this._instance.delete(url, config)
   }
+  // 下载
+  public download<T = any>(url: string, data?: any, config?: ExpandAxiosRequestConfig): Promise<T> {
+    // config?.responseType='blob'
+    return this._instance.post(url, data, {
+      responseType: "blob",
+      ...config
+    })
+  }
+
 }

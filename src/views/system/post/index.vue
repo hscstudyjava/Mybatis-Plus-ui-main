@@ -2,11 +2,12 @@
 import { onMounted, reactive, ref, unref } from 'vue';
 import type { SysPost } from "@/api/system/type";
 
-import { parseTime } from '@/utils/common'
+import { parseTime,downloadUtil,randomUtil } from '@/utils/common'
 import { DICT_TYPE, getDictOptions } from '@/utils/common/dict'
 import { confirms, messages, notify } from '@/utils/message/MessageUtils';
-import { selectPostPage, basePeri, insertPost, updatePost, getOnce, removeBatchOrOnce } from '@/api/system/post'
+import { selectPostPage, basePeri, insertPost, updatePost, getOnce, removeBatchOrOnce, exportPost } from '@/api/system/post'
 import PostFrom from './postFrom.vue';
+
 
 //------------------------基础模板-------------------------------------------------
 const total = ref(0)
@@ -32,6 +33,7 @@ const query = ref({
     postCode: '',
     status: ''
 })
+const exportLoding = ref(false)
 
 // 加载数据
 const loadList = async () => {
@@ -80,6 +82,18 @@ const handleDelete = async (row: SysPost) => {
 const openFrom = async (type: string, row?: SysPost) => {
     const currentId = row?.id || state.ids[0]
     openPostRef.value.open(type, currentId)
+}
+
+const hadnleExport = async () => {
+    try {
+        await confirms.confirm("您确定是否下载Excel")
+        exportLoding.value = true
+        const { data } = await exportPost(unref(query))
+        downloadUtil.excel(data,`角色名称-${randomUtil()._randomNum()}.xls`)
+    } catch (error) { }
+    finally {
+        exportLoding.value = false;
+    }
 }
 
 onMounted(async () => {
@@ -139,6 +153,15 @@ onMounted(async () => {
                         删除
                     </el-button>
                 </el-col>
+                <el-col :span="1.5" v-peri="[`${basePeri}export`]">
+                    <el-button plain :loading="exportLoding" @click="hadnleExport">
+                        <template #icon>
+                            <svg-icon class="mr-5px" icon="ep:download" />
+                        </template>
+                        导出
+                    </el-button>
+                </el-col>
+
 
 
             </el-row>
@@ -168,7 +191,8 @@ onMounted(async () => {
                     <template #default="scope">
                         <div class="flex items-center justify-center">
 
-                            <el-button link type="primary" v-peri="[`${basePeri}update`]" @click="openFrom('update',scope.row)">
+                            <el-button link type="primary" v-peri="[`${basePeri}update`]"
+                                @click="openFrom('update', scope.row)">
                                 <template #icon>
                                     <!-- <i-ep-delete /> -->
                                     <svg-icon icon="ep:edit"></svg-icon>
@@ -196,9 +220,7 @@ onMounted(async () => {
 
     </div>
 
-    <PostFrom
-    ref="openPostRef"
-    @success="loadList"></PostFrom>
+    <PostFrom ref="openPostRef" @success="loadList"></PostFrom>
 </template>
 
 <style lang='scss' scoped></style>

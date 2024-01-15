@@ -50,6 +50,11 @@ export const transform: InterceptorHooks = {
     // 与后端约定的请求成功码
     if (res.status !== 200) return Promise.reject(result)
 
+    // 判断是否是blob
+    if (res.request.responseType === 'blob' || res.request.responseType === 'arraybuffer') {
+      return res;
+    }
+
     if (res.data.code !== SuccessCode.SUCCESS) {
 
 
@@ -58,7 +63,7 @@ export const transform: InterceptorHooks = {
         // 这里全局提示错误
         console.error(res.data.msg)
       }
-      
+
       // 访问Token已经过期
       if (res.data.code === LoginCode.USER_TOKEN_EXPIRE) {
         if (!isRefresh) {
