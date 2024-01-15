@@ -10,9 +10,7 @@ import { useDictStore } from '@/stores/dict'
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 import { usePeriStroe } from '@/stores/permission';
 import type { RouteRecordRaw } from 'vue-router'
-import { storeToRefs } from 'pinia';
-import { unref } from 'vue';
-import type { Menu } from './types/menu';
+import { useAppStore } from './stores/app';
 
 
 
@@ -34,6 +32,9 @@ router.beforeEach(async (to, from, next) => {
     dynamicTitle(to.meta.title as string)
     const accessToken = getAccessToken();
     const refreshToken = getRefreshToken();
+    const appStore = useAppStore()
+    // 无论如何都拉取的配置
+    await appStore.getServerInitConfig()
 
     // 如果访问 Token 已经无效使用刷新 Token 拉取一下访问 Token
     if (accessToken || refreshToken) {
@@ -68,10 +69,9 @@ router.beforeEach(async (to, from, next) => {
 
                 if (!userStore.getIsUserSet) {
                     await userStore.getCurrentUser(); // 拉取用户数据
-                    await usePri.loadingRouter(); // 拉取后端数据  
-                                      
+                    await usePri.loadingRouter(); // 拉取后端数据
                     usePri.routes.forEach(menu => {
-                        router.addRoute(menu as unknown as Menu as RouteRecordRaw);
+                        router.addRoute(menu as unknown as RouteRecordRaw);
                     });
                     const redirectPath = from.query.redirect || to.path;
                     const redirect = decodeURIComponent(redirectPath as string);

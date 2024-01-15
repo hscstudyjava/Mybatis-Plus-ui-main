@@ -96,7 +96,7 @@ export const dynamicRoutes: AppRouteRecordRaw[] = [
         meta: { title: '系统菜单', activeMenu: '/system/dict/type' }
       }
     ]
-  },
+  }
 ]
 
 const router = createRouter({

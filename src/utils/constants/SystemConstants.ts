@@ -76,17 +76,28 @@ export const enum SystemEnum {
 /**
  * 字节、KB、MB、GB
  */
-export const enum FileTypeEnum {
+export const enum FileSizeTypeEnum {
 
     /** 
-     * 现在
+     * byte
      */
     BYTE = "byte",
 
+    /**
+     * kb
+     * 
+     */
     KB = "Kb",
 
+    /**
+     * mb
+     * 
+     */
     MB = "Mb",
 
+    /**
+     * GB
+     */
     GB = "Gb"
 
 }
@@ -114,4 +125,27 @@ export const enum SystemConfigEnum {
     SYSTEM_CODE_STRATEGY = "system.login.code_strategy",
     // 登录限制策略
     SYSTEM_LOGIN_LIMIT = "system.login.limit"
+}
+
+
+export const enum CityLevelType{
+
+    /**
+     * 国家
+     */
+    COUNTRY="0",
+
+    /**
+     * 省份
+     */
+    PROVINCE="1",
+
+    /**
+     * 城市
+     */
+    CITY="2",
+    /**
+     * 区县
+     */
+    COUNTY="3"
 }

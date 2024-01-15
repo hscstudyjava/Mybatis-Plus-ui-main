@@ -1,5 +1,5 @@
 import { SimpleTree, BaseEnity, SysDept } from './type.d';
-interface BaseEnity {
+interface BaseEnity{
 
     id: string | number | any
 
@@ -429,4 +429,57 @@ export interface SysLoginLog {
 
     createTime?: Date
 
+}
+
+/**  */
+export interface SysCity extends SimpleTree<SysCity>{
+
+     id:string,
+
+     parentId: string
+
+    /**
+     * 全称
+     */
+     name: string
+
+    /**
+     * 简称
+     */
+     shortName: string
+
+    /**
+     * 城市级别
+     */
+     levelType: string
+
+    /**
+     * 城市编码
+     */
+     cityCode: string
+
+    /**
+     * 邮编
+     */
+     zipCode: string
+
+    /**
+     * 经度
+     */
+     lng: string
+
+    /**
+     * 维度
+     */
+     lat: string
+
+    /**
+     * 拼音
+     */
+     pinyin: string
+
+    /**
+     * 状态
+     */
+     status:String=""
 }

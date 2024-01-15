@@ -13,7 +13,8 @@ export default class Request {
     timeout: 5000,
     requestOptions: {
       globalErrorMessage: true,
-      globalSuccessMessage: false
+      globalSuccessMessage: false,
+      isEncrypt:false
     }
   }
   private _interceptorHooks?: InterceptorHooks

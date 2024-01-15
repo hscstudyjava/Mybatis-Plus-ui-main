@@ -80,8 +80,8 @@
                         <el-table-column label="权限类型" align="center">
                             <template #default="scope">
                                 <el-tag v-if="scope.row.permissionType === 'P'" type="success">权限</el-tag>
-                                <el-tag v-else-if="scope.row.permissionType === 'M'" type="warning">路由</el-tag>
-                                <el-tag v-else>菜单</el-tag>
+                                <el-tag v-else-if="scope.row.permissionType === 'M'" type="warning">菜单</el-tag>
+                                <el-tag v-else>路由</el-tag>
                             </template>
                         </el-table-column>
 

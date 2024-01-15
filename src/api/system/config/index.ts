@@ -65,3 +65,5 @@ export function removeSysConfig(id:string|number): Promise<AjaxResult<any>> {
         baseUrl + id,
     )
 }
+
+export const getAdminServerConfig=async():Promise<AjaxResult<object>> => request.get(baseUrl+'admin-init-config')

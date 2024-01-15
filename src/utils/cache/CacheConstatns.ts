@@ -40,7 +40,17 @@ export const enum CacheConstants {
    /** 
     * 路由数据
     */
-   ROUTER_KEY="current_router"
+   ROUTER_KEY="current_router",
+
+   /**
+    * 从服务器拉取的配置
+    */
+   SERVER_SETTING_FILE= "file",
+   
+   /**
+    * 服务器配置
+    */
+   SERVER_SETTING="server_setting"
    
 
    
