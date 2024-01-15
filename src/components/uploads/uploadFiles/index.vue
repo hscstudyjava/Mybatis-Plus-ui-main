@@ -2,8 +2,8 @@
 <template>
     <el-upload class="upload-demo" :action="uploadUrl" :accept="fileTypeList.join(default_split)"
         :on-preview="handlePreview" :on-success="handleUploadSuccess" :on-error="handleUploadError" :show-file-list="false"
-        :file-list="uploadList" v-bind="$attrs" :before-upload="handlebeforeUpload"
-        :headers="headers" :before-remove="beforeRemove" :limit="uploadConfig.limit" :on-exceed="handleExceed">
+        :file-list="list" :before-upload="handlebeforeUpload" :headers="headers" :before-remove="beforeRemove"
+        :limit="uploadConfig.limit" :on-exceed="handleExceed" ref="uploadRef">
         <el-button type="primary">上传文件</el-button>
         <template #tip v-if="prop.showTip">
             <div class="el-upload__tip">
@@ -23,16 +23,14 @@
     <transition-group class="upload-file-list el-upload-list el-upload-list--text" name="el-fade-in-linear" tag="ul">
         <li :key="index" class="el-upload-list__item ele-upload-list__item-content" v-for="(file, index) in list">
             <el-link :href="`${convertFileList(file.url)}`" :underline="false" target="_blank">
-                <svg-icon icon="ep:document"/>
+                <svg-icon icon="ep:document" />
                 {{ file.name }}
-                    
+
             </el-link>
             <div class="ele-upload-list__item-content-action">
                 <!-- 下载 -->
-                <el-link :href="`${convertFileList(file.url)}`" :underline="false"
-                type="primary"
-                target="_blank">
-                    <svg-icon icon="ep:download"/>
+                <el-link :href="`${convertFileList(file.url)}`" :underline="false" type="primary" target="_blank">
+                    <svg-icon icon="ep:download" />
                 </el-link>
 
                 <!-- 删除 -->
@@ -47,7 +45,7 @@
 <script setup lang="ts">
 import { isExternal, isArray } from "@/utils/verify"
 import type { PropType } from 'vue'
-import { computed, reactive, ref, unref } from 'vue'
+import { computed, reactive, ref, shallowRef, unref } from 'vue'
 import { FileSizeTypeEnum, SystemEnum } from '@/utils/constants/SystemConstants'
 import type { UploadFile, UploadFiles, UploadProps, UploadUserFile } from 'element-plus'
 import { confirms, loading, messages } from "@/utils/message/MessageUtils";
@@ -102,10 +100,9 @@ const prop = defineProps({
         }
     }
 })
+const uploadRef = shallowRef();
 // 文件允许上传Url
 const uploadUrl = ref();
-// 这个就是用来判断是否上传成功的
-const uploadList = ref<string[]>([]);
 // 判断是否上传成功
 const uploadNumber = ref(0);
 // 上传文件数据
@@ -200,13 +197,13 @@ const handlebeforeUpload: UploadProps['beforeUpload'] = async (rowFile) => {
 // 上传成功处理操作
 const handleUploadSuccess: UploadProps['onSuccess'] = (response: any, uploadFile: UploadFile, uploadFiles: UploadFiles) => {
     if (response.code === 20000) {
-        uploadList.value.push(response.data)
         uploadedSuccessfully();
     } else {
         // 提示用户
         messages.error(response.msg);
         // 去除最后一个数据
         prop.list?.pop();
+        uploadedSuccessfully();
     }
 }
 
@@ -217,7 +214,11 @@ const uploadedSuccessfully = () => {
  * 当超出限制时，执行的钩子函数
  */
 const handleExceed: UploadProps['onExceed'] = (files, uploadFiles) => {
-    messages.error(`上传文件不允许超过${prop.uploadConfig.limit}个`)
+    const limit = prop.uploadConfig.limit
+    const currentLenght = prop.list?.length
+    if (currentLenght && currentLenght >= limit) {
+        messages.error(`上传文件不允许超过${prop.uploadConfig.limit}个`)
+    }
 }
 
 const handleUploadError: UploadProps['onError'] = (error: any) => {
@@ -234,6 +235,7 @@ const handleListRemove = async (index: number) => {
     try {
         await confirms.confirm(`您确定删除当前文件:(${currentItme?.name})吗?`)
         prop.list?.splice(index, 1);
+        uploadRef.value.clearFiles();
         // 后续可以根据这个查找到PathName然后去调用后端删除数据,目前暂时不开发了   
     } catch (error) { }
 }
