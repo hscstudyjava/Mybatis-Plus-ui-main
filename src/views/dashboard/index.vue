@@ -1,6 +1,8 @@
 <template>
     <div>
-        <uploadFiles v-model:list="fileList" :upload-config="upload"/>
+        <!-- <uploadFiles v-model:list="fileList" :upload-config="upload"/> -->
+        <Test v-model:list="str"></Test>
+        <button @click="onAdd">ok?</button>
     </div>
 </template>
     
@@ -13,6 +15,7 @@ import { userFile } from '@/hooks/web/file'
 import { fileUtil } from '@/utils/common';
 import { FileSizeTypeEnum } from '@/utils/constants/SystemConstants';
 import type { UploadFileModelConfig, UploadFileResult, UploadModel } from '@/api/files/type';
+import Test from './test.vue';
 const { removeDuplicateSlashes, concatTrimStartSlashes, trimStartSlashes, toByte, ignoreFileName } = fileUtil()
 const { convertFileList } = userFile()
 
@@ -23,13 +26,15 @@ const upload = ref<UploadFileModelConfig>({
     hasSourceName: true,
     hasTimeFilePath: true,
     fileSizeType: FileSizeTypeEnum.GB,
-    fileTypeList: ['go', 'js', 'txt','zip','7z', 'xls', 'mkv'],
+    fileTypeList: ['go', 'js', 'txt', 'zip', '7z', 'xls', 'mkv'],
     limit: 1
 })
 
-const fileList = ref<UploadFileResult[]>([
- 
-])
+const list = ref<string[]>([])
+const str=ref<string>("111")
+const onAdd = () => {
+    list.value?.push("ok")
+}
 
 onMounted(async () => {
 

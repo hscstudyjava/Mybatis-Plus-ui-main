@@ -107,20 +107,26 @@ export interface UploadFileModelConfig extends Omit<UploadModel, 'name' | 'size'
 
 export interface UploadFileResult {
     // 文件名称
-    name:string
-
-    time:Date,
-    // 上传路径
-    uploadFileUrl:string,
-    // 文件大小
-    fileSize:number,
-
-    url:string,
-
+    name:string,
+    
+    // 后缀
     fileSuffix:string,
 
+    //路径
+    url:string,
+
+    // 文件大小
     path:string,
 
-    optionsParams:object
+    // 时间
+    time?:Date,
+
+    // 上传路径
+    uploadFileUrl?:string,
+
+    // 大小
+    fileSize?:number,
+    // 扩展
+    optionsParams?:object
 }
 

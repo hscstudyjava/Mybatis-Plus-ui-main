@@ -1,5 +1,6 @@
 import type { BaseDeptEntity } from "@/types/base";
 import type { SimpleTree } from "../system/type";
+import type { UploadFileResult } from "../files/type";
 
 
 
@@ -139,5 +140,5 @@ export interface TrainVideoChild extends SimpleTree<TrainVideoChild> {
    /**
     * 视频路径
     */
-   path: string 
+   path: Array<UploadFileResult>
 }

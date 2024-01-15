@@ -186,6 +186,18 @@ export const fileUtil = () => {
         return separatorIndex < 0 ? '' : fileName.substring(separatorIndex + 1).toLowerCase();
     }
 
+    /** 
+     * 获得文件名称
+     */
+    const getFileName = (name: string): string => {
+        // 判断是否
+        if (name.lastIndexOf("/") > -1) {
+            return name.slice(name.lastIndexOf("/") + 1).toLowerCase();
+        } else {
+            return "";
+        }
+    }
+
     /**
      * 获取文件类型
      *
@@ -509,6 +521,7 @@ export const fileUtil = () => {
 
     return {
         getFileType,
+        getFileName,
         getFileExtendName,
         ignoreFileType,
         ignoreFileName,
@@ -565,8 +578,9 @@ export const MimeFileType = {
         "swf", "flv", "mp3", "wav", "wma", "wmv", "mid", "avi", "mpg",
         "asf", "rm", "rmvb"
     ],
-    VIDEO_EXTENSION: ["mp4", "avi", "rmvb"],
-    
+    VIDEO_EXTENSION: ["mp4", "avi", "mov", "mkv", "rmvb", "wav", "wma",
+        "wmv", "mid", "avi", "mpg",],
+
     DEFAULT_ALLOWED_EXTENSION: [
         // 图片
         "bmp", "gif", "jpg", "jpeg", "png",

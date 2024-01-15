@@ -5,8 +5,12 @@ import { DICT_TYPE, getDictOptions } from '@/utils/common/dict'
 import type { TrainVideoChild } from '@/api/train/type';
 import { confirms, messages, notify } from '@/utils/message/MessageUtils';
 import { number } from 'vue-types';
+import type { UploadFileModelConfig, UploadFileResult } from '@/api/files/type';
+import { FileSizeTypeEnum } from '@/utils/constants/SystemConstants';
+import { MimeFileType } from '@/utils/common';
+import { useAppStore } from '@/stores/app';
 
-
+const { getFileConfig } = useAppStore()
 
 const train_Id = ref()
 
@@ -20,6 +24,20 @@ const query = ref({
     switchType: ''
 })
 const queryRef = ref()
+// 上传配置
+const uploadConfig = ref<UploadFileModelConfig>({
+    fileSizeType: FileSizeTypeEnum.GB,
+    fileTypeList: MimeFileType.VIDEO_EXTENSION,
+    limit: 1,
+    storeKey: getFileConfig.fileInitKey,
+    path: 'train/video',
+    limitSize: 1,
+    hasSourceName: false,
+    hasTimeFilePath: true
+})
+
+const uploadList = ref<UploadFileResult[]>([])
+
 const open = async (trainId: number) => {
     diologOpen.value = true;
     query.value.trainId = trainId
@@ -38,7 +56,7 @@ const loadList = async () => {
 }
 const resetQuery = async () => {
     query.value = {
-        trainId: 0,
+        trainId: unref(train_Id),
         name: '',
         realType: '',
         switchType: ''
@@ -57,11 +75,11 @@ const form = reactive<TrainVideoChild>({
     name: '',
     realType: '',
     switchType: '',
-    path: '',
     id: null,
     parentId: null,
     label: '',
-    children: []
+    children: [],
+    path: []
 })
 
 
@@ -71,7 +89,7 @@ const resetForm = async () => {
         name: '',
         realType: '',
         switchType: '',
-        path: '',
+        path: [],
         id: undefined,
         parentId: "0",
         label: '',
@@ -81,13 +99,11 @@ const resetForm = async () => {
 }
 
 
-
-
 const videoTreeList = ref<TrainVideoChild[]>([])
 
 // 
 const handleVideoTree = () => {
-    videoTreeList.value=[];// 清空数据
+    videoTreeList.value = [];// 清空数据
     const parentObj: TrainVideoChild = {
         id: '0',
         parentId: '',
@@ -96,7 +112,7 @@ const handleVideoTree = () => {
         trainId: '',
         realType: '',
         switchType: '',
-        path: '',
+        path: [],
         label: ''
     }
     // @ts-ignore
@@ -220,18 +236,34 @@ defineExpose({
                 </el-select>
             </el-form-item>
 
-
-
             <el-form-item>
-                <el-button type="primary" @click="loadList">查询</el-button>
-                <el-button @click="resetQuery">重置</el-button>
-                <el-button type="success" @click="handleOpenForm">新增</el-button>
+                <el-button type="primary" @click="loadList">
+                    <template #icon>
+                        <svg-icon icon="ep:search" />
+                    </template>
+                    查询</el-button>
+                <el-button @click="resetQuery">
+                    <template #icon>
+                        <svg-icon icon="ep:refresh" />
+                    </template>
+                    重置</el-button>
+                <el-button type="success" @click="handleOpenForm">
+                    <template #icon>
+                        <svg-icon icon="ep:plus" />
+                    </template>
+                    新增</el-button>
             </el-form-item>
         </el-form>
         <el-table ref="treeTableRef" v-loading="loading" stripe border :data="list" style="width: 100%" row-key="id" lazy
             :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
             <el-table-column prop="name" show-overflow-tooltip label="警情名称" />
-            <el-table-column prop="path" show-overflow-tooltip align="center" label="警情路径" />
+            <el-table-column show-overflow-tooltip align="center" label="警情路径">
+                <template #default="scope">
+                    <span v-if="scope.row.path && scope.row.path.length > 0">
+                        {{ scope.row.path[0].name }}
+                    </span>
+                </template>
+            </el-table-column>
 
             <el-table-column show-overflow-tooltip align="center" label="警情类型">
                 <template #default="socpe">
@@ -279,9 +311,7 @@ defineExpose({
 
     </el-dialog>
     <!-- 表单提交 -->
-    <el-dialog v-model="formOpen" 
-    v-loading="formLoading"
-    :close-on-click-modal="false" :draggable="true" :align-center="true" width="30%">
+    <el-dialog v-model="formOpen" :close-on-click-modal="false" :draggable="true" :align-center="true" width="30%">
         <template #header="{ close, titleId, titleClass }">
             <div class="my-header">
                 <h6 :id="titleId">警情数据</h6>
@@ -289,9 +319,9 @@ defineExpose({
             </div>
         </template>
         <!-- 表单 -->
-        <el-form :model="form" ref="formRef">
+        <el-form :model="form" ref="formRef" v-loading="formLoading">
 
-            <el-form-item label="上级部门">
+            <el-form-item label="上级类目">
                 <el-tree-select style="width:100%" v-model="form.parentId" node-key="id" :props="{ label: 'name' }"
                     :data="videoTreeList" check-strictly :render-after-expand="false" />
             </el-form-item>
@@ -314,13 +344,22 @@ defineExpose({
                 </el-select>
             </el-form-item>
 
-
-
-            <el-form-item>
-                <el-button @click="resetForm">重置</el-button>
-                <el-button type="primary" @click="submit">提交</el-button>
+            <el-form-item label="上传视频" prop="path">
+                <uploadFiles :upload-config="uploadConfig" v-model:list="form.path" />
             </el-form-item>
-        </el-form>
 
+
+
+        </el-form>
+        <template #footer>
+            <el-divider />
+            <span class="dialog-footer">
+
+                <el-button @click="resetForm">重置</el-button>
+
+                <el-button type="primary" @click="submit">提交</el-button>
+
+            </span>
+        </template>
     </el-dialog>
 </template>

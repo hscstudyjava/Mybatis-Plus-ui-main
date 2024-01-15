@@ -25,14 +25,12 @@
             <el-link :href="`${convertFileList(file.url)}`" :underline="false" target="_blank">
                 <svg-icon icon="ep:document" />
                 {{ file.name }}
-
             </el-link>
             <div class="ele-upload-list__item-content-action">
                 <!-- 下载 -->
                 <el-link :href="`${convertFileList(file.url)}`" :underline="false" type="primary" target="_blank">
                     <svg-icon icon="ep:download" />
                 </el-link>
-
                 <!-- 删除 -->
                 <el-link :underline="false" @click="handleListRemove(index)" type="danger">
                     <svg-icon icon='ep:delete'></svg-icon>
@@ -54,6 +52,7 @@ import { getUploadFileUrl } from "@/api/files/operation"
 import { fileUtil } from "@/utils/common"
 import type { UploadFileModelConfig, UploadFileResult, UploadModel } from "@/api/files/type"
 import { userFile } from "@/hooks/web/file"
+import { instanceOf, object } from "vue-types"
 const { convertFileList } = userFile()
 const { toByte, ignoreFileName, byteUpShift, checkContains } = fileUtil()
 const default_split = SystemEnum.DEFAULT_SPLIT_SYMBOL
@@ -69,7 +68,7 @@ const prop = defineProps({
     /** 
      * 传入的值
      */
-    list: Array as PropType<UploadFileResult[]>,
+    list: [Array] as PropType<UploadFileResult[]>,
 
     headers: {
         type: Object,
@@ -145,6 +144,15 @@ const fileTypeList = computed((): string[] => {
         }
     }).flat();
 })
+// 文件集合
+const fileLists = computed(() => {
+    const propList = prop.list
+    if (propList) {
+        return Array.isArray(propList) ? propList : [propList]
+    }
+    return []
+})
+
 
 /** 
  * 上传前操作
@@ -201,6 +209,7 @@ const handleUploadSuccess: UploadProps['onSuccess'] = (response: any, uploadFile
         // 提示用户
         messages.error(response.msg);
         // 去除最后一个数据
+        // fileLists.value!!.pop();
         prop.list?.pop();
         uploadedSuccessfully();
     }
@@ -214,7 +223,7 @@ const uploadedSuccessfully = () => {
  */
 const handleExceed: UploadProps['onExceed'] = (files, uploadFiles) => {
     const limit = prop.uploadConfig.limit
-    const currentLenght = prop.list?.length
+    const currentLenght = fileLists.value!!.length
     if (currentLenght && currentLenght >= limit) {
         messages.error(`上传文件不允许超过${prop.uploadConfig.limit}个`)
     }
@@ -230,9 +239,10 @@ const handleUploadError: UploadProps['onError'] = (error: any) => {
  */
 const handleListRemove = async (index: number) => {
     // 确定后执行删除
-    const currentItme = prop.list?.[index]
+    const currentItme = fileLists.value!![index]
     try {
         await confirms.confirm(`您确定删除当前文件:(${currentItme?.name})吗?`)
+        // fileLists.value!!.splice(index, 1);
         prop.list?.splice(index, 1);
         uploadRef.value.clearFiles();
         // 后续可以根据这个查找到PathName然后去调用后端删除数据,目前暂时不开发了   

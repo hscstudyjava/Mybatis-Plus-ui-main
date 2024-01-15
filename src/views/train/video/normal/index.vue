@@ -23,8 +23,8 @@ const query = ref({
     code: '',
     createDept: '',
     name: '',
-    status: '',
-    idNo: ''
+    trainType: '',
+    trainLevel: ''
 })
 const state = reactive({
     loading: false,
@@ -44,8 +44,8 @@ const resetFrom = () => {
         code: '',
         createDept: '',
         name: '',
-        status: '',
-        idNo: ''
+        trainType: '',
+        trainLevel: ''
     }
     queryFromRef.value?.resetFields()
     loadList()
@@ -136,27 +136,46 @@ onMounted(async () => {
                     <!-- 表单 -->
                     <el-form :inline="true" :model="query" ref="queryFromRef" class="demo-form-inline"
                         @submit.native.prevent>
-                        <el-form-item label="警员警号" prop="code">
-                            <el-input v-model="query.code" placeholder="请输入警员警号" @keyup.enter.native="loadList" clearable />
+                        <el-form-item label="警情编码" prop="code">
+                            <el-input v-model="query.code" placeholder="请输入警情编码" @keyup.enter.native="loadList" clearable />
                         </el-form-item>
 
-                        <el-form-item label="警员姓名" prop="name">
-                            <el-input v-model="query.name" placeholder="请输入警员姓名" @keyup.enter.native="loadList" clearable />
+                        <el-form-item label="警情名称" prop="name">
+                            <el-input v-model="query.name" placeholder="请输入警情名称" @keyup.enter.native="loadList" clearable />
                         </el-form-item>
 
-                        <el-form-item label="身份号码" prop="idNo">
-                            <el-input v-model="query.idNo" placeholder="请输入身份号码" @keyup.enter.native="loadList" clearable />
+                        <el-form-item label="警情级别" prop="trainLevel">
+                            <el-select v-model="query.trainLevel" placeholder="请选择警情级别" class="w-full">
+                                <el-option v-for="item in getDictOptions(DICT_TYPE.BIZ_TRIAN_VIDEO_LEVEL)" :key="item.value"
+                                    :label="item.label" :value="item.value" />
+                            </el-select>
                         </el-form-item>
+
+                        <el-form-item label="警情类型" prop="trainType">
+                            <el-select v-model="query.trainType" placeholder="请选择警情级别" class="w-full">
+                                <el-option v-for="item in getDictOptions(DICT_TYPE.BIZ_TRAIN_VIDEO_TYPE)" :key="item.value"
+                                    :label="item.label" :value="item.value" />
+                            </el-select>
+                        </el-form-item>
+
 
                         <el-form-item>
-                            <el-button type="primary" @click="loadList">查询</el-button>
-                            <el-button @click="resetFrom">重置</el-button>
+                            <el-button type="primary" @click="loadList">
+                                <template #icon>
+                                    <svg-icon icon="ep:search" />
+                                </template>
+                                查询</el-button>
+                            <el-button @click="resetFrom">
+                                <template #icon>
+                                    <svg-icon icon="ep:refresh" />
+                                </template>
+                                重置</el-button>
                         </el-form-item>
                     </el-form>
                     <!-- 相关按钮组 -->
 
 
-                    <el-row :gutter="10" class="mb8">
+                    <el-row :gutter="10" >
 
                         <el-col :span="1.5" v-peri="[`${basePeri}save`]">
                             <el-button type="success" @click="openFrom('create')" plain>
@@ -224,9 +243,7 @@ onMounted(async () => {
                             </template>
                         </el-table-column>
 
-                        <el-table-column label="操作"
-                        width="200px"
-                        align="center">
+                        <el-table-column label="操作" width="200px" align="center">
                             <template #default="scope">
                                 <div class="flex items-center justify-center">
 

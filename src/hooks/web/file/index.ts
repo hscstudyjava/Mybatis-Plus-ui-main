@@ -1,3 +1,4 @@
+import type { UploadFileResult } from '@/api/files/type';
 import { useAppStore } from '@/stores/app';
 import { fileUtil } from '@/utils/common';
 import { SystemEnum } from '@/utils/constants/SystemConstants';
@@ -15,7 +16,7 @@ export const userFile = () => {
     const app = useAppStore()
     const PD_BASE_URL = import.meta.env.VITE_APP_BASE_URL + PD_FILE_URL;
     const fileConfig = app.getFileConfig
-    const { removeDuplicateSlashes, concatTrimStartSlashes } = fileUtil()
+    const { removeDuplicateSlashes, concatTrimStartSlashes, getFileType, getFileName } = fileUtil()
 
     /**
      * 
@@ -42,7 +43,7 @@ export const userFile = () => {
             if (!files.includes(default_split)) {
                 // 如果不包含逗号分隔符，直接返回 URL 数组
                 if (!isHttp(files)) {
-                    return [concatTrimStartSlashes(PD_BASE_URL,files)];
+                    return [concatTrimStartSlashes(PD_BASE_URL, files)];
                 } else {
                     return [files]
                 }
@@ -57,8 +58,7 @@ export const userFile = () => {
                         }
                     }).flat()
             }
-        } else { // 如果是字符串数组类型的文件列表
-            // 返回 URL 数组
+        } else if (typeof files === 'object') {
             return files.map(item => {
                 if (!isHttp(item)) {
                     return [concatTrimStartSlashes(PD_BASE_URL + item)];
@@ -66,6 +66,26 @@ export const userFile = () => {
                     return [concatTrimStartSlashes(item)]
                 }
             }).flat()
+        } else {
+            return []
+        }
+    }
+
+    /** 
+     * 将path转换成为对象
+     */
+    const path2Result = (url: string): UploadFileResult => {
+        /** 
+         * 将Path转换成为UploadFileResult
+         */
+        const fileSuffix = getFileType(url);
+        // const fileName=
+        const fileName = getFileName(url);
+        return {
+            name: fileName,
+            fileSuffix: fileSuffix,
+            url: url,
+            path: url,
         }
     }
 
@@ -73,7 +93,8 @@ export const userFile = () => {
 
 
     return {
-        convertFileList
+        convertFileList,
+        path2Result
     }
 
 }
