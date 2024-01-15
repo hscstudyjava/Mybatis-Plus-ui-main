@@ -94,6 +94,10 @@ export const randomUtil = () => {
 
         _randomNum() { return this.randomNum(10000000, 999999999999) },
 
+        randomTime(time?: Date) {
+            return parseTime(time || new Date(), "{y}-{m}-{d}_{h}-{i}-{s}")
+        },
+
         // 随机字符串
         randomStr(len: number): string {
             const chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz123456789';
@@ -647,8 +651,8 @@ export const downloadUtil = {
         window.URL.revokeObjectURL(href)
     },
     // 下载 Excel 方法
-    excel(data: Blob, fileName: string) {
-        this.download(data, fileName, MimeFileType.DOCUMENT_XLS)
+     excel(data: Blob, fileName: string) {
+         this.download(data, fileName, MimeFileType.DOCUMENT_XLS)
     },
     // 下载 Word 方法
     word(data: Blob, fileName: string) {

@@ -2,7 +2,7 @@
 import { onMounted, reactive, ref, unref } from 'vue';
 import type { SysPost } from "@/api/system/type";
 
-import { parseTime,downloadUtil,randomUtil } from '@/utils/common'
+import { parseTime, downloadUtil, randomUtil } from '@/utils/common'
 import { DICT_TYPE, getDictOptions } from '@/utils/common/dict'
 import { confirms, messages, notify } from '@/utils/message/MessageUtils';
 import { selectPostPage, basePeri, insertPost, updatePost, getOnce, removeBatchOrOnce, exportPost } from '@/api/system/post'
@@ -86,10 +86,10 @@ const openFrom = async (type: string, row?: SysPost) => {
 
 const hadnleExport = async () => {
     try {
-        await confirms.confirm("您确定是否下载Excel")
         exportLoding.value = true
-        const { data } = await exportPost(unref(query))
-        downloadUtil.excel(data,`角色名称-${randomUtil()._randomNum()}.xls`)
+        await confirms.confirm("您确定是否下载Excel")
+        const data = await exportPost(unref(query))
+        downloadUtil.excel(data, `角色名称-${randomUtil().randomTime()}.xls`)
     } catch (error) { }
     finally {
         exportLoding.value = false;
@@ -138,7 +138,7 @@ onMounted(async () => {
                     <el-button type="primary" @click="openFrom('update')" plain :disabled="state.single">
                         <template #icon>
                             <el-icon>
-                                <i-ep-Edit />
+                                <svg-icon class="mr-5px" icon="ep:edit" />
                             </el-icon>
                         </template>
                         更新
@@ -148,7 +148,7 @@ onMounted(async () => {
                 <el-col :span="1.5" v-peri="[`${basePeri}remove`]">
                     <el-button type="danger" @click="handleDelete" :disabled="state.multiple" plain>
                         <template #icon>
-                            <i-ep-delete />
+                            <svg-icon class="mr-5px" icon="ep:delete" />
                         </template>
                         删除
                     </el-button>
