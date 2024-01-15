@@ -4,7 +4,9 @@
     <span v-if="isHttp" :style="styleExternalIcon" class="svg-external-icon svg-icon" v-on="$attrs"></span>
     
     <!-- 如果icon是iconfy -->
-    <IconifyIcon v-if="isIconify" :icon="iconName" :style="iconStyle" aria-hidden="true" v-on="$attrs"/>
+    <IconifyIcon v-if="isIconify" :icon="iconName" :style="iconStyle" aria-hidden="true" 
+   
+    v-on="$attrs"/>
 
     <svg v-else :class="svgClass" aria-hidden="true" v-on="$attrs">
       <use :xlink:href="iconName"/>
@@ -33,6 +35,8 @@ const props = defineProps({
     default: ''
   },
   size: propTypes.number.def(16),
+  height:propTypes.number.def(12),
+  width:propTypes.number.def(12)
 });
 
 const iconName = computed(() => {
@@ -53,7 +57,8 @@ const styleExternalIcon = computed(() => ({
 const iconStyle = computed(() => ({
   fill: props.color,
   fontSize: `${props.size}px`,
-  height: '1em',
+  height: `${props.height}px`,
+  width:`${props.width}px`,
   stroke: 'none',
   'stroke-width': '1',
   'fill-rule': 'evenodd'
@@ -72,13 +77,7 @@ const isIconify = computed(() => {
 })
 
 
-const iconComponent = computed(() => {
-  if (props.icon.includes(":")) {
-    return IconifyIcon; // 使用 IconifyIcon 组件
-  } else {
-    return 'svg'; // 使用内联 SVG 渲染
-  }
-});
+
 </script>
 
 <style scoped lang='scss'>
