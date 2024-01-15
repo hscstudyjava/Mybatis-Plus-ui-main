@@ -31,7 +31,7 @@ export const pageTrainVideo=async (params:any):Promise<AjaxResult<Page<TrainVide
 
 export const listTrainVideo =async (params:any):Promise<AjaxResult<Array<TrainVideo>>> =>{
     return request.get(
-        baseUrl+'list',
+        baseUrl+'simple-list',
         {
             params
         }

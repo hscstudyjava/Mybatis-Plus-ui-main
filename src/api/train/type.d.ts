@@ -142,3 +142,32 @@ export interface TrainVideoChild extends SimpleTree<TrainVideoChild> {
     */
    path: Array<UploadFileResult>
 }
+
+
+export interface TrainRecord {
+
+   id?: number
+
+   trainVideoId?: number
+
+   trainTaskId?: number
+
+   policeIdNo: string,
+
+   screenShot: string,
+
+   trainVideo: string,
+
+   trainTime?: Date
+
+   uploadTime?: Date
+
+   uploadIp?: string
+
+   hasTrain: boolean,
+
+   uploadClientVersion: string
+
+   optionsParams?: Map<string, object>
+
+}

@@ -18,6 +18,7 @@ import type { UploadFileModelConfig, UploadFileResult, UploadModel } from '@/api
 import Test from './test.vue';
 const { removeDuplicateSlashes, concatTrimStartSlashes, trimStartSlashes, toByte, ignoreFileName } = fileUtil()
 const { convertFileList } = userFile()
+import { pageTrainRecord } from '@/api/train/record'
 
 const upload = ref<UploadFileModelConfig>({
     storeKey: 'local',
@@ -31,10 +32,12 @@ const upload = ref<UploadFileModelConfig>({
 })
 
 const list = ref<string[]>([])
-const str=ref<string>("111")
+const str = ref<string>("111")
 const onAdd = () => {
     list.value?.push("ok")
 }
+
+
 
 onMounted(async () => {
 
