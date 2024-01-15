@@ -20,10 +20,7 @@
                 <el-col :span="12">
                     <el-row>
                         <el-col :span="8">
-                            <el-upload action="#" :http-request="() => { }" :before-upload="beforeUpload"
-                                :show-file-list="false">
-                                <el-button>选择</el-button>
-                            </el-upload>
+                            <uploadFiles :showTip="false" :upload-config="uploadConfig" v-model:list="fileList"/>
                         </el-col>
                         <el-col :span="4">
                             <el-button :icon="Plus" @click="changeScale(1)"></el-button>
@@ -50,9 +47,12 @@
 <script setup lang="ts">
 import { Plus, Minus, RefreshLeft, RefreshRight } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
-import VueCropper from 'vue-cropper';
+import { VueCropper } from 'vue-cropper'
 import 'vue-cropper/dist/index.css'
 import { getCurrentInstance, ref, reactive, watch } from 'vue'
+import type { UploadFileModelConfig, UploadFileResult } from '@/api/files/type'
+import { FileSizeTypeEnum } from '@/utils/constants/SystemConstants'
+import { MimeFileType } from '@/utils/common'
 
 const { proxy } = getCurrentInstance()
 const props = defineProps({
@@ -68,13 +68,42 @@ const props = defineProps({
 const showCropper = ref(false)
 // cropper配置  更多配置可参考 https://www.npmjs.com/package/vue-cropper
 const options = reactive({
-    img: null, // 裁剪图片的地址
-    autoCropWidth: 200, // 默认生成截图框宽度 默认容器的 80%
-    autoCropHeight: 200, // 默认生成截图框高度 默认容器的 80%
-    outputType: 'png', // 裁剪生成图片的格式 jpeg, png, webp
-    autoCrop: true, // 是否默认生成截图框
-    fixedBox: false // 固定截图框大小
+    img: "http://localhost:1010/file/pd/local/file/empty.png?type=preview", // 裁剪图片的地址
+    aspectRatio: 1,
+    zoomable: true,
+    zoomOnTouch: true,
+    zoomOnWheel: true,
+    cropBoxMovable: true,
+    cropBoxResizable: true,
+    toggleDragModeOnDblclick: true,
+    autoCrop: true,
+    background: true,
+    highlight: true,
+    center: true,
+    responsive: true,
+    restore: true,
+    checkCrossOrigin: true,
+    checkOrientation: true,
+    scalable: true,
+    modal: true,
+    guides: true,
+    movable: true,
+    rotatable: true,
 })
+
+const uploadConfig = ref<UploadFileModelConfig>({
+    fileSizeType: FileSizeTypeEnum.MB,
+    fileTypeList: MimeFileType.IMAGE_EXTENSION,
+    limit: 1,
+    storeKey: 'local',
+    path: 'avatar',
+    limitSize: 10,
+    hasSourceName: false,
+    hasTimeFilePath: true
+})
+
+const fileList=ref<UploadFileResult[]>([])
+
 const previews = ref({
     url: ''
 })
