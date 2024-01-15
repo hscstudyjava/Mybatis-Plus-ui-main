@@ -2,9 +2,13 @@
     <el-breadcrumb class="app-breadcrumb" separator="/">
         <transition-group name="breadcrumb">
             <el-breadcrumb-item v-for="(item, index) in level.list" :key="item.path">
-                <span v-if="item.redirect === 'noRedirect' || index == level.list.length - 1" class="no-redirect">{{
-                    item.meta.title }}</span>
-                <a v-else @click.prevent="handleLink(item)">{{ item.meta.title }}</a>
+                <span 
+                v-if="item.redirect === 'noRedirect' || index == level.list.length - 1" class="no-redirect flex items-center">
+                    <svg-icon :icon="item.meta.icon" />
+                    {{ item.meta.title }}</span>
+                <a v-else @click.prevent="handleLink(item)">
+                    <svg-icon :icon="item.meta.icon" />
+                    {{ item.meta.title }}</a>
             </el-breadcrumb-item>
         </transition-group>
     </el-breadcrumb>
@@ -39,12 +43,11 @@ const onCreated = onMounted(() => {
 
 const watchRouter = watch(() => currentRouter.currentRoute.value,
     (newVlaue: any) => {
-
         if (newVlaue.path.startsWith('/redirect/')) {
             return
         }
         getBreadcrumb()
-    }
+    },
     // { immediate: true }
 )
 
@@ -53,7 +56,7 @@ const getBreadcrumb = () => {
     let matceh: any = currentRouter.currentRoute.value.matched.filter(item => item.meta && item.meta.title)
     const first = matceh[0]//获得第一个
     if (isDashboard(first)) {
-        matceh = [{ path: '/index', meta: { title: '首页' } }].concat(matceh)
+        matceh = [{ path: '/', meta: { title: '首页' } }].concat(matceh)
     }
     level.list = matceh.filter((item: any) => item.meta && item.meta.title && item.meta.breadcrumb !== false)
 }
@@ -63,7 +66,7 @@ const isDashboard = (route: RouteLocationNormalized): boolean => {
     if (!name) {
         return false
     }
-    let IndexName: RouteRecordName = "Index"
+    let IndexName: RouteRecordName = "Dashboard"
     return name === IndexName
 }
 
@@ -84,14 +87,14 @@ const handleLink = (currentItem: any) => {
 
 <style scoped lang="scss">
 .app-breadcrumb.el-breadcrumb {
-  display: inline-block;
-  font-size: 14px;
-  line-height: 50px;
-  margin-left: 8px;
+    display: inline-block;
+    font-size: 14px;
+    line-height: 50px;
+    margin-left: 8px;
 
-  .no-redirect {
-    color: #97a8be;
-    cursor: text;
-  }
+    .no-redirect {
+        color: #97a8be;
+        cursor: text;
+    }
 }
 </style>

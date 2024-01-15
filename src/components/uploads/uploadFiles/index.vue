@@ -77,6 +77,7 @@ const prop = defineProps({
         }
     },
 
+
     showTip: {
         type: Boolean,
         default: true

@@ -73,6 +73,21 @@ export const defaultRouter: AppRouteRecordRaw[] = [
         meta: { title: '首页', icon: 'dashboard', affix: true }
       }
     ]
+  },
+  {
+    path:'/user',
+    name:'user',
+    component: shallowRef(Layout),
+    hidden:true,
+    redirect: '/user/profile',
+    children:[
+      {
+        path:'profile',
+        name:'UserProfile',
+        component: ()=>import('@/views/user/profile/index.vue'),
+        meta:{title:'用户中心'}
+      }
+    ]
   }
 ]
 

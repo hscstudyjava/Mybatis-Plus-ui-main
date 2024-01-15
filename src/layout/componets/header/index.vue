@@ -118,8 +118,9 @@ const toggleSideBar = () => {
     height: 50px;
     overflow: hidden;
     position: relative;
-    background: #fff;
-    box-shadow: 0 1px 4px rgba(0, 21, 41, .08);
+    background: var(--el-bg-color);
+    border-bottom: 1px solid var(--el-border-color);
+    box-shadow: var(--el-box-shadow);
 
     .hamburger-container {
         line-height: 46px;
