@@ -1,6 +1,7 @@
 import type { BaseDeptEntity } from "@/types/base";
 import type { SimpleTree } from "../system/type";
 import type { UploadFileResult } from "../files/type";
+import type { string } from "vue-types";
 
 
 
@@ -170,6 +171,55 @@ export interface TrainRecord {
 
    optionsParams?: Map<string, object>,
 
-   createDept?:string
+   createDept?: string
+
+}
+
+export interface TrainPlan extends Omit<BaseDeptEntity, 'updateDept'> {
+   /**
+   * 编号
+   */
+   id?: number
+
+
+   /**
+    * 名称
+    */
+   name: string
+
+   /**
+    * 训练类型 normal 正常 setup 分步
+    */
+   planType: string
+   /**
+    * 同上级id集合
+    */
+   planIds: Array<number>
+
+   /**
+    * 上传文件集合
+    */
+   uploadFiles: Array<number>
+
+   /**
+    * 扩展字段
+    */
+   optionsParams: {}
+
+   /**
+    * 训练开始时间
+    */
+   startTime?: Date
+
+   /**
+    * 训练结束时间
+    */
+   endTime?: Date
+
+   /**
+    * 备注
+    */
+   remark?: string
+
 
 }

@@ -38,7 +38,7 @@ export interface BaseDeptEntity extends BaseEnity {
     /**
      * 备注
      */
-    remark?:string
+    remark?: string
 
 }
 
@@ -90,3 +90,5 @@ export interface SimpleTree<T> {
 
     children: Array<T>
 }
+
+export type IdType = string | number | string[] | number[]

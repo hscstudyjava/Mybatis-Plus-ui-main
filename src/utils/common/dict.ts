@@ -24,7 +24,7 @@ export const getDictOptions = (dictType: string) => {
 export const getIntDictOptions = (dictType: string): NumberValueType[] => {
     // 获得通用的 DictDataType 列表
     const dictOptions: SysDictSimpleResult[] = getDictOptions(dictType)
-    
+
     // 转换成 number 类型的 NumberDictDataType 类型
     // why 需要特殊转换：避免 IDEA 在 v-for="dict in getIntDictOptions(...)" 时，el-option 的 key 会告警
     const dictOption: NumberValueType[] = []
@@ -131,37 +131,45 @@ export enum DICT_TYPE {
      */
     SYSTEM_DATA_PERMISSION = "system_data_permission",
 
-  
+
 
     /** 
      * 城市类型
      */
     SYSTEM_CITY_LEVEL_TYPE = "system_city_level_type",
 
-    
+
     /**
      * 实名||匿名
      */
     SYSTEM_TRAIN_REAL_TYPE = "system_train_real_type",
-
+    /**
+     * 文件存储类型
+     */
+    SYSTEM_FILE_TYPE = "system_file_type",
 
     /***************Train***************** */
+
     /**
      * 训练类型
      */
     BIZ_TRAIN_VIDEO_TYPE = "biz_train_video_type",
+
     /**
      * 警情训练等级
      */
     BIZ_TRIAN_VIDEO_LEVEL = "biz_train_video_leave",
+
     /**
      * 警情触发条件
      */
     BIZ_TRAIN_SWITCH_TYPE = "biz_train_switch_type",
 
-
     /**
-     * 文件存储类型
+     * 警情计划训练类型
      */
-    SYSTEM_FILE_TYPE="system_file_type",
+    BIZ_TRAIN_PLAN_TYPE = "biz_train_plan_type",
+
+
+
 }
