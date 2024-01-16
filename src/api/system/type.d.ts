@@ -195,6 +195,14 @@ export interface SysDept extends BaseEnity, SimpleTree<SysDept> {
     sortValue: number
 }
 
+export interface SysDeptSimpleVO {
+
+    id:string|number,
+
+    deptName:string
+    
+}
+
 
 export interface SysConfig extends BaseEnity, SimpleTree<SysConfig> {
 

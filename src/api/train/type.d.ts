@@ -84,7 +84,7 @@ export interface TrainVideo extends Omit<BaseDeptEntity, "optionsParams"> {
 
    sortValue: number
 
-   optionsParams: TrainVideoParams
+   optionsParams?: TrainVideoParams
 }
 
 
@@ -168,6 +168,8 @@ export interface TrainRecord {
 
    uploadClientVersion: string
 
-   optionsParams?: Map<string, object>
+   optionsParams?: Map<string, object>,
+
+   createDept?:string
 
 }

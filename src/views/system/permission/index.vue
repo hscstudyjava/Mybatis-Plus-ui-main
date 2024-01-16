@@ -550,7 +550,7 @@ const toggleExpansion = () => {   //展开
 
 
 /***********操作表单************ */
-const handleSave = (id: String | Number) => {
+const handleSave = (id: string | number) => {
 
     state.firstDialog.open = true;
     state.firstDialog.title = "新增权限"
