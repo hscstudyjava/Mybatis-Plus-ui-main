@@ -348,18 +348,23 @@ onMounted(async () => {
                     </div>
                 </template>
                 {{ from.requestParams }}
+                <!-- <json-preview :data="JSON.parse(from.requestParams)"/> -->
             </el-descriptions-item>
-            <el-descriptions-item :span="2">
+            <el-descriptions-item >
                 <template #label>
                     <div class="cell-item">
                         响应数据
                     </div>
                 </template>
-                {{ from.responseParams }}
+                <div class="text-truncate ">
+                    {{ from.responseParams }}
+                </div>
+                <!-- <json-preview :data="JSON.parse(from.responseParams)"/> -->
             </el-descriptions-item>
 
 
         </el-descriptions>
+      
     </el-dialog>
 </template>
 
