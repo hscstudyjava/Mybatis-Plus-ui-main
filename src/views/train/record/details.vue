@@ -58,7 +58,7 @@ defineExpose({
 </script>
 
 <template>
-    <el-dialog v-model="diologOpen" :close-on-click-modal="false" :draggable="true" :align-center="true" width="40%">
+    <el-dialog v-model="diologOpen"   :align-center="true" width="40%">
         <template #header="{ close, titleId, titleClass }">
             <div class="my-header">
                 <h6 :id="titleId">{{ diologTitle }}</h6>

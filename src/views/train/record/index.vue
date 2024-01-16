@@ -137,26 +137,29 @@ onMounted(async () => {
                 <el-card>
                     <!-- 表单 -->
                     <el-form :inline="true" :model="query" ref="queryRef" @submit.native.prevent>
-                        <el-form-item label="警员名称" prop="policeName">
-                            <el-input v-model="query.policeName" placeholder="请输入警员名称" @keyup.enter.native="loadList"
-                                clearable />
-                        </el-form-item>
+
 
                         <el-form-item label="身份号码" prop="policeIdNo">
-                            <el-input v-model="query.policeIdNo" placeholder="请输入身份号码" @keyup.enter.native="loadList"
+                            <el-input v-model="query.policeIdNo"
+                            class="!w-240px"
+                            placeholder="请输入身份号码" @keyup.enter.native="loadList"
                                 clearable />
                         </el-form-item>
 
                         <el-form-item label="训练警情" prop="trainVideoId">
-                            <el-select v-model="query.trainVideoId" filterable placeholder="请选择训练警情">
+                            <el-select v-model="query.trainVideoId" filterable
+                            class="!w-240px"
+                            placeholder="请选择训练警情">
                                 <el-option v-for="item in trainList" :key="item.id" :label="item.name" :value="item.id" />
                             </el-select>
                         </el-form-item>
 
-                        <el-form-item label="训练警情" prop="trainVideoId">
-                            <el-date-picker v-model="query.startTime" type="datetimerange" start-placeholder="开始时间"
-                                end-placeholder="结束时间" format="YYYY-MM-DD HH:mm:ss" date-format="YYYY/MM/DD ddd"
-                                time-format="A hh:mm:ss" />
+                        <el-form-item label="训练时间" prop="trainVideoId">
+                            <el-date-picker v-model="query.startTime"
+                                :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]" 
+                                end-placeholder="结束日期" start-placeholder="开始日期" type="daterange"
+                                value-format="YYYY-MM-DD HH:mm:ss" />
+
                         </el-form-item>
 
                         <!-- 训练时间 -->
@@ -193,12 +196,12 @@ onMounted(async () => {
                         style="width: 100%">
                         <el-table-column type="selection" width="55" align="center" />
                         <el-table-column type="index" label="Index" align="center" />
-                        <el-table-column label="警情名称" prop="bizTrainVideo.name" align="center" />
-                        <el-table-column label="所属部门" prop="dept.deptName" align="center" />
-                        <el-table-column label="警员名称" prop="policeInfo.name" align="center" />
-                        <el-table-column label="身份号码" prop="policeInfo.idNo" align="center" />
-                        <el-table-column label="上传IP" prop="uploadIp" align="center" />
-                        <el-table-column label="发送版本" prop="uploadClientVersion" align="center" />
+                        <el-table-column label="警情名称" prop="bizTrainVideo.name" show-overflow-tooltip align="center" />
+                        <el-table-column label="所属部门" prop="dept.deptName" show-overflow-tooltip align="center" />
+                        <el-table-column label="警员名称" prop="policeInfo.name" show-overflow-tooltip align="center" />
+                        <el-table-column label="身份号码" prop="policeInfo.idNo" show-overflow-tooltip align="center" />
+                        <el-table-column label="上传IP" show-overflow-tooltip prop="uploadIp" align="center" />
+                        <el-table-column label="发送版本" show-overflow-tooltip prop="uploadClientVersion" align="center" />
                         <el-table-column label="训练时间" show-overflow-tooltip align="center">
                             <template #default="scope">
                                 {{ parseTime(scope.row.trainTime) }}
